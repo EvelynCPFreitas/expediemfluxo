@@ -9,12 +9,33 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <style>
-        /* Variáveis de Cores */
+        /* Variáveis de Cores e Temas */
         :root {
+            /* Tema Claro (Padrão) */
             --azul-escuro: #004b87; 
             --cinza-texto: #6b7280;
             --cinza-borda: #d1d5db;
             --fundo-tela: #eef1f6;
+            --fundo-card: #ffffff;
+            --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --cor-caminhao-fundo: #cbd5e1;
+            --cor-icone-olho: #6b7280;
+            --cor-fundo-botao-tema: rgba(0,0,0,0.05);
+            --cor-icone-tema: var(--azul-escuro);
+        }
+
+        /* Classe para Tema Escuro */
+        .dark-theme {
+            --azul-escuro: #1e88e5; /* Um azul mais claro e vibrante */
+            --cinza-texto: #d1d5db; /* Texto mais claro */
+            --cinza-borda: #4b5563; /* Bordas mais escuras */
+            --fundo-tela: #0f172a; /* Azul-cinza escuro profundo */
+            --fundo-card: #1e293b; /* Card mais escuro */
+            --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --cor-caminhao-fundo: #4b5563; /* Caminhões mais sutis */
+            --cor-icone-olho: #d1d5db;
+            --cor-fundo-botao-tema: rgba(255,255,255,0.1);
+            --cor-icone-tema: #fcd34d; /* Amarelo ouro para o ícone preenchido */
         }
 
         * {
@@ -31,8 +52,48 @@
             align-items: center;
             height: 100vh;
             position: relative;
-            overflow: hidden; 
+            overflow: hidden; /* Esconde os caminhões fora da tela */
+            transition: background-color 0.3s ease;
         }
+
+        /* =========================================
+           BOTÃO DE TROCA DE TEMA (Canto Superior Direito)
+           ========================================= */
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--cor-fundo-botao-tema);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(128, 128, 128, 0.2);
+        }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: var(--cor-icone-tema);
+            stroke-width: 1.5;
+            transition: stroke 0.3s ease;
+        }
+
+        /* Exibir/Ocultar ícones com base no tema */
+        #theme-icon-dark { display: none; }
+        .dark-theme #theme-icon-light { display: none; }
+        .dark-theme #theme-icon-dark { display: block; fill: var(--cor-icone-tema); }
+
 
         /* =========================================
            ANIMAÇÃO DOS 5 CAMINHÕES NO FUNDO
@@ -40,9 +101,10 @@
         .caminhao-fundo {
             position: absolute;
             font-size: 2.2rem;
-            color: #cbd5e1; 
+            color: var(--cor-caminhao-fundo);
             opacity: 0.7;
             z-index: 1; 
+            transition: color 0.3s ease;
         }
 
         .cam-1 { top: 10%; animation: moveDireita 7s linear infinite; }
@@ -66,26 +128,27 @@
            CARTÃO DE LOGIN
            ========================================= */
         .login-card {
-            background-color: #ffffff;
+            background-color: var(--fundo-card);
             width: 100%;
             max-width: 450px;
             padding: 40px;
             border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--sombra-card);
             text-align: center;
             z-index: 2; 
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .cabecalho-logo p {
             font-size: 0.8rem;
             font-weight: 700;
-            color: #111827;
+            color: var(--azul-escuro);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 15px;
+            transition: color 0.3s ease;
         }
 
-        /* Ajuste no tamanho do Logo SVG para acomodar os traços */
         .logo-svg {
             width: 95px;
             height: auto;
@@ -95,11 +158,11 @@
         .login-card h1 {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #111827;
+            color: var(--azul-escuro);
             margin-bottom: 30px;
+            transition: color 0.3s ease;
         }
 
-        /* Formulário e Inputs */
         .grupo-input {
             position: relative;
             margin-bottom: 15px;
@@ -111,10 +174,11 @@
             transform: translateY(-50%);
             color: var(--azul-escuro);
             font-size: 1.2rem;
+            transition: color 0.3s ease;
         }
 
         .icone-esq { left: 15px; }
-        .icone-dir { right: 15px; cursor: pointer; color: var(--cinza-texto) !important; }
+        .icone-dir { right: 15px; cursor: pointer; color: var(--cor-icone-olho) !important; transition: color 0.3s ease; }
 
         .grupo-input input {
             width: 100%;
@@ -122,9 +186,10 @@
             border: 1px solid var(--cinza-borda);
             border-radius: 30px;
             font-size: 0.95rem;
-            color: #111827;
+            color: var(--cinza-texto);
+            background-color: transparent;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, color 0.3s;
         }
 
         .grupo-input input::placeholder {
@@ -135,7 +200,6 @@
             border-color: var(--azul-escuro);
         }
 
-        /* Botão */
         .btn-entrar {
             width: 100%;
             background-color: var(--azul-escuro);
@@ -154,7 +218,6 @@
             background-color: #033663;
         }
 
-        /* Rodapé */
         .rodape-login {
             display: flex;
             justify-content: space-between;
@@ -165,11 +228,13 @@
         .rodape-login a {
             text-decoration: none;
             color: var(--cinza-texto);
+            transition: color 0.3s ease;
         }
 
         .rodape-login a span {
             color: var(--azul-escuro);
             font-weight: 600;
+            transition: color 0.3s ease;
         }
 
         .rodape-login a:hover {
@@ -178,6 +243,20 @@
     </style>
 </head>
 <body>
+
+    <!-- Botão de troca de tema -->
+    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
+        <!-- Ícone Tema Claro (Contorno) -->
+        <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+            <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
+        </svg>
+        <!-- Ícone Tema Escuro (Preenchido) -->
+        <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+            <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
+        </svg>
+    </button>
 
     <!-- 5 Caminhões animados no fundo -->
     <i class="ph ph-truck caminhao-fundo cam-1"></i>
@@ -191,25 +270,25 @@
         <div class="cabecalho-logo">
             <p>Expedição em Fluxo</p>
             
-            <!-- SVG Atualizado: Caminhão Sólido com a Seta Cortando -->
+            <!-- SVG Customizado do Logotipo -->
             <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
                 <!-- Corpo e Cabine -->
-                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="var(--azul-escuro)"/>
+                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
                 
                 <!-- Rodas (Azul com miolo branco para vazar) -->
-                <circle cx="38" cy="52" r="7" fill="var(--azul-escuro)"/>
+                <circle cx="38" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
                 <circle cx="38" cy="52" r="3" fill="#ffffff"/>
                 
-                <circle cx="78" cy="52" r="7" fill="var(--azul-escuro)"/>
+                <circle cx="78" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
                 <circle cx="78" cy="52" r="3" fill="#ffffff"/>
 
-                <!-- Janela da Cabine (Vazada em branco) -->
-                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#ffffff"/>
+                <!-- Janela da Cabine -->
+                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
 
-                <!-- Seta cortando o caminhão (Vazada em branco) -->
-                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#ffffff"/>
+                <!-- Seta cortando o caminhão -->
+                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
 
-                <!-- Tracinhos de velocidade (Linhas azuis atrás) -->
+                <!-- Tracinhos de velocidade -->
                 <rect x="8" y="25" width="10" height="4" rx="1.5" fill="var(--azul-escuro)"/>
                 <rect x="2" y="33" width="16" height="4" rx="1.5" fill="var(--azul-escuro)"/>
             </svg>
@@ -225,8 +304,8 @@
 
             <div class="grupo-input">
                 <i class="ph ph-lock-key icone-esq"></i>
-                <input type="password" placeholder="Senha" required>
-                <i class="ph ph-eye-slash icone-dir"></i>
+                <input type="password" id="senha" placeholder="Senha" required>
+                <i class="ph ph-eye-slash icone-dir" id="togglePassword"></i>
             </div>
 
             <button type="submit" class="btn-entrar">ENTRAR</button>
@@ -237,6 +316,40 @@
             <a href="#">Ainda não tem conta? <span>Cadastre-se</span></a>
         </div>
     </div>
+
+    <script>
+        // Lógica do Tema (Salva a preferência no navegador)
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Verifica o tema salvo ou o padrão do sistema
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            body.classList.add(currentTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            body.classList.add('dark-theme');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            let theme = 'light-theme';
+            if (body.classList.contains('dark-theme')) {
+                theme = 'dark-theme';
+            }
+            localStorage.setItem('theme', theme);
+        });
+
+        // Lógica para mostrar/esconder a senha
+        const togglePassword = document.getElementById('togglePassword');
+        const senhaInput = document.getElementById('senha');
+
+        togglePassword.addEventListener('click', function() {
+            const type = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            senhaInput.setAttribute('type', type);
+            this.classList.toggle('ph-eye');
+            this.classList.toggle('ph-eye-slash');
+        });
+    </script>
 
 </body>
 </html>
