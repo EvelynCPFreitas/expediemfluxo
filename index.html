@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Expedição em Fluxo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        /* Variáveis de Cores */
+        :root {
+            --azul-escuro: #0a4d8c;
+            --cinza-texto: #6b7280;
+            --cinza-borda: #d1d5db;
+            --fundo-tela: #eef1f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--fundo-tela);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden; /* Esconde os caminhões que saem da tela */
+        }
+
+        /* =========================================
+           ANIMAÇÃO DOS CAMINHÕES NO FUNDO
+           ========================================= */
+        .caminhao-fundo {
+            position: absolute;
+            font-size: 2rem;
+            color: #cbd5e1;
+            opacity: 0.5;
+            z-index: 0; /* Fica atrás do card */
+            animation: moverCaminhao linear infinite;
+        }
+
+        .caminhao-1 { top: 15%; left: -10%; animation-duration: 15s; }
+        .caminhao-2 { top: 75%; left: -10%; animation-duration: 20s; animation-delay: 2s; }
+        .caminhao-3 { top: 45%; right: -10%; animation-duration: 18s; animation-direction: reverse; transform: scaleX(-1); }
+
+        @keyframes moverCaminhao {
+            0% { transform: translateX(0vw); }
+            100% { transform: translateX(110vw); }
+        }
+
+        /* =========================================
+           CARTÃO DE LOGIN
+           ========================================= */
+        .login-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            z-index: 1; /* Fica na frente da animação */
+        }
+
+        .cabecalho-logo p {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .icone-caminhao {
+            font-size: 3rem;
+            color: var(--azul-escuro);
+            margin-bottom: 10px;
+        }
+
+        .login-card h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 30px;
+        }
+
+        /* Formulário e Inputs */
+        .grupo-input {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .grupo-input i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--azul-escuro);
+            font-size: 1.2rem;
+        }
+
+        .icone-esq { left: 15px; }
+        .icone-dir { right: 15px; cursor: pointer; color: var(--cinza-texto) !important; }
+
+        .grupo-input input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            color: #111827;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .grupo-input input::placeholder {
+            color: var(--cinza-texto);
+        }
+
+        .grupo-input input:focus {
+            border-color: var(--azul-escuro);
+        }
+
+        /* Botão */
+        .btn-entrar {
+            width: 100%;
+            background-color: var(--azul-escuro);
+            color: #ffffff;
+            border: none;
+            padding: 15px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-entrar:hover {
+            background-color: #083c6d;
+        }
+
+        /* Rodapé */
+        .rodape-login {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 0.85rem;
+        }
+
+        .rodape-login a {
+            text-decoration: none;
+            color: var(--cinza-texto);
+        }
+
+        .rodape-login a span {
+            color: var(--azul-escuro);
+            font-weight: 600;
+        }
+
+        .rodape-login a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <i class="ph ph-truck caminhao-fundo caminhao-1"></i>
+    <i class="ph ph-truck caminhao-fundo caminhao-2"></i>
+    <i class="ph ph-truck caminhao-fundo caminhao-3"></i>
+
+    <div class="login-card">
+        <div class="cabecalho-logo">
+            <p>Expedição em Fluxo</p>
+            <i class="ph ph-truck icone-caminhao"></i>
+            <h1>LOGIN</h1>
+        </div>
+
+        <form>
+            <div class="grupo-input">
+                <i class="ph ph-user icone-esq"></i>
+                <input type="text" placeholder="E-mail ou Usuário" required>
+            </div>
+
+            <div class="grupo-input">
+                <i class="ph ph-lock-key icone-esq"></i>
+                <input type="password" placeholder="Senha" required>
+                <i class="ph ph-eye-slash icone-dir"></i>
+            </div>
+
+            <button type="submit" class="btn-entrar">ENTRAR</button>
+        </form>
+
+        <div class="rodape-login">
+            <a href="#">Esqueceu a senha?</a>
+            <a href="#">Ainda não tem conta? <span>Cadastre-se</span></a>
+        </div>
+    </div>
+
+</body>
+</html>
