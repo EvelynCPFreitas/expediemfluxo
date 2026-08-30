@@ -182,4 +182,53 @@
         }
 
         .rodape-login a span {
-            color: var(--azul-escuro
+            color: var(--azul-escuro);
+            font-weight: 600;
+        }
+
+        .rodape-login a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <i class="ph ph-truck caminhao-fundo caminhao-1"></i>
+    <i class="ph ph-truck caminhao-fundo caminhao-2"></i>
+    <i class="ph ph-truck caminhao-fundo caminhao-3"></i>
+
+    <div class="login-card">
+        <div class="cabecalho-logo">
+            <p>Expedição em Fluxo</p>
+            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 6h8v11h-1"></path>
+                <path d="M15 6h3.5L22 10v7h-6"></path>
+                <circle cx="5" cy="17" r="2"></circle>
+                <circle cx="18" cy="17" r="2"></circle>
+                <path d="M-1 11h11"></path>
+                <path d="M7 8l3 3-3 3"></path>
+            </svg>
+            <h1>LOGIN</h1>
+        </div>
+
+        <form>
+            <div class="grupo-input">
+                <i class="ph ph-user icone-esq"></i>
+                <input type="text" placeholder="E-mail ou Usuário" required>
+            </div>
+            <div class="grupo-input">
+                <i class="ph ph-lock-key icone-esq"></i>
+                <input type="password" placeholder="Senha" required>
+                <i class="ph ph-eye-slash icone-dir"></i>
+            </div>
+            <button type="submit" class="btn-entrar">ENTRAR</button>
+        </form>
+
+        <div class="rodape-login">
+            <a href="#">Esqueceu a senha?</a>
+            <a href="#">Ainda não tem conta? <span>Cadastre-se</span></a>
+        </div>
+    </div>
+
+</body>
+</html>
