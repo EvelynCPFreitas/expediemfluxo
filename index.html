@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Expedição em Fluxo</title>
+    <!-- Importando fonte e ícones -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <style>
+        /* Variáveis de Cores */
         :root {
-            --azul-escuro: #004b87;
+            --azul-escuro: #004b87; 
             --cinza-texto: #6b7280;
             --cinza-borda: #d1d5db;
             --fundo-tela: #eef1f6;
@@ -23,64 +25,47 @@
         }
 
         body {
-            background-color: var(--fundo-tela);
-            /* Lembre-se de colocar o nome do seu arquivo de fundo aqui */
-            background-image: url('fundo.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            
+            background-color: var(--fundo-tela); /* Fundo liso cinza claro */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Esconde os caminhões fora da tela */
         }
 
         /* =========================================
-           ANIMAÇÃO DOS CAMINHÕES NAS CURVAS
+           ANIMAÇÃO DOS 5 CAMINHÕES NO FUNDO
            ========================================= */
         .caminhao-fundo {
             position: absolute;
             font-size: 2.2rem;
-            color: #b0bbcb;
-            opacity: 0.8; /* Aumentei um pouco a opacidade para destacar */
-            z-index: 1;
-            
-            /* Esta propriedade faz o ícone girar acompanhando a curva */
-            offset-rotate: auto; 
+            color: #cbd5e1; /* Cinza suave para os caminhões do fundo */
+            opacity: 0.7;
+            z-index: 1; 
         }
 
-        /* Trilho 1: Curva da esquerda para cima */
-        .caminhao-1 { 
-            offset-path: path('M -50,200 C 200,200 250,50 300,-50');
-            animation: seguirTrilha 15s linear infinite;
+        /* Caminhões indo da Esquerda para a Direita */
+        .cam-1 { top: 10%; animation: moveDireita 7s linear infinite; }
+        .cam-3 { top: 40%; animation: moveDireita 9s linear infinite 2s; }
+        .cam-5 { top: 85%; animation: moveDireita 5s linear infinite 1s; }
+
+        /* Caminhões indo da Direita para a Esquerda */
+        .cam-2 { top: 25%; animation: moveEsquerda 6s linear infinite; }
+        .cam-4 { top: 70%; animation: moveEsquerda 8s linear infinite 3s; }
+
+        @keyframes moveDireita {
+            0% { left: -10%; transform: scaleX(1); }
+            100% { left: 110%; transform: scaleX(1); }
         }
 
-        /* Trilho 2: Curva longa da parte inferior esquerda para a direita */
-        .caminhao-2 { 
-            offset-path: path('M -50,600 C 300,600 400,350 1200,350');
-            animation: seguirTrilha 20s linear infinite;
-            animation-delay: 3s; /* Começa depois de 3 segundos */
-        }
-
-        /* Trilho 3: Curva da direita para baixo (sentido oposto) */
-        .caminhao-3 { 
-            offset-path: path('M 1200,150 C 900,150 800,500 500,800');
-            animation: seguirTrilha 18s linear infinite;
-            /* offset-rotate: auto 180deg (para o caminhão não andar de ré) */
-            offset-rotate: auto 180deg;
-        }
-
-        /* Animação universal que manda o elemento do início ao fim do trilho */
-        @keyframes seguirTrilha {
-            0% { offset-distance: 0%; }
-            100% { offset-distance: 100%; }
+        @keyframes moveEsquerda {
+            0% { right: -10%; transform: scaleX(-1); /* scaleX(-1) inverte a imagem do caminhão */ }
+            100% { right: 110%; transform: scaleX(-1); }
         }
 
         /* =========================================
-           CARTÃO DE LOGIN (Mantido)
+           CARTÃO DE LOGIN
            ========================================= */
         .login-card {
             background-color: #ffffff;
@@ -90,7 +75,7 @@
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             text-align: center;
-            z-index: 2;
+            z-index: 2; /* Mantém o cartão na frente dos caminhões */
         }
 
         .cabecalho-logo p {
@@ -102,6 +87,7 @@
             margin-bottom: 15px;
         }
 
+        /* Estilo do Logo Customizado (SVG) */
         .logo-svg {
             width: 65px;
             height: 65px;
@@ -116,6 +102,7 @@
             margin-bottom: 30px;
         }
 
+        /* Formulário e Inputs */
         .grupo-input {
             position: relative;
             margin-bottom: 15px;
@@ -151,6 +138,7 @@
             border-color: var(--azul-escuro);
         }
 
+        /* Botão */
         .btn-entrar {
             width: 100%;
             background-color: var(--azul-escuro);
@@ -169,6 +157,7 @@
             background-color: #033663;
         }
 
+        /* Rodapé */
         .rodape-login {
             display: flex;
             justify-content: space-between;
@@ -193,13 +182,19 @@
 </head>
 <body>
 
-    <i class="ph ph-truck caminhao-fundo caminhao-1"></i>
-    <i class="ph ph-truck caminhao-fundo caminhao-2"></i>
-    <i class="ph ph-truck caminhao-fundo caminhao-3"></i>
+    <!-- 5 Caminhões animados no fundo -->
+    <i class="ph ph-truck caminhao-fundo cam-1"></i>
+    <i class="ph ph-truck caminhao-fundo cam-2"></i>
+    <i class="ph ph-truck caminhao-fundo cam-3"></i>
+    <i class="ph ph-truck caminhao-fundo cam-4"></i>
+    <i class="ph ph-truck caminhao-fundo cam-5"></i>
 
+    <!-- Card Principal -->
     <div class="login-card">
         <div class="cabecalho-logo">
             <p>Expedição em Fluxo</p>
+            
+            <!-- SVG Customizado: Caminhão com a Seta -->
             <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M7 6h8v11h-1"></path>
                 <path d="M15 6h3.5L22 10v7h-6"></path>
@@ -208,6 +203,7 @@
                 <path d="M-1 11h11"></path>
                 <path d="M7 8l3 3-3 3"></path>
             </svg>
+
             <h1>LOGIN</h1>
         </div>
 
@@ -216,11 +212,13 @@
                 <i class="ph ph-user icone-esq"></i>
                 <input type="text" placeholder="E-mail ou Usuário" required>
             </div>
+
             <div class="grupo-input">
                 <i class="ph ph-lock-key icone-esq"></i>
                 <input type="password" placeholder="Senha" required>
                 <i class="ph ph-eye-slash icone-dir"></i>
             </div>
+
             <button type="submit" class="btn-entrar">ENTRAR</button>
         </form>
 
