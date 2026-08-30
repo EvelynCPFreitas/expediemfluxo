@@ -19,7 +19,6 @@
             --fundo-card: #ffffff;
             --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.05);
             --cor-caminhao-fundo: #cbd5e1;
-            --cor-icone-olho: #6b7280;
             --cor-fundo-botao-tema: rgba(0,0,0,0.05);
             --cor-icone-tema: var(--azul-escuro);
         }
@@ -33,7 +32,6 @@
             --fundo-card: #1e293b; /* Card mais escuro */
             --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.3);
             --cor-caminhao-fundo: #4b5563; /* Caminhões mais sutis */
-            --cor-icone-olho: #d1d5db;
             --cor-fundo-botao-tema: rgba(255,255,255,0.1);
             --cor-icone-tema: #fcd34d; /* Amarelo ouro para o ícone preenchido */
         }
@@ -178,7 +176,6 @@
         }
 
         .icone-esq { left: 15px; }
-        .icone-dir { right: 15px; cursor: pointer; color: var(--cor-icone-olho) !important; transition: color 0.3s ease; }
 
         .grupo-input input {
             width: 100%;
@@ -216,29 +213,6 @@
 
         .btn-entrar:hover {
             background-color: #033663;
-        }
-
-        .rodape-login {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            font-size: 0.85rem;
-        }
-
-        .rodape-login a {
-            text-decoration: none;
-            color: var(--cinza-texto);
-            transition: color 0.3s ease;
-        }
-
-        .rodape-login a span {
-            color: var(--azul-escuro);
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .rodape-login a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
@@ -296,25 +270,14 @@
             <h1>LOGIN</h1>
         </div>
 
-        <form>
+        <form action="#" method="post">
             <div class="grupo-input">
                 <i class="ph ph-user icone-esq"></i>
-                <input type="text" placeholder="E-mail ou Usuário" required>
-            </div>
-
-            <div class="grupo-input">
-                <i class="ph ph-lock-key icone-esq"></i>
-                <input type="password" id="senha" placeholder="Senha" required>
-                <i class="ph ph-eye-slash icone-dir" id="togglePassword"></i>
+                <input type="text" placeholder="Usuário" required>
             </div>
 
             <button type="submit" class="btn-entrar">ENTRAR</button>
         </form>
-
-        <div class="rodape-login">
-            <a href="#">Esqueceu a senha?</a>
-            <a href="#">Ainda não tem conta? <span>Cadastre-se</span></a>
-        </div>
     </div>
 
     <script>
@@ -337,17 +300,6 @@
                 theme = 'dark-theme';
             }
             localStorage.setItem('theme', theme);
-        });
-
-        // Lógica para mostrar/esconder a senha
-        const togglePassword = document.getElementById('togglePassword');
-        const senhaInput = document.getElementById('senha');
-
-        togglePassword.addEventListener('click', function() {
-            const type = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            senhaInput.setAttribute('type', type);
-            this.classList.toggle('ph-eye');
-            this.classList.toggle('ph-eye-slash');
         });
     </script>
 
