@@ -10,7 +10,7 @@
     <style>
         /* Variáveis de Cores */
         :root {
-            --azul-escuro: #0a4d8c;
+            --azul-escuro: #004b87; /* Ajustado para o tom exato da sua imagem */
             --cinza-texto: #6b7280;
             --cinza-borda: #d1d5db;
             --fundo-tela: #eef1f6;
@@ -25,12 +25,22 @@
 
         body {
             background-color: var(--fundo-tela);
+            
+            /* ========================================================
+               AQUI ENTRA A SUA IMAGEM DE FUNDO COM AS LINHAS
+               Substitua 'fundo.jpg' pelo nome do arquivo no seu GitHub
+               ======================================================== */
+            background-image: url('fundo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             position: relative;
-            overflow: hidden; /* Esconde os caminhões que saem da tela */
+            overflow: hidden;
         }
 
         /* =========================================
@@ -38,10 +48,10 @@
            ========================================= */
         .caminhao-fundo {
             position: absolute;
-            font-size: 2rem;
-            color: #cbd5e1;
-            opacity: 0.5;
-            z-index: 0; /* Fica atrás do card */
+            font-size: 2.2rem;
+            color: #b0bbcb; /* Cinza um pouco mais escuro para destacar sobre as linhas */
+            opacity: 0.6;
+            z-index: 1; /* Fica atrás do card, mas na frente do fundo */
             animation: moverCaminhao linear infinite;
         }
 
@@ -65,22 +75,24 @@
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             text-align: center;
-            z-index: 1; /* Fica na frente da animação */
+            z-index: 2; /* Fica na frente da animação */
         }
 
         .cabecalho-logo p {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: #111827;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .icone-caminhao {
-            font-size: 3rem;
-            color: var(--azul-escuro);
+        /* Estilo do Logo Customizado (SVG) */
+        .logo-svg {
+            width: 65px;
+            height: 65px;
             margin-bottom: 10px;
+            stroke: var(--azul-escuro);
         }
 
         .login-card h1 {
@@ -142,7 +154,7 @@
         }
 
         .btn-entrar:hover {
-            background-color: #083c6d;
+            background-color: #033663;
         }
 
         /* Rodapé */
@@ -177,7 +189,16 @@
     <div class="login-card">
         <div class="cabecalho-logo">
             <p>Expedição em Fluxo</p>
-            <i class="ph ph-truck icone-caminhao"></i>
+            
+            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 6h8v11h-1"></path>
+                <path d="M15 6h3.5L22 10v7h-6"></path>
+                <circle cx="5" cy="17" r="2"></circle>
+                <circle cx="18" cy="17" r="2"></circle>
+                <path d="M-1 11h11"></path>
+                <path d="M7 8l3 3-3 3"></path>
+            </svg>
+
             <h1>LOGIN</h1>
         </div>
 
