@@ -25,13 +25,13 @@
         }
 
         body {
-            background-color: var(--fundo-tela); /* Fundo liso cinza claro */
+            background-color: var(--fundo-tela);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             position: relative;
-            overflow: hidden; /* Esconde os caminhões fora da tela */
+            overflow: hidden; 
         }
 
         /* =========================================
@@ -40,17 +40,15 @@
         .caminhao-fundo {
             position: absolute;
             font-size: 2.2rem;
-            color: #cbd5e1; /* Cinza suave para os caminhões do fundo */
+            color: #cbd5e1; 
             opacity: 0.7;
             z-index: 1; 
         }
 
-        /* Caminhões indo da Esquerda para a Direita */
         .cam-1 { top: 10%; animation: moveDireita 7s linear infinite; }
         .cam-3 { top: 40%; animation: moveDireita 9s linear infinite 2s; }
         .cam-5 { top: 85%; animation: moveDireita 5s linear infinite 1s; }
 
-        /* Caminhões indo da Direita para a Esquerda */
         .cam-2 { top: 25%; animation: moveEsquerda 6s linear infinite; }
         .cam-4 { top: 70%; animation: moveEsquerda 8s linear infinite 3s; }
 
@@ -60,7 +58,7 @@
         }
 
         @keyframes moveEsquerda {
-            0% { right: -10%; transform: scaleX(-1); /* scaleX(-1) inverte a imagem do caminhão */ }
+            0% { right: -10%; transform: scaleX(-1); }
             100% { right: 110%; transform: scaleX(-1); }
         }
 
@@ -75,7 +73,7 @@
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             text-align: center;
-            z-index: 2; /* Mantém o cartão na frente dos caminhões */
+            z-index: 2; 
         }
 
         .cabecalho-logo p {
@@ -87,12 +85,11 @@
             margin-bottom: 15px;
         }
 
-        /* Estilo do Logo Customizado (SVG) */
+        /* Ajuste no tamanho do Logo SVG para acomodar os traços */
         .logo-svg {
-            width: 65px;
-            height: 65px;
+            width: 95px;
+            height: auto;
             margin-bottom: 10px;
-            stroke: var(--azul-escuro);
         }
 
         .login-card h1 {
@@ -194,14 +191,27 @@
         <div class="cabecalho-logo">
             <p>Expedição em Fluxo</p>
             
-            <!-- SVG Customizado: Caminhão com a Seta -->
-            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 6h8v11h-1"></path>
-                <path d="M15 6h3.5L22 10v7h-6"></path>
-                <circle cx="5" cy="17" r="2"></circle>
-                <circle cx="18" cy="17" r="2"></circle>
-                <path d="M-1 11h11"></path>
-                <path d="M7 8l3 3-3 3"></path>
+            <!-- SVG Atualizado: Caminhão Sólido com a Seta Cortando -->
+            <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
+                <!-- Corpo e Cabine -->
+                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="var(--azul-escuro)"/>
+                
+                <!-- Rodas (Azul com miolo branco para vazar) -->
+                <circle cx="38" cy="52" r="7" fill="var(--azul-escuro)"/>
+                <circle cx="38" cy="52" r="3" fill="#ffffff"/>
+                
+                <circle cx="78" cy="52" r="7" fill="var(--azul-escuro)"/>
+                <circle cx="78" cy="52" r="3" fill="#ffffff"/>
+
+                <!-- Janela da Cabine (Vazada em branco) -->
+                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#ffffff"/>
+
+                <!-- Seta cortando o caminhão (Vazada em branco) -->
+                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#ffffff"/>
+
+                <!-- Tracinhos de velocidade (Linhas azuis atrás) -->
+                <rect x="8" y="25" width="10" height="4" rx="1.5" fill="var(--azul-escuro)"/>
+                <rect x="2" y="33" width="16" height="4" rx="1.5" fill="var(--azul-escuro)"/>
             </svg>
 
             <h1>LOGIN</h1>
