@@ -8,9 +8,8 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <style>
-        /* Variáveis de Cores */
         :root {
-            --azul-escuro: #004b87; /* Ajustado para o tom exato da sua imagem */
+            --azul-escuro: #004b87;
             --cinza-texto: #6b7280;
             --cinza-borda: #d1d5db;
             --fundo-tela: #eef1f6;
@@ -25,11 +24,7 @@
 
         body {
             background-color: var(--fundo-tela);
-            
-            /* ========================================================
-               AQUI ENTRA A SUA IMAGEM DE FUNDO COM AS LINHAS
-               Substitua 'fundo.jpg' pelo nome do arquivo no seu GitHub
-               ======================================================== */
+            /* Lembre-se de colocar o nome do seu arquivo de fundo aqui */
             background-image: url('fundo.jpg');
             background-size: cover;
             background-position: center;
@@ -44,28 +39,48 @@
         }
 
         /* =========================================
-           ANIMAÇÃO DOS CAMINHÕES NO FUNDO
+           ANIMAÇÃO DOS CAMINHÕES NAS CURVAS
            ========================================= */
         .caminhao-fundo {
             position: absolute;
             font-size: 2.2rem;
-            color: #b0bbcb; /* Cinza um pouco mais escuro para destacar sobre as linhas */
-            opacity: 0.6;
-            z-index: 1; /* Fica atrás do card, mas na frente do fundo */
-            animation: moverCaminhao linear infinite;
+            color: #b0bbcb;
+            opacity: 0.8; /* Aumentei um pouco a opacidade para destacar */
+            z-index: 1;
+            
+            /* Esta propriedade faz o ícone girar acompanhando a curva */
+            offset-rotate: auto; 
         }
 
-        .caminhao-1 { top: 15%; left: -10%; animation-duration: 15s; }
-        .caminhao-2 { top: 75%; left: -10%; animation-duration: 20s; animation-delay: 2s; }
-        .caminhao-3 { top: 45%; right: -10%; animation-duration: 18s; animation-direction: reverse; transform: scaleX(-1); }
+        /* Trilho 1: Curva da esquerda para cima */
+        .caminhao-1 { 
+            offset-path: path('M -50,200 C 200,200 250,50 300,-50');
+            animation: seguirTrilha 15s linear infinite;
+        }
 
-        @keyframes moverCaminhao {
-            0% { transform: translateX(0vw); }
-            100% { transform: translateX(110vw); }
+        /* Trilho 2: Curva longa da parte inferior esquerda para a direita */
+        .caminhao-2 { 
+            offset-path: path('M -50,600 C 300,600 400,350 1200,350');
+            animation: seguirTrilha 20s linear infinite;
+            animation-delay: 3s; /* Começa depois de 3 segundos */
+        }
+
+        /* Trilho 3: Curva da direita para baixo (sentido oposto) */
+        .caminhao-3 { 
+            offset-path: path('M 1200,150 C 900,150 800,500 500,800');
+            animation: seguirTrilha 18s linear infinite;
+            /* offset-rotate: auto 180deg (para o caminhão não andar de ré) */
+            offset-rotate: auto 180deg;
+        }
+
+        /* Animação universal que manda o elemento do início ao fim do trilho */
+        @keyframes seguirTrilha {
+            0% { offset-distance: 0%; }
+            100% { offset-distance: 100%; }
         }
 
         /* =========================================
-           CARTÃO DE LOGIN
+           CARTÃO DE LOGIN (Mantido)
            ========================================= */
         .login-card {
             background-color: #ffffff;
@@ -75,7 +90,7 @@
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             text-align: center;
-            z-index: 2; /* Fica na frente da animação */
+            z-index: 2;
         }
 
         .cabecalho-logo p {
@@ -87,7 +102,6 @@
             margin-bottom: 15px;
         }
 
-        /* Estilo do Logo Customizado (SVG) */
         .logo-svg {
             width: 65px;
             height: 65px;
@@ -102,7 +116,6 @@
             margin-bottom: 30px;
         }
 
-        /* Formulário e Inputs */
         .grupo-input {
             position: relative;
             margin-bottom: 15px;
@@ -138,7 +151,6 @@
             border-color: var(--azul-escuro);
         }
 
-        /* Botão */
         .btn-entrar {
             width: 100%;
             background-color: var(--azul-escuro);
@@ -157,7 +169,6 @@
             background-color: #033663;
         }
 
-        /* Rodapé */
         .rodape-login {
             display: flex;
             justify-content: space-between;
@@ -171,57 +182,4 @@
         }
 
         .rodape-login a span {
-            color: var(--azul-escuro);
-            font-weight: 600;
-        }
-
-        .rodape-login a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-
-    <i class="ph ph-truck caminhao-fundo caminhao-1"></i>
-    <i class="ph ph-truck caminhao-fundo caminhao-2"></i>
-    <i class="ph ph-truck caminhao-fundo caminhao-3"></i>
-
-    <div class="login-card">
-        <div class="cabecalho-logo">
-            <p>Expedição em Fluxo</p>
-            
-            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 6h8v11h-1"></path>
-                <path d="M15 6h3.5L22 10v7h-6"></path>
-                <circle cx="5" cy="17" r="2"></circle>
-                <circle cx="18" cy="17" r="2"></circle>
-                <path d="M-1 11h11"></path>
-                <path d="M7 8l3 3-3 3"></path>
-            </svg>
-
-            <h1>LOGIN</h1>
-        </div>
-
-        <form>
-            <div class="grupo-input">
-                <i class="ph ph-user icone-esq"></i>
-                <input type="text" placeholder="E-mail ou Usuário" required>
-            </div>
-
-            <div class="grupo-input">
-                <i class="ph ph-lock-key icone-esq"></i>
-                <input type="password" placeholder="Senha" required>
-                <i class="ph ph-eye-slash icone-dir"></i>
-            </div>
-
-            <button type="submit" class="btn-entrar">ENTRAR</button>
-        </form>
-
-        <div class="rodape-login">
-            <a href="#">Esqueceu a senha?</a>
-            <a href="#">Ainda não tem conta? <span>Cadastre-se</span></a>
-        </div>
-    </div>
-
-</body>
-</html>
+            color: var(--azul-escuro
