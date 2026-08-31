@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Expedição em Fluxo</title>
+    <title>Dashboard - Expedição em Fluxo</title>
     <!-- Importando fonte e ícones -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -15,11 +15,13 @@
             --azul-escuro: #004b87; 
             --cinza-texto: #6b7280;
             --cinza-borda: #d1d5db;
-            --fundo-tela: #eef1f6;
+            --fundo-tela: #f4f7f6; /* Cinza claro suave */
+            --fundo-sidebar: #dfe6e9; /* Cinza médio suave */
             --fundo-card: #ffffff;
-            --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --cor-caminhao-fundo: #cbd5e1;
-            --cor-icone-olho: #6b7280;
+            --fundo-grafico-inferior: #212121;
+            --sombra-card: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --cor-texto-body: #333333;
+            --cor-icone-sidebar: var(--azul-escuro);
             --cor-fundo-botao-tema: rgba(0,0,0,0.05);
             --cor-icone-tema: var(--azul-escuro);
         }
@@ -30,10 +32,12 @@
             --cinza-texto: #d1d5db; /* Texto mais claro */
             --cinza-borda: #4b5563; /* Bordas mais escuras */
             --fundo-tela: #0f172a; /* Azul-cinza escuro profundo */
+            --fundo-sidebar: #1e293b; /* Sidebar mais escura */
             --fundo-card: #1e293b; /* Card mais escuro */
-            --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.3);
-            --cor-caminhao-fundo: #4b5563; /* Caminhões mais sutis */
-            --cor-icone-olho: #d1d5db;
+            --fundo-grafico-inferior: #1a1a1a;
+            --sombra-card: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --cor-texto-body: #d1d5db;
+            --cor-icone-sidebar: #fff;
             --cor-fundo-botao-tema: rgba(255,255,255,0.1);
             --cor-icone-tema: #fcd34d; /* Amarelo ouro para o ícone preenchido */
         }
@@ -48,17 +52,15 @@
         body {
             background-color: var(--fundo-tela);
             display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
-            position: relative;
-            overflow: hidden; /* Esconde os caminhões fora da tela */
-            transition: background-color 0.3s ease;
+            overflow: hidden;
+            color: var(--cor-texto-body);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* =========================================
-            BOTÃO DE TROCA DE TEMA (Canto Superior Direito)
-            ========================================= */
+           BOTÃO DE TROCA DE TEMA (Canto Superior Direito)
+           ========================================= */
         .theme-toggle-btn {
             position: fixed;
             top: 20px;
@@ -94,152 +96,316 @@
         .dark-theme #theme-icon-light { display: none; }
         .dark-theme #theme-icon-dark { display: block; fill: var(--cor-icone-tema); }
 
-
         /* =========================================
-            ANIMAÇÃO DOS 5 CAMINHÕES NO FUNDO
-            ========================================= */
-        .caminhao-fundo {
-            position: absolute;
-            font-size: 2.2rem;
-            color: var(--cor-caminhao-fundo);
-            opacity: 0.7;
-            z-index: 1; 
+           SIDEBAR (Barra Lateral)
+           ========================================= */
+        .sidebar {
+            background-color: var(--fundo-sidebar);
+            width: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 10;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar i {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: var(--cor-icone-sidebar);
+            cursor: pointer;
             transition: color 0.3s ease;
         }
 
-        .cam-1 { top: 10%; animation: moveDireita 7s linear infinite; }
-        .cam-3 { top: 40%; animation: moveDireita 9s linear infinite 2s; }
-        .cam-5 { top: 85%; animation: moveDireita 5s linear infinite 1s; }
-
-        .cam-2 { top: 25%; animation: moveEsquerda 6s linear infinite; }
-        .cam-4 { top: 70%; animation: moveEsquerda 8s linear infinite 3s; }
-
-        @keyframes moveDireita {
-            0% { left: -10%; transform: scaleX(1); }
-            100% { left: 110%; transform: scaleX(1); }
+        .sidebar i:hover {
+            color: #1e88e5;
         }
 
-        @keyframes moveEsquerda {
-            0% { right: -10%; transform: scaleX(-1); }
-            100% { right: 110%; transform: scaleX(-1); }
+        .sidebar-logo {
+            font-size: 2.2rem;
+            color: #b0bbcb; /* Cor sutil como na imagem */
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-toggle-group {
+            display: flex;
+            gap: -8px; /* Setas sobrepostas */
+            color: #636e72;
+            cursor: pointer;
+            margin-top: auto; /* Rodapé */
+            margin-bottom: 25px;
+        }
+
+        .sidebar-toggle-group i {
+            font-size: 20px;
+            margin-bottom: 0;
+            color: #636e72;
         }
 
         /* =========================================
-            CARTÃO DE LOGIN
-            ========================================= */
-        .login-card {
-            background-color: var(--fundo-card);
-            width: 100%;
-            max-width: 450px;
+           CONTEÚDO PRINCIPAL (DASHBOARD)
+           ========================================= */
+        .main-content {
+            flex: 1;
             padding: 40px;
-            border-radius: 24px;
-            box-shadow: var(--sombra-card);
-            text-align: center;
-            z-index: 2; 
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto; /* Rolagem se o conteúdo for grande */
         }
 
-        .cabecalho-logo p {
-            font-size: 0.8rem;
+        .header h1 {
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--azul-escuro);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
             transition: color 0.3s ease;
         }
 
-        .logo-svg {
-            width: 95px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .login-card h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--azul-escuro);
-            margin-bottom: 30px;
-            transition: color 0.3s ease;
-        }
-
-        .grupo-input {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .grupo-input i {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--azul-escuro);
-            font-size: 1.2rem;
-            transition: color 0.3s ease;
-        }
-
-        .icone-esq { left: 15px; }
-        .icone-dir { right: 15px; cursor: pointer; color: var(--cor-icone-olho) !important; transition: color 0.3s ease; }
-
-        .grupo-input input {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            border: 1px solid var(--cinza-borda);
-            border-radius: 30px;
-            font-size: 0.95rem;
-            color: var(--cinza-texto);
-            background-color: transparent;
-            outline: none;
-            transition: border-color 0.3s, color 0.3s;
-        }
-
-        .grupo-input input::placeholder {
-            color: var(--cinza-texto);
-        }
-
-        .grupo-input input:focus {
-            border-color: var(--azul-escuro);
-        }
-
-        .btn-entrar {
-            width: 100%;
-            background-color: var(--azul-escuro);
+        /* Estilo comum para os cards */
+        .card {
+            border-radius: 12px;
+            box-shadow: var(--sombra-card);
+            padding: 20px;
             color: #ffffff;
-            border: none;
-            padding: 15px;
-            border-radius: 30px;
-            font-size: 1rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
             font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.3s;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
-        .btn-entrar:hover {
-            background-color: #033663;
+        /* Seção KPI (Cards superiores) */
+        .kpi-section {
+            display: flex;
+            gap: 25px;
         }
 
-        .rodape-login {
+        .kpi-card {
+            flex: 1;
+            text-align: center;
+        }
+
+        .card-pendentes {
+            background-image: linear-gradient(135deg, #b71c1c 0%, #f44336 100%);
+        }
+
+        .card-finalizados {
+            background-image: linear-gradient(135deg, #000000 0%, #4caf50 100%);
+        }
+
+        .kpi-value {
+            font-size: 4rem;
+            font-weight: 700;
+            display: block;
+            margin-top: 15px;
+        }
+
+        /* Seção Média (Gráficos e Listas) */
+        .mid-section {
+            display: flex;
+            gap: 25px;
+        }
+
+        .charts-lists-group {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            flex: 2;
+        }
+
+        .category-card {
+            background-image: linear-gradient(135deg, #4527a0 0%, #9575cd 100%);
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
-            font-size: 0.85rem;
+            align-items: center;
         }
 
-        .rodape-login a {
-            text-decoration: none;
-            color: var(--cinza-texto);
-            transition: color 0.3s ease;
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-image: conic-gradient(#4dd0e1 0% 50%, #f06292 50% 80%, #1e88e5 80% 100%);
+            margin-right: 20px;
         }
 
-        .rodape-login a span {
-            color: var(--azul-escuro);
+        .category-legend {
+            text-align: left;
+            font-size: 0.9rem;
+            margin-top: -10px;
+        }
+
+        .category-legend p {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-point {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .point-hu { background-color: #4dd0e1; }
+        .point-desvio { background-color: #f06292; }
+        .point-mu { background-color: #1e88e5; }
+
+        .ranking-card {
+            background-image: linear-gradient(135deg, #00838f 0%, #4dd0e1 100%);
+            flex: 1;
+        }
+
+        .ranking-list {
+            list-style: decimal inside;
+            text-align: left;
+            font-size: 1.1rem;
             font-weight: 600;
-            transition: color 0.3s ease;
+            margin-top: 15px;
         }
 
-        .rodape-login a:hover {
-            text-decoration: underline;
+        .ranking-list li {
+            margin-bottom: 15px;
         }
+
+        /* Seção Direita Vertical (CAD's Ofensores) */
+        .right-section {
+            flex: 1;
+            display: flex;
+        }
+
+        .cad-card {
+            background-image: linear-gradient(135deg, #4e342e 0%, #ff9800 100%);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bar-chart-vertical {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 8px;
+            padding: 20px;
+        }
+
+        .vertical-bar {
+            width: 25px;
+            background-color: #ffffff;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s ease;
+        }
+
+        /* Alturas das barras simulando o gráfico da imagem */
+        .bar-1 { height: 40%; }
+        .bar-2 { height: 60%; }
+        .bar-3 { height: 75%; }
+        .bar-4 { height: 85%; }
+        .bar-5 { height: 100%; }
+
+        /* Seção Inferior (Gráfico Principal) */
+        .evolution-card {
+            background-color: var(--fundo-grafico-inferior);
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease;
+        }
+
+        .evolution-legend-group {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .evolution-chart-content {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+        }
+
+        .y-axis {
+            width: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #d1d5db;
+            text-align: right;
+            padding-right: 10px;
+            font-weight: 600;
+        }
+
+        .main-bar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #4b5563;
+            border-bottom: 1px solid #4b5563;
+        }
+
+        .bars-content {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            padding: 10px 0;
+        }
+
+        .bar-group-month {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .month-bar {
+            width: 15px;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .bar-hu { background-color: #4dd0e1; }
+        .bar-desvio { background-color: #f06292; }
+        .bar-mu { background-color: #1e88e5; }
+
+        /* Alturas simulando o gráfico principal */
+        /* Jan */
+        .jan .bar-hu { height: 50%; } .jan .bar-desvio { height: 35%; } .jan .bar-mu { height: 35%; }
+        /* Fev */
+        .fev .bar-hu { height: 45%; } .fev .bar-desvio { height: 28%; } .fev .bar-mu { height: 35%; }
+        /* Mar */
+        .mar .bar-hu { height: 35%; } .mar .bar-desvio { height: 20%; } .mar .bar-mu { height: 20%; }
+        /* Abr */
+        .abr .bar-hu { height: 28%; } .abr .bar-desvio { height: 50%; } .abr .bar-mu { height: 30%; }
+        /* Mai */
+        .mai .bar-hu { height: 48%; } .mai .bar-desvio { height: 18%; } .mai .bar-mu { height: 28%; }
+        /* Jun */
+        .jun .bar-hu { height: 20%; } .jun .bar-desvio { height: 30%; } .jun .bar-mu { height: 75%; }
+
+        .x-axis {
+            height: 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #d1d5db;
+            font-weight: 600;
+        }
+
+        .month-label { flex: 1; text-align: center; }
+
     </style>
 </head>
 <body>
@@ -258,59 +424,150 @@
         </svg>
     </button>
 
-    <!-- 5 Caminhões animados no fundo -->
-    <i class="ph ph-truck caminhao-fundo cam-1"></i>
-    <i class="ph ph-truck caminhao-fundo cam-2"></i>
-    <i class="ph ph-truck caminhao-fundo cam-3"></i>
-    <i class="ph ph-truck caminhao-fundo cam-4"></i>
-    <i class="ph ph-truck caminhao-fundo cam-5"></i>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <!-- Logo simulado da sidebar -->
+        <i class="ph ph-truck sidebar-logo"></i>
+        
+        <i class="ph ph-squares-four"></i>
+        <i class="ph ph-list-bullets"></i>
+        <i class="ph ph-map-trifold"></i>
+        <i class="ph ph-package"></i>
 
-    <!-- Card Principal -->
-    <div class="login-card">
-        <div class="cabecalho-logo">
-            <p>Expedição em Fluxo</p>
-            
-            <!-- SVG Customizado do Logotipo -->
-            <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
-                <!-- Corpo e Cabine -->
-                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
-                
-                <!-- Rodas (Azul com miolo branco para vazar) -->
-                <circle cx="38" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
-                <circle cx="38" cy="52" r="3" fill="#ffffff"/>
-                
-                <circle cx="78" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
-                <circle cx="78" cy="52" r="3" fill="#ffffff"/>
+        <!-- Toggle Collapse simulado -->
+        <div class="sidebar-toggle-group">
+            <i class="ph ph-arrow-right"></i>
+            <i class="ph ph-arrow-right"></i>
+        </div>
+    </aside>
 
-                <!-- Janela da Cabine -->
-                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
-
-                <!-- Seta cortando o caminhão -->
-                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
-
-                <!-- Tracinhos de velocidade -->
-                <rect x="8" y="25" width="10" height="4" rx="1.5" fill="var(--azul-escuro)"/>
-                <rect x="2" y="33" width="16" height="4" rx="1.5" fill="var(--azul-escuro)"/>
-            </svg>
-
-            <h1>LOGIN</h1>
+    <!-- Área Principal de Conteúdo -->
+    <main class="main-content">
+        <div class="header">
+            <h1>DASHBOARD</h1>
         </div>
 
-        <form>
-            <div class="grupo-input">
-                <i class="ph ph-user icone-esq"></i>
-                <input type="text" placeholder="E-mail ou Usuário" required>
+        <!-- KPI Seção Superior -->
+        <div class="kpi-section">
+            <div class="card kpi-card card-pendentes">
+                <h2>Total Pendentes</h2>
+                <span class="kpi-value">30</span>
+            </div>
+            <div class="card kpi-card card-finalizados">
+                <h2>Total Finalizados</h2>
+                <span class="kpi-value">100</span>
+            </div>
+        </div>
+
+        <!-- Média Seção (Gráficos e Listas) -->
+        <div class="mid-section">
+            <div class="charts-lists-group">
+                <div class="card category-card">
+                    <div class="category-info">
+                        <h2>Categorias</h2>
+                        <div class="category-legend">
+                            <p><span class="legend-point point-hu"></span> HU Pendente</p>
+                            <p><span class="legend-point point-desvio"></span> Desvio de Rota</p>
+                            <p><span class="legend-point point-mu"></span> MU Pendente</p>
+                        </div>
+                    </div>
+                    <div class="pie-chart"></div>
+                </div>
+
+                <div class="card ranking-card">
+                    <h2>Ranking Resolução</h2>
+                    <ol class="ranking-list">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ol>
+                </div>
             </div>
 
-            <div class="grupo-input">
-                <i class="ph ph-warehouse icone-esq"></i>
-                <input type="text" id="cd" placeholder="CD" required>
+            <!-- CAD'S Ofensores (Vertical) -->
+            <div class="right-section">
+                <div class="card cad-card">
+                    <h2>CAD'S Ofensores</h2>
+                    <div class="bar-chart-vertical">
+                        <div class="vertical-bar bar-1"></div>
+                        <div class="vertical-bar bar-2"></div>
+                        <div class="vertical-bar bar-3"></div>
+                        <div class="vertical-bar bar-4"></div>
+                        <div class="vertical-bar bar-5"></div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <button type="submit" class="btn-entrar">ENTRAR</button>
-        </form>
-
-    </div>
+        <!-- Gráfico de Evolução (Inferior) -->
+        <div class="card evolution-card">
+            <div class="evolution-legend-group">
+                <p><span class="legend-point point-hu"></span> HU Pendentes</p>
+                <p><span class="legend-point point-desvio"></span> Desvio de rota</p>
+                <p><span class="legend-point point-mu"></span> MU Pendentes</p>
+            </div>
+            <div class="evolution-chart-content">
+                <div class="y-axis">
+                    <span>7.000</span>
+                    <span>6.000</span>
+                    <span>5.000</span>
+                    <span>4.000</span>
+                    <span>3.000</span>
+                    <span>2.000</span>
+                    <span>1.000</span>
+                    <span>0</span>
+                </div>
+                <div class="main-bar-container">
+                    <div class="bars-content">
+                        <!-- Jan -->
+                        <div class="bar-group-month jan">
+                            <div class="month-bar bar-hu"></div>
+                            <div class="month-bar bar-desvio"></div>
+                            <div class="month-bar bar-mu"></div>
+                        </div>
+                        <!-- Fev -->
+                        <div class="bar-group-month fev">
+                            <div class="month-bar bar-hu"></div>
+                            <div class="month-bar bar-desvio"></div>
+                            <div class="month-bar bar-mu"></div>
+                        </div>
+                        <!-- Mar -->
+                        <div class="bar-group-month mar">
+                            <div class="month-bar bar-hu"></div>
+                            <div class="month-bar bar-desvio"></div>
+                            <div class="month-bar bar-mu"></div>
+                        </div>
+                        <!-- Abr -->
+                        <div class="bar-group-month abr">
+                            <div class="month-bar bar-hu"></div>
+                            <div class="month-bar bar-desvio"></div>
+                            <div class="month-bar bar-mu"></div>
+                        </div>
+                        <!-- Mai -->
+                        <div class="bar-group-month mai">
+                            <div class="month-bar bar-hu"></div>
+                            <div class="month-bar bar-desvio"></div>
+                            <div class="month-bar bar-mu"></div>
+                        </div>
+                        <!-- Jun -->
+                        <div class="bar-group-month jun">
+                            <div class="month-bar bar-hu"></div>
+                            <div class="month-bar bar-desvio"></div>
+                            <div class="month-bar bar-mu"></div>
+                        </div>
+                    </div>
+                    <div class="x-axis">
+                        <span class="month-label">Jan</span>
+                        <span class="month-label">Fev</span>
+                        <span class="month-label">Mar</span>
+                        <span class="month-label">Abr</span>
+                        <span class="month-label">Mai</span>
+                        <span class="month-label">Jun</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
         // Lógica do Tema (Salva a preferência no navegador)
