@@ -3,237 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo - Login</title>
+    <title>Login - Expedição em Fluxo</title>
+    <!-- Importando fonte e ícones -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
     <style>
-        /* Variáveis de cores e espaçamento para facilidade de personalização */
+        /* Variáveis de Cores e Temas */
         :root {
-            --dark-blue: #004b87;
-            --light-gray-border: #d1d5db;
-            --placeholder-gray: #6b7280;
-            --background-blue: #eef1f6;
-            --shadow: 0 8px 30px rgba(0,0,0,0.1);
-            --font-family: 'Open Sans', 'Roboto', 'Helvetica Neue', sans-serif;
+            /* Tema Claro (Padrão) */
+            --azul-escuro: #004b87; 
+            --cinza-texto: #6b7280;
+            --cinza-borda: #d1d5db;
+            --fundo-tela: #eef1f6;
+            --fundo-card: #ffffff;
+            --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --cor-caminhao-fundo: #cbd5e1;
+            --cor-icone-olho: #6b7280;
+            --cor-fundo-botao-tema: rgba(0,0,0,0.05);
+            --cor-icone-tema: var(--azul-escuro);
         }
 
-        /* Base do corpo com gradiente sutil */
-        body {
+        /* Classe para Tema Escuro */
+        .dark-theme {
+            --azul-escuro: #1e88e5; /* Um azul mais claro e vibrante */
+            --cinza-texto: #d1d5db; /* Texto mais claro */
+            --cinza-borda: #4b5563; /* Bordas mais escuras */
+            --fundo-tela: #0f172a; /* Azul-cinza escuro profundo */
+            --fundo-card: #1e293b; /* Card mais escuro */
+            --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --cor-caminhao-fundo: #4b5563; /* Caminhões mais sutis */
+            --cor-icone-olho: #d1d5db;
+            --cor-fundo-botao-tema: rgba(255,255,255,0.1);
+            --cor-icone-tema: #fcd34d; /* Amarelo ouro para o ícone preenchido */
+        }
+
+        * {
             margin: 0;
-            font-family: var(--font-family);
-            height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--fundo-tela);
             display: flex;
             justify-content: center;
             align-items: center;
-            background: radial-gradient(circle, #ffffff 0%, var(--background-blue) 100%);
+            height: 100vh;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Esconde os caminhões fora da tela */
+            transition: background-color 0.3s ease;
         }
 
-        /* Fundo com rede de distribuição sutil (simulado com SVG) */
-        .background-pattern {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyBmaWxsPSJub25lIiBzdHJva2U9IiM5YzlhOWEiIHN0cm9rZS13aWR0aD0iMC4xIiBzdHJva2Utb3BhY2l0eT0iMC4yIj48cGF0aCBkPSJNMTAsMTBMMjAsMjBNMzAsMDBMNDAsMTBNODAsODBMOTAsOTBNMDAsNTBMMTAsNjBNNTAsNTBMMDYwLDYwTTIwLDgwTDMwLDkwTTgwLDIwTDkwLDMwIiAvPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjAuNSIgLz48Y2lyY2xlIGN4PSI0MCIgY3k9IjEwIiByPSIwLjUiIC8+PGNpcmN5IGN4PSI5MCIgY3k9IjkwIiByPSIwLjUiIC8+PGNpcmN5IGN4PSIxMCIgY3k9IjYwIiByPSIwLjUiIC8+PGNpcmN5IGN4PSI2MCIgY3k9IjYwIiByPSIwLjUiIC8+PGNpcmN5IGN4PSIzMCIgY3k9IjkwIiByPSIwLjUiIC8+PGNpcmN5IGN4PSI5MCIgY3k9IjMwIiByPSIwLjUiIC8+PC9nPjwvc3ZnPg==');
-            opacity: 0.15;
-            z-index: 0;
-        }
-
-        /* Modal flutuante central */
-        .modal {
-            background: #fff;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: var(--shadow);
-            width: 400px;
-            text-align: center;
-            z-index: 10;
-            position: relative;
-        }
-
-        /* Título do Projeto */
-        .project-title {
-            font-size: 14px;
-            color: var(--dark-blue);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 0 0 10px 0;
-            font-weight: 500;
-        }
-
-        /* Logotipo do Caminhão (SVG limpo de linha) */
-        .logo {
-            width: 60px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        /* Título da Ação */
-        .login-title {
-            font-size: 32px;
-            color: var(--dark-blue);
-            font-weight: 700;
-            margin: 0 0 30px 0;
-            letter-spacing: -1px;
-        }
-
-        /* Grupos de entrada com ícones */
-        .input-group {
-            position: relative;
-            margin-bottom: 15px;
-            width: 100%;
-            max-width: 350px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* NOVO CAMPO CAD: Centralizado e mais compacto, como na inspiração */
-        .input-group.cad-group {
-            max-width: 250px;
-            margin-top: 25px; /* Maior espaçamento abaixo do usuário */
-        }
-
-        /* Estilo dos Ícones dos Campos */
-        .input-group svg {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            fill: var(--placeholder-gray);
-        }
-
-        /* Estilo dos Campos de Entrada */
-        .input-group input {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            border-radius: 30px;
-            border: 1px solid var(--light-gray-border);
-            font-size: 16px;
-            color: #333;
-            outline: none;
-            box-sizing: border-box;
-            transition: border-color 0.2s;
-        }
-
-        /* Efeito de foco sutil */
-        .input-group input:focus {
-            border-color: var(--dark-blue);
-        }
-
-        /* Cor do placeholder */
-        .input-group input::placeholder {
-            color: var(--placeholder-gray);
-        }
-
-        /* Botão "ENTRAR" */
-        .enter-btn {
-            background-color: var(--dark-blue);
-            color: #fff;
-            border: none;
-            border-radius: 30px;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 30px;
-            width: 100%;
-            max-width: 350px;
-            display: block;
-            margin-left: auto; margin-right: auto;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background-color 0.2s;
-        }
-
-        /* Efeito de hover no botão */
-        .enter-btn:hover {
-            background-color: #003666;
-        }
-
-        /* Controles externos (Ícone de configuração) */
-        .config-icon {
-            position: absolute;
+        /* =========================================
+           BOTÃO DE TROCA DE TEMA (Canto Superior Direito)
+           ========================================= */
+        .theme-toggle-btn {
+            position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 100;
+            background-color: var(--cor-fundo-botao-tema);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
             cursor: pointer;
-        }
-        .config-icon svg { fill: var(--placeholder-gray); width: 24px; height: 24px; opacity: 0.8; }
-
-        /* Controles externos (Controle inferior sutil) */
-        .bottom-control {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             z-index: 100;
+            transition: background-color 0.3s ease;
         }
-        .bottom-control div {
-            width: 15px; height: 15px; background: rgba(0,0,0,0.1); border-radius: 3px;
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(128, 128, 128, 0.2);
+        }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: var(--cor-icone-tema);
+            stroke-width: 1.5;
+            transition: stroke 0.3s ease;
+        }
+
+        /* Exibir/Ocultar ícones com base no tema */
+        #theme-icon-dark { display: none; }
+        .dark-theme #theme-icon-light { display: none; }
+        .dark-theme #theme-icon-dark { display: block; fill: var(--cor-icone-tema); }
+
+
+        /* =========================================
+           ANIMAÇÃO DOS 5 CAMINHÕES NO FUNDO
+           ========================================= */
+        .caminhao-fundo {
+            position: absolute;
+            font-size: 2.2rem;
+            color: var(--cor-caminhao-fundo);
+            opacity: 0.7;
+            z-index: 1; 
+            transition: color 0.3s ease;
+        }
+
+        .cam-1 { top: 10%; animation: moveDireita 7s linear infinite; }
+        .cam-3 { top: 40%; animation: moveDireita 9s linear infinite 2s; }
+        .cam-5 { top: 85%; animation: moveDireita 5s linear infinite 1s; }
+
+        .cam-2 { top: 25%; animation: moveEsquerda 6s linear infinite; }
+        .cam-4 { top: 70%; animation: moveEsquerda 8s linear infinite 3s; }
+
+        @keyframes moveDireita {
+            0% { left: -10%; transform: scaleX(1); }
+            100% { left: 110%; transform: scaleX(1); }
+        }
+
+        @keyframes moveEsquerda {
+            0% { right: -10%; transform: scaleX(-1); }
+            100% { right: 110%; transform: scaleX(-1); }
+        }
+
+        /* =========================================
+           CARTÃO DE LOGIN
+           ========================================= */
+        .login-card {
+            background-color: var(--fundo-card);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: var(--sombra-card);
+            text-align: center;
+            z-index: 2; 
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cabecalho-logo p {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--azul-escuro);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .logo-svg {
+            width: 95px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .login-card h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--azul-escuro);
+            margin-bottom: 30px;
+            transition: color 0.3s ease;
+        }
+
+        .grupo-input {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .grupo-input i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--azul-escuro);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .icone-esq { left: 15px; }
+        .icone-dir { right: 15px; cursor: pointer; color: var(--cor-icone-olho) !important; transition: color 0.3s ease; }
+
+        .grupo-input input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            color: var(--cinza-texto);
+            background-color: transparent;
+            outline: none;
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+        .grupo-input input::placeholder {
+            color: var(--cinza-texto);
+        }
+
+        .grupo-input input:focus {
+            border-color: var(--azul-escuro);
+        }
+
+        .btn-entrar {
+            width: 100%;
+            background-color: var(--azul-escuro);
+            color: #ffffff;
+            border: none;
+            padding: 15px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-entrar:hover {
+            background-color: #033663;
+        }
+
+        .rodape-login {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 0.85rem;
+        }
+
+        .rodape-login a {
+            text-decoration: none;
+            color: var(--cinza-texto);
+            transition: color 0.3s ease;
+        }
+
+        .rodape-login a span {
+            color: var(--azul-escuro);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .rodape-login a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <!-- Padrão de fundo -->
-    <div class="background-pattern"></div>
-    
-    <!-- Ícone de Configuração (Canto Superior Direito) -->
-    <div class="config-icon">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2a1 1 0 100 2a1 1 0 000-2zm0 3a1 1 0 110 2a1 1 0 010-2zm0 3a1 1 0 110 2a1 1 0 010-2zm0 3a1 1 0 110 2a1 1 0 010-2zm0 3a1 1 0 110 2a1 1 0 010-2z" stroke="#6b7280" stroke-width="0.5" fill="none" transform="rotate(45 12 12)" />
-            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.22-0.24-0.4-0.47-0.4h-3.84c-0.24,0-0.43,0.17-0.47,0.4L9.25,5.35C8.66,5.59,8.13,5.91,7.62,6.29L5.23,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.71,8.87c-0.12,0.21-0.07,0.47,0.12,0.61l2.03,1.58C4.82,11.36,4.8,11.68,4.8,12c0,0.32,0.02,0.64,0.07,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54c0.05,0.24,0.24,0.4,0.47,0.4h3.84c0.24,0,0.43-0.17,0.47-0.4l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.21,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z" />
+
+    <!-- Botão de troca de tema -->
+    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
+        <!-- Ícone Tema Claro (Contorno) -->
+        <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+            <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
         </svg>
+        <!-- Ícone Tema Escuro (Preenchido) -->
+        <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+            <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
+        </svg>
+    </button>
+
+    <!-- 5 Caminhões animados no fundo -->
+    <i class="ph ph-truck caminhao-fundo cam-1"></i>
+    <i class="ph ph-truck caminhao-fundo cam-2"></i>
+    <i class="ph ph-truck caminhao-fundo cam-3"></i>
+    <i class="ph ph-truck caminhao-fundo cam-4"></i>
+    <i class="ph ph-truck caminhao-fundo cam-5"></i>
+
+    <!-- Card Principal -->
+    <div class="login-card">
+        <div class="cabecalho-logo">
+            <p>Expedição em Fluxo</p>
+            
+            <!-- SVG Customizado do Logotipo -->
+            <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
+                <!-- Corpo e Cabine -->
+                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+                
+                <!-- Rodas (Azul com miolo branco para vazar) -->
+                <circle cx="38" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+                <circle cx="38" cy="52" r="3" fill="#ffffff"/>
+                
+                <circle cx="78" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+                <circle cx="78" cy="52" r="3" fill="#ffffff"/>
+
+                <!-- Janela da Cabine -->
+                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+
+                <!-- Seta cortando o caminhão -->
+                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+
+                <!-- Tracinhos de velocidade -->
+                <rect x="8" y="25" width="10" height="4" rx="1.5" fill="var(--azul-escuro)"/>
+                <rect x="2" y="33" width="16" height="4" rx="1.5" fill="var(--azul-escuro)"/>
+            </svg>
+
+            <h1>LOGIN</h1>
+        </div>
+
+        <form>
+            <div class="grupo-input">
+                <i class="ph ph-user icone-esq"></i>
+                <input type="text" placeholder="E-mail ou Usuário" required>
+            </div>
+
+            <div class="grupo-input">
+                <i class="ph ph-warehouse icone-esq"></i>
+                <input type="text" id="cd" placeholder="CD" required>
+            </div>
+
+            <div class="grupo-input">
+                <i class="ph ph-lock-key icone-esq"></i>
+                <input type="password" id="senha" placeholder="Senha" required>
+                <i class="ph ph-eye-slash icone-dir" id="togglePassword"></i>
+            </div>
+
+            <button type="submit" class="btn-entrar">ENTRAR</button>
+        </form>
+
+        <div class="rodape-login">
+            <a href="#">Esqueceu a senha?</a>
+            <a href="#">Ainda não tem conta? <span>Cadastre-se</span></a>
+        </div>
     </div>
 
-    <!-- Modal de Login -->
-    <div class="modal">
-        <p class="project-title">EXPEDIÇÃO EM FLUXO</p>
-        
-        <!-- Logotipo do Caminhão (SVG de Linha Sutil) -->
-        <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <g fill="none" stroke="var(--dark-blue)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 6h8v11H7zM15 7h4a2 2 0 0 1 2 2v7h-6v-9zM7 6l-3 3v8h3"></path>
-                <circle cx="9" cy="18" r="2.5"></circle>
-                <circle cx="17" cy="18" r="2.5"></circle>
-                <path d="M0 10h6M-2 13h5M2 16h4M3 7h3" stroke-width="1" stroke-opacity="0.7"></path>
-            </svg>
-        </svg>
-        
-        <h1 class="login-title">LOGIN</h1>
-        
-        <form>
-            <!-- CAMPO USUÁRIO -->
-            <div class="input-group">
-                <!-- Ícone de Pessoa (SVG limpo) -->
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <g fill="none" stroke="var(--placeholder-gray)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </g>
-                </svg>
-                <input type="text" placeholder="Usuário" required>
-            </div>
-            
-            <!-- NOVO CAMPO CAD (abaixo do usuário, centralizado e mais compacto) -->
-            <div class="input-group cad-group">
-                <!-- Ícone de Armazém/CAD (SVG limpo) -->
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <g fill="none" stroke="var(--placeholder-gray)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 10V4.5a1.5 1.5 0 0 1 1.5-1.5h15a1.5 1.5 0 0 1 1.5 1.5V10c0 1.5-1.5 3-3 3h-12c-1.5 0-3-1.5-3-3z"></path>
-                        <path d="M3 10c0-1.5 1.5-3 3-3h12c1.5 0 3 1.5 3 3"></path>
-                        <path d="M6 13v7a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-7"></path>
-                        <rect x="9" y="13" width="6" height="5" rx="1"></rect>
-                    </g>
-                </svg>
-                <input type="text" placeholder="CAD" required>
-            </div>
-            
-            <button type="submit" class="enter-btn">ENTRAR</button>
-        </form>
-    </div>
-    
-    <!-- Controle inferior sutil (Canto Inferior Direito) -->
-    <div class="bottom-control">
-        <div></div>
-    </div>
+    <script>
+        // Lógica do Tema (Salva a preferência no navegador)
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Verifica o tema salvo ou o padrão do sistema
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            body.classList.add(currentTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            body.classList.add('dark-theme');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            let theme = 'light-theme';
+            if (body.classList.contains('dark-theme')) {
+                theme = 'dark-theme';
+            }
+            localStorage.setItem('theme', theme);
+        });
+
+        // Lógica para mostrar/esconder a senha
+        const togglePassword = document.getElementById('togglePassword');
+        const senhaInput = document.getElementById('senha');
+
+        togglePassword.addEventListener('click', function() {
+            const type = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            senhaInput.setAttribute('type', type);
+            this.classList.toggle('ph-eye');
+            this.classList.toggle('ph-eye-slash');
+        });
+    </script>
+
 </body>
 </html>
