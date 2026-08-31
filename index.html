@@ -3,479 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Expedição em Fluxo</title>
-    <!-- Importando fonte e ícones -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
+    <title>Dashboard Compacto</title>
     <style>
-        /* Variáveis de Cores e Temas */
-        :root {
-            /* Tema Claro (Padrão) */
-            --azul-escuro: #004b87; 
-            --cinza-texto: #6b7280;
-            --cinza-borda: #d1d5db;
-            --fundo-tela: #f4f7f6; /* Cinza claro suave */
-            --fundo-sidebar: #dfe6e9; /* Cinza médio suave */
-            --fundo-card: #ffffff;
-            --fundo-grafico-inferior: #212121;
-            --sombra-card: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --cor-texto-body: #333333;
-            --cor-icone-sidebar: var(--azul-escuro);
-            --cor-fundo-botao-tema: rgba(0,0,0,0.05);
-            --cor-icone-tema: var(--azul-escuro);
+        /* Estilo base */
+        html {
+            font-size: 10px; /* Base para rem reduzida */
         }
-
-        /* Classe para Tema Escuro */
-        .dark-theme {
-            --azul-escuro: #1e88e5; /* Um azul mais claro e vibrante */
-            --cinza-texto: #d1d5db; /* Texto mais claro */
-            --cinza-borda: #4b5563; /* Bordas mais escuras */
-            --fundo-tela: #0f172a; /* Azul-cinza escuro profundo */
-            --fundo-sidebar: #1e293b; /* Sidebar mais escura */
-            --fundo-card: #1e293b; /* Card mais escuro */
-            --fundo-grafico-inferior: #1a1a1a;
-            --sombra-card: 0 4px 6px rgba(0, 0, 0, 0.3);
-            --cor-texto-body: #d1d5db;
-            --cor-icone-sidebar: #fff;
-            --cor-fundo-botao-tema: rgba(255,255,255,0.1);
-            --cor-icone-tema: #fcd34d; /* Amarelo ouro para o ícone preenchido */
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
         body {
-            background-color: var(--fundo-tela);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            color: var(--cor-texto-body);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        /* =========================================
-           BOTÃO DE TROCA DE TEMA (Canto Superior Direito)
-           ========================================= */
-        .theme-toggle-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--cor-fundo-botao-tema);
-            border: none;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            transition: background-color 0.3s ease;
+            height: 100vh; /* Altura total da tela */
+            overflow: hidden; /* Impede rolagem */
         }
 
-        .theme-toggle-btn:hover {
-            background-color: rgba(128, 128, 128, 0.2);
+        /* Contêiner do dashboard */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            grid-gap: 0.6rem; /* Lacunas reduzidas */
+            padding: 1.2rem;
+            max-width: 100vw;
+            max-height: 100vh;
+            width: fit-content;
+            height: fit-content;
+            background-color: #fff;
+            border-radius: 1.6rem;
+            box-shadow: 0 0.4rem 1rem rgba(0,0,0,0.1);
         }
 
-        .theme-icon {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: var(--cor-icone-tema);
-            stroke-width: 1.5;
-            transition: stroke 0.3s ease;
+        /* Título */
+        .dashboard-title {
+            color: #004b8d;
+            font-size: 1.6rem; /* Fonte reduzida */
+            font-weight: bold;
+            margin: 0;
+            padding-bottom: 0.4rem;
         }
 
-        /* Exibir/Ocultar ícones com base no tema */
-        #theme-icon-dark { display: none; }
-        .dark-theme #theme-icon-light { display: none; }
-        .dark-theme #theme-icon-dark { display: block; fill: var(--cor-icone-tema); }
-
-        /* =========================================
-           SIDEBAR (Barra Lateral)
-           ========================================= */
-        .sidebar {
-            background-color: var(--fundo-sidebar);
-            width: 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            position: relative;
-            z-index: 10;
-            transition: background-color 0.3s ease;
-        }
-
-        .sidebar i {
-            font-size: 24px;
-            margin-bottom: 25px;
-            color: var(--cor-icone-sidebar);
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .sidebar i:hover {
-            color: #1e88e5;
-        }
-
-        .sidebar-logo {
-            font-size: 2.2rem;
-            color: #b0bbcb; /* Cor sutil como na imagem */
-            opacity: 0.7;
-            margin-bottom: 30px;
-        }
-
-        .sidebar-toggle-group {
-            display: flex;
-            gap: -8px; /* Setas sobrepostas */
-            color: #636e72;
-            cursor: pointer;
-            margin-top: auto; /* Rodapé */
-            margin-bottom: 25px;
-        }
-
-        .sidebar-toggle-group i {
-            font-size: 20px;
-            margin-bottom: 0;
-            color: #636e72;
-        }
-
-        /* =========================================
-           CONTEÚDO PRINCIPAL (DASHBOARD)
-           ========================================= */
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            overflow-y: auto; /* Rolagem se o conteúdo for grande */
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--azul-escuro);
-            text-transform: uppercase;
-            transition: color 0.3s ease;
-        }
-
-        /* Estilo comum para os cards */
+        /* Cards em geral */
         .card {
-            border-radius: 12px;
-            box-shadow: var(--sombra-card);
-            padding: 20px;
-            color: #ffffff;
-            transition: box-shadow 0.3s ease;
+            border-radius: 1.2rem;
+            padding: 0.8rem; /* Preenchimento reduzido */
+            color: #fff;
+            position: relative;
+            box-sizing: border-box;
+            background-size: cover;
+            overflow: hidden;
         }
 
-        .card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 10px;
+        /* Detalhes esquemáticos de metal nos cantos */
+        .card::before,
+        .card::after {
+            content: '';
+            position: absolute;
+            width: 0.6rem;
+            height: 0.6rem;
+            background-color: #f5f5f5; /* Cor de fundo para simular metal */
+            border-radius: 50%;
+            border: 0.1rem solid #ccc;
+        }
+        .card::before { top: 0.4rem; left: 0.4rem; }
+        .card::after { bottom: 0.4rem; right: 0.4rem; }
+        .card.alternate::before { top: 0.4rem; right: 0.4rem; }
+        .card.alternate::after { bottom: 0.4rem; left: 0.4rem; }
+
+        /* Títulos de card */
+        .card-title {
+            font-size: 0.8rem; /* Fonte reduzida */
             text-transform: uppercase;
+            margin: 0;
+            opacity: 0.9;
         }
 
-        /* Seção KPI (Cards superiores) */
-        .kpi-section {
+        /* Linhas de cards */
+        .row {
             display: flex;
-            gap: 25px;
+            gap: 0.6rem; /* Lacunas reduzidas */
         }
 
-        .kpi-card {
-            flex: 1;
-            text-align: center;
+        /* Fileira KPI (Superior) */
+        .top-kpi .card {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 6rem; /* Altura reduzida */
         }
-
-        .card-pendentes {
-            background-image: linear-gradient(135deg, #b71c1c 0%, #f44336 100%);
+        .top-kpi .card-title {
+            margin-bottom: 0.2rem;
         }
-
-        .card-finalizados {
-            background-image: linear-gradient(135deg, #000000 0%, #4caf50 100%);
-        }
-
         .kpi-value {
-            font-size: 4rem;
-            font-weight: 700;
-            display: block;
-            margin-top: 15px;
+            font-size: 2.2rem; /* Fonte reduzida */
+            font-weight: bold;
+            margin: 0;
+        }
+        .top-kpi .card-left {
+            background-image: linear-gradient(135deg, #f05040, #ff8070);
+        }
+        .top-kpi .card-right {
+            background-image: linear-gradient(135deg, #106030, #209040);
         }
 
-        /* Seção Média (Gráficos e Listas) */
-        .mid-section {
+        /* Área de gráficos e ranking (Meio e inferior) */
+        .charts-ranking {
             display: flex;
-            gap: 25px;
+            gap: 0.6rem; /* Lacunas reduzidas */
         }
-
-        .charts-lists-group {
+        .charts-left {
             display: flex;
             flex-direction: column;
-            gap: 25px;
-            flex: 2;
+            gap: 0.6rem; /* Lacunas reduzidas */
+            flex-basis: 60%;
+        }
+        .charts-right {
+            flex-basis: 40%;
+            display: flex;
         }
 
-        .category-card {
-            background-image: linear-gradient(135deg, #4527a0 0%, #9575cd 100%);
+        /* Card Categorias */
+        .card-categories {
+            background-image: linear-gradient(135deg, #9050c0, #704090);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 9rem; /* Altura reduzida */
         }
-
-        .pie-chart {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-image: conic-gradient(#4dd0e1 0% 50%, #f06292 50% 80%, #1e88e5 80% 100%);
-            margin-right: 20px;
-        }
-
         .category-legend {
-            text-align: left;
-            font-size: 0.9rem;
-            margin-top: -10px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.65rem; /* Fonte reduzida */
         }
-
-        .category-legend p {
-            margin-bottom: 8px;
+        .category-legend li {
             display: flex;
             align-items: center;
-            gap: 10px;
+            margin-bottom: 0.2rem;
         }
-
-        .legend-point {
-            width: 12px;
-            height: 12px;
+        .legend-dot {
+            width: 0.7rem;
+            height: 0.7rem;
             border-radius: 50%;
+            margin-right: 0.3rem;
+            border: 0.1rem solid rgba(0,0,0,0.1);
+        }
+        .dot-hu { background-color: #a0c0e0; }
+        .dot-desvio { background-color: #e090a0; }
+        .dot-mu { background-color: #60c0e0; }
+        .pie-chart {
+            width: 4rem; /* Tamanho reduzido */
+            height: 4rem; /* Tamanho reduzido */
+            background-image: conic-gradient(
+                #a0c0e0 0% 40%,
+                #e090a0 40% 70%,
+                #60c0e0 70% 100%
+            );
+            border-radius: 50%;
+            border: 0.15rem solid rgba(255,255,255,0.4);
+            box-shadow: 0 0 0.3rem rgba(0,0,0,0.1);
         }
 
-        .point-hu { background-color: #4dd0e1; }
-        .point-desvio { background-color: #f06292; }
-        .point-mu { background-color: #1e88e5; }
-
-        .ranking-card {
-            background-image: linear-gradient(135deg, #00838f 0%, #4dd0e1 100%);
-            flex: 1;
+        /* Card Ranking Resolution */
+        .card-ranking {
+            background-image: linear-gradient(135deg, #40c0d0, #60e0f0);
+            height: 7rem; /* Altura reduzida */
         }
-
         .ranking-list {
-            list-style: decimal inside;
-            text-align: left;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-top: 15px;
+            list-style: decimal;
+            font-size: 0.8rem; /* Fonte reduzida */
+            margin: 0;
+            padding-left: 1.2rem;
+            opacity: 0.95;
         }
-
         .ranking-list li {
-            margin-bottom: 15px;
+            margin-bottom: 0.1rem;
         }
 
-        /* Seção Direita Vertical (CAD's Ofensores) */
-        .right-section {
-            flex: 1;
-            display: flex;
-        }
-
-        .cad-card {
-            background-image: linear-gradient(135deg, #4e342e 0%, #ff9800 100%);
-            flex: 1;
+        /* Card CAD'S Ofensores */
+        .card-ofensores {
+            background-image: linear-gradient(135deg, #a06030, #e09040);
             display: flex;
             flex-direction: column;
-        }
-
-        .bar-chart-vertical {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 8px;
-            padding: 20px;
-        }
-
-        .vertical-bar {
-            width: 25px;
-            background-color: #ffffff;
-            border-radius: 4px 4px 0 0;
-            transition: height 0.3s ease;
-        }
-
-        /* Alturas das barras simulando o gráfico da imagem */
-        .bar-1 { height: 40%; }
-        .bar-2 { height: 60%; }
-        .bar-3 { height: 75%; }
-        .bar-4 { height: 85%; }
-        .bar-5 { height: 100%; }
-
-        /* Seção Inferior (Gráfico Principal) */
-        .evolution-card {
-            background-color: var(--fundo-grafico-inferior);
-            height: 350px;
-            display: flex;
-            flex-direction: column;
-            transition: background-color 0.3s ease;
-        }
-
-        .evolution-legend-group {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-        }
-
-        .evolution-chart-content {
-            flex: 1;
-            display: flex;
-            gap: 15px;
-        }
-
-        .y-axis {
-            width: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #d1d5db;
-            text-align: right;
-            padding-right: 10px;
-            font-weight: 600;
-        }
-
-        .main-bar-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            border-left: 1px solid #4b5563;
-            border-bottom: 1px solid #4b5563;
-        }
-
-        .bars-content {
-            flex: 1;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            padding: 10px 0;
-        }
-
-        .bar-group-month {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 5px;
+            justify-content: flex-start;
+            align-items: flex-start;
             height: 100%;
         }
-
-        .month-bar {
-            width: 15px;
-            border-radius: 4px 4px 0 0;
-        }
-
-        .bar-hu { background-color: #4dd0e1; }
-        .bar-desvio { background-color: #f06292; }
-        .bar-mu { background-color: #1e88e5; }
-
-        /* Alturas simulando o gráfico principal */
-        /* Jan */
-        .jan .bar-hu { height: 50%; } .jan .bar-desvio { height: 35%; } .jan .bar-mu { height: 35%; }
-        /* Fev */
-        .fev .bar-hu { height: 45%; } .fev .bar-desvio { height: 28%; } .fev .bar-mu { height: 35%; }
-        /* Mar */
-        .mar .bar-hu { height: 35%; } .mar .bar-desvio { height: 20%; } .mar .bar-mu { height: 20%; }
-        /* Abr */
-        .abr .bar-hu { height: 28%; } .abr .bar-desvio { height: 50%; } .abr .bar-mu { height: 30%; }
-        /* Mai */
-        .mai .bar-hu { height: 48%; } .mai .bar-desvio { height: 18%; } .mai .bar-mu { height: 28%; }
-        /* Jun */
-        .jun .bar-hu { height: 20%; } .jun .bar-desvio { height: 30%; } .jun .bar-mu { height: 75%; }
-
-        .x-axis {
-            height: 30px;
+        .bar-chart-vertical {
             display: flex;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 0.9rem;
-            color: #d1d5db;
-            font-weight: 600;
+            justify-content: flex-start;
+            align-items: flex-end;
+            gap: 0.3rem; /* Lacunas reduzidas */
+            margin-top: auto; /* Empurra para a base */
+            margin-bottom: 0.2rem;
+            width: 100%;
         }
-
-        .month-label { flex: 1; text-align: center; }
-
+        .vertical-bar {
+            width: 1.8rem; /* Tamanho reduzido */
+            background-color: #fff;
+            border-radius: 0.3rem;
+            transition: height 0.3s ease;
+        }
+        /* Alturas das barras simuladas */
+        .bar-1 { height: 2.2rem; }
+        .bar-2 { height: 3.2rem; }
+        .bar-3 { height: 4.2rem; }
+        .bar-4 { height: 5.2rem; }
     </style>
 </head>
 <body>
+    <div class="dashboard-container">
+        <!-- Título -->
+        <h1 class="dashboard-title">DASHBOARD</h1>
 
-    <!-- Botão de troca de tema -->
-    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
-        <!-- Ícone Tema Claro (Contorno) -->
-        <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
-            <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
-        </svg>
-        <!-- Ícone Tema Escuro (Preenchido) -->
-        <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
-            <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
-        </svg>
-    </button>
-
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <!-- Logo simulado da sidebar -->
-        <i class="ph ph-truck sidebar-logo"></i>
-        
-        <i class="ph ph-squares-four"></i>
-        <i class="ph ph-list-bullets"></i>
-        <i class="ph ph-map-trifold"></i>
-        <i class="ph ph-package"></i>
-
-        <!-- Toggle Collapse simulado -->
-        <div class="sidebar-toggle-group">
-            <i class="ph ph-arrow-right"></i>
-            <i class="ph ph-arrow-right"></i>
-        </div>
-    </aside>
-
-    <!-- Área Principal de Conteúdo -->
-    <main class="main-content">
-        <div class="header">
-            <h1>DASHBOARD</h1>
-        </div>
-
-        <!-- KPI Seção Superior -->
-        <div class="kpi-section">
-            <div class="card kpi-card card-pendentes">
-                <h2>Total Pendentes</h2>
-                <span class="kpi-value">30</span>
+        <!-- Fileira KPI (Superior) -->
+        <div class="row top-kpi">
+            <div class="card card-left">
+                <h2 class="card-title">TOTAL PENDENTES</h2>
+                <p class="kpi-value">30</p>
             </div>
-            <div class="card kpi-card card-finalizados">
-                <h2>Total Finalizados</h2>
-                <span class="kpi-value">100</span>
+            <div class="card card-right alternate">
+                <h2 class="card-title">TOTAL FINALIZADOS</h2>
+                <p class="kpi-value">100</p>
             </div>
         </div>
 
-        <!-- Média Seção (Gráficos e Listas) -->
-        <div class="mid-section">
-            <div class="charts-lists-group">
-                <div class="card category-card">
-                    <div class="category-info">
-                        <h2>Categorias</h2>
-                        <div class="category-legend">
-                            <p><span class="legend-point point-hu"></span> HU Pendente</p>
-                            <p><span class="legend-point point-desvio"></span> Desvio de Rota</p>
-                            <p><span class="legend-point point-mu"></span> MU Pendente</p>
-                        </div>
+        <!-- Área de gráficos e ranking -->
+        <div class="charts-ranking">
+            <!-- Coluna Esquerda -->
+            <div class="charts-left">
+                <div class="card card-categories">
+                    <div>
+                        <h2 class="card-title">CATEGORIAS</h2>
+                        <ul class="category-legend">
+                            <li><span class="legend-dot dot-hu"></span> HU Pendente</li>
+                            <li><span class="legend-dot dot-desvio"></span> Desvio de Rota</li>
+                            <li><span class="legend-dot dot-mu"></span> MU Pendente</li>
+                        </ul>
                     </div>
                     <div class="pie-chart"></div>
                 </div>
-
-                <div class="card ranking-card">
-                    <h2>Ranking Resolução</h2>
+                <div class="card card-ranking alternate">
+                    <h2 class="card-title">RANKING RESOLUÇÃO</h2>
                     <ol class="ranking-list">
                         <li></li>
                         <li></li>
@@ -483,115 +255,19 @@
                     </ol>
                 </div>
             </div>
-
-            <!-- CAD'S Ofensores (Vertical) -->
-            <div class="right-section">
-                <div class="card cad-card">
-                    <h2>CAD'S Ofensores</h2>
+            <!-- Coluna Direita -->
+            <div class="charts-right">
+                <div class="card card-ofensores">
+                    <h2 class="card-title">CAD'S OFENSORES</h2>
                     <div class="bar-chart-vertical">
                         <div class="vertical-bar bar-1"></div>
                         <div class="vertical-bar bar-2"></div>
                         <div class="vertical-bar bar-3"></div>
                         <div class="vertical-bar bar-4"></div>
-                        <div class="vertical-bar bar-5"></div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Gráfico de Evolução (Inferior) -->
-        <div class="card evolution-card">
-            <div class="evolution-legend-group">
-                <p><span class="legend-point point-hu"></span> HU Pendentes</p>
-                <p><span class="legend-point point-desvio"></span> Desvio de rota</p>
-                <p><span class="legend-point point-mu"></span> MU Pendentes</p>
-            </div>
-            <div class="evolution-chart-content">
-                <div class="y-axis">
-                    <span>7.000</span>
-                    <span>6.000</span>
-                    <span>5.000</span>
-                    <span>4.000</span>
-                    <span>3.000</span>
-                    <span>2.000</span>
-                    <span>1.000</span>
-                    <span>0</span>
-                </div>
-                <div class="main-bar-container">
-                    <div class="bars-content">
-                        <!-- Jan -->
-                        <div class="bar-group-month jan">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Fev -->
-                        <div class="bar-group-month fev">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Mar -->
-                        <div class="bar-group-month mar">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Abr -->
-                        <div class="bar-group-month abr">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Mai -->
-                        <div class="bar-group-month mai">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Jun -->
-                        <div class="bar-group-month jun">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                    </div>
-                    <div class="x-axis">
-                        <span class="month-label">Jan</span>
-                        <span class="month-label">Fev</span>
-                        <span class="month-label">Mar</span>
-                        <span class="month-label">Abr</span>
-                        <span class="month-label">Mai</span>
-                        <span class="month-label">Jun</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        // Lógica do Tema (Salva a preferência no navegador)
-        const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        // Verifica o tema salvo ou o padrão do sistema
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme) {
-            body.classList.add(currentTheme);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            body.classList.add('dark-theme');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-theme');
-            let theme = 'light-theme';
-            if (body.classList.contains('dark-theme')) {
-                theme = 'dark-theme';
-            }
-            localStorage.setItem('theme', theme);
-        });
-
-    </script>
-
+    </div>
 </body>
 </html>
