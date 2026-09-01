@@ -3,73 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo</title>
-    <!-- Importando fonte e ícones para consistência -->
+    <title>Login - Expedição em Fluxo</title>
+    <!-- Importando fonte e ícones -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
     <style>
-        /* Estilo base adaptado para notebook (paisagem 16:9, legível) */
-        html {
-            font-size: 14px; /* Base para rem reduzida para notebook, mas legível */
-        }
-        body {
-            background-color: #f4f7f6; /* Cinza claro suave profissional */
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Altura total da tela */
-            overflow: hidden; /* Impede rolagem */
-            /* Padrão de rede sutil no fundo */
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23d1d5db' fill-opacity='0.1'%3E%3Cpath d='M10 10h10v10H10z'/%3E%3Cpath d='M10 10l80 80h10v10H90L10 20v-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        /* Variáveis de Cores e Temas */
+        :root {
+            /* Tema Claro (Padrão) */
+            --azul-escuro: #004b87; 
+            --cinza-texto: #6b7280;
+            --cinza-borda: #d1d5db;
+            --fundo-tela: #eef1f6;
+            --fundo-card: #ffffff;
+            --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --cor-caminhao-fundo: #cbd5e1;
+            --cor-icone-olho: #6b7280;
+            --cor-fundo-botao-tema: rgba(0,0,0,0.05);
+            --cor-icone-tema: var(--azul-escuro);
         }
 
-        /* Contêiner principal do dashboard centralizado (modal) */
-        #dashboard-container {
-            display: grid;
-            grid-template-rows: auto auto 1fr; /* Título, KPIs, Gráficos */
-            grid-gap: 15px; /* Lacunas reduzidas */
-            padding: 20px;
-            width: 95vw; /* Usa quase toda a largura */
-            max-width: 1400px; /* Largura máxima profissional */
-            height: 95vh; /* Usa quase toda a altura */
-            background-color: #fff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        /* Classe para Tema Escuro */
+        .dark-theme {
+            --azul-escuro: #1e88e5; /* Um azul mais claro e vibrante */
+            --cinza-texto: #d1d5db; /* Texto mais claro */
+            --cinza-borda: #4b5563; /* Bordas mais escuras */
+            --fundo-tela: #0f172a; /* Azul-cinza escuro profundo */
+            --fundo-card: #1e293b; /* Card mais escuro */
+            --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --cor-caminhao-fundo: #4b5563; /* Caminhões mais sutis */
+            --cor-icone-olho: #d1d5db;
+            --cor-fundo-botao-tema: rgba(255,255,255,0.1);
+            --cor-icone-tema: #fcd34d; /* Amarelo ouro para o ícone preenchido */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            position: relative;
-            /* Padrão de rede sutil também no contêiner */
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23d1d5db' fill-opacity='0.05'%3E%3Cpath d='M10 10h10v10H10z'/%3E%3Cpath d='M10 10l80 80h10v10H90L10 20v-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            font-family: 'Inter', sans-serif;
         }
 
-        /* Título e Logotipo */
-        .header-group {
+        body {
+            background-color: var(--fundo-tela);
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            color: #004b87;
-            text-transform: uppercase;
-        }
-        .header-group .icon-truck {
-            font-size: 2.2rem;
-            color: #b0bbcb;
-            opacity: 0.7;
-        }
-        .header-group h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-            padding-bottom: 5px;
+            height: 100vh;
+            position: relative;
+            overflow: hidden; /* Esconde os caminhões fora da tela */
+            transition: background-color 0.3s ease;
         }
 
-        /* Botão de troca de tema (Canto Superior Direito) */
+        /* =========================================
+            BOTÃO DE TROCA DE TEMA (Canto Superior Direito)
+            ========================================= */
         .theme-toggle-btn {
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
-            background-color: rgba(0,0,0,0.05);
+            background-color: var(--cor-fundo-botao-tema);
             border: none;
             border-radius: 50%;
             width: 45px;
@@ -78,476 +72,246 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10;
+            z-index: 100;
             transition: background-color 0.3s ease;
         }
+
         .theme-toggle-btn:hover {
             background-color: rgba(128, 128, 128, 0.2);
         }
+
         .theme-icon {
             width: 24px;
             height: 24px;
             fill: none;
-            stroke: #004b87;
+            stroke: var(--cor-icone-tema);
             stroke-width: 1.5;
             transition: stroke 0.3s ease;
         }
+
         /* Exibir/Ocultar ícones com base no tema */
         #theme-icon-dark { display: none; }
         .dark-theme #theme-icon-light { display: none; }
-        .dark-theme #theme-icon-dark { display: block; fill: #fcd34d; }
+        .dark-theme #theme-icon-dark { display: block; fill: var(--cor-icone-tema); }
 
-        /* Sidebar (Canto Esquerdo) */
-        .sidebar {
+
+        /* =========================================
+            ANIMAÇÃO DOS 5 CAMINHÕES NO FUNDO
+            ========================================= */
+        .caminhao-fundo {
             position: absolute;
-            top: calc(50% - 150px); /* Centralizada verticalmente no modal */
-            left: -30px; /* Avança um pouco para fora do modal */
-            background-color: #dfe6e9; /* Cinza médio suave */
-            width: 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            border-radius: 15px;
-            z-index: 10;
-        }
-        .sidebar i {
-            font-size: 24px;
-            margin-bottom: 25px;
-            color: #004b87;
-            cursor: pointer;
+            font-size: 2.2rem;
+            color: var(--cor-caminhao-fundo);
+            opacity: 0.7;
+            z-index: 1; 
             transition: color 0.3s ease;
         }
-        .sidebar i:hover {
-            color: #1e88e5;
-        }
-        .sidebar-collapse-btn {
-            margin-top: auto; /* Empurra para o rodapé da sidebar */
-            margin-bottom: -10px;
-            display: flex;
-            gap: -8px; /* Setas sobrepostas */
-        }
-        .sidebar-collapse-btn i {
-            font-size: 20px;
-            color: #636e72;
+
+        .cam-1 { top: 10%; animation: moveDireita 7s linear infinite; }
+        .cam-3 { top: 40%; animation: moveDireita 9s linear infinite 2s; }
+        .cam-5 { top: 85%; animation: moveDireita 5s linear infinite 1s; }
+
+        .cam-2 { top: 25%; animation: moveEsquerda 6s linear infinite; }
+        .cam-4 { top: 70%; animation: moveEsquerda 8s linear infinite 3s; }
+
+        @keyframes moveDireita {
+            0% { left: -10%; transform: scaleX(1); }
+            100% { left: 110%; transform: scaleX(1); }
         }
 
-        /* Cards em geral */
-        .card {
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            padding: 10px; /* Preenchimento reduzido */
-            color: #fff;
-            box-sizing: border-box;
-            background-size: cover;
-            transition: box-shadow 0.3s ease;
+        @keyframes moveEsquerda {
+            0% { right: -10%; transform: scaleX(-1); }
+            100% { right: 110%; transform: scaleX(-1); }
         }
 
-        /* Títulos de card */
-        .card-title {
-            font-size: 1rem;
-            text-transform: uppercase;
-            margin: 0 0 10px 0;
-            font-weight: 600;
-        }
-
-        /* KPI Seção Superior (Lado a Lado) */
-        .top-kpi-section {
-            display: flex;
-            gap: 15px; /* Lacunas reduzidas */
-        }
-        .kpi-card {
-            flex-grow: 1;
+        /* =========================================
+            CARTÃO DE LOGIN
+            ========================================= */
+        .login-card {
+            background-color: var(--fundo-card);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: var(--sombra-card);
             text-align: center;
-            height: 120px; /* Altura reduzida */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            z-index: 2; 
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .kpi-card h2 {
-            margin-bottom: 5px;
-        }
-        .kpi-value {
-            font-size: 3.5rem; /* Fonte reduzida, mas legível */
+
+        .cabecalho-logo p {
+            font-size: 0.8rem;
             font-weight: 700;
-            display: block;
-            margin-top: 10px;
-        }
-        .card-pendentes {
-            background-image: linear-gradient(135deg, #b71c1c 0%, #f44336 100%);
-        }
-        .card-finalizados {
-            background-image: linear-gradient(135deg, #000000 0%, #4caf50 100%);
+            color: var(--azul-escuro);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
         }
 
-        /* Área de gráficos e ranking (Meio e inferior) */
-        .charts-ranking-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr; /* Três colunas de paisagem */
-            grid-gap: 15px; /* Lacunas reduzidas */
-        }
-
-        /* Card Categorias */
-        .categories-card {
-            background-image: linear-gradient(135deg, #4527a0 0%, #9575cd 100%);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 180px; /* Altura reduzida */
-        }
-        .category-legend {
-            text-align: left;
-            font-size: 0.8rem; /* Fonte reduzida */
-            margin-top: -10px;
-        }
-        .category-legend p {
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .legend-point {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-        .point-hu { background-color: #4dd0e1; }
-        .point-desvio { background-color: #f06292; }
-        .point-mu { background-color: #1e88e5; }
-        .pie-chart {
-            width: 80px; /* Tamanho reduzido */
-            height: 80px; /* Tamanho reduzido */
-            border-radius: 50%;
-            background-image: conic-gradient(#4dd0e1 0% 50%, #f06292 50% 80%, #1e88e5 80% 100%);
-            margin-right: 20px;
-        }
-
-        /* Card Ranking Resolution */
-        .ranking-card {
-            background-image: linear-gradient(135deg, #00838f 0%, #4dd0e1 100%);
-            height: 180px; /* Altura reduzida */
-        }
-        .ranking-list {
-            list-style: decimal inside;
-            text-align: left;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-top: 15px;
-        }
-        .ranking-list li {
+        .logo-svg {
+            width: 95px;
+            height: auto;
             margin-bottom: 10px;
         }
 
-        /* Card CAD'S Ofensores (Vertical à Direita) */
-        .cad-card-vertical {
-            background-image: linear-gradient(135deg, #4e342e 0%, #ff9800 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            grid-column: 3; /* Terceira coluna */
-            grid-row: 1 / 3; /* Ocupa as linhas 1 e 2 */
-            height: calc(180px * 2 + 15px); /* Altura de 2 cards + lacuna */
+        .login-card h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--azul-escuro);
+            margin-bottom: 30px;
+            transition: color 0.3s ease;
         }
-        .bar-chart-vertical {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 8px; /* Lacunas reduzidas */
-            padding: 20px;
-            height: calc(100% - 30px); /* Altura restante do card */
-        }
-        .vertical-bar {
-            width: 20px; /* Tamanho reduzido */
-            background-color: #ffffff;
-            border-radius: 4px 4px 0 0;
-            transition: height 0.3s ease;
-        }
-        /* Alturas das barras simulando o gráfico da imagem */
-        .bar-1 { height: 40%; }
-        .bar-2 { height: 60%; }
-        .bar-3 { height: 75%; }
-        .bar-4 { height: 85%; }
-        .bar-5 { height: 100%; }
 
-        /* Gráfico Principal (Inferior com barras agrupadas) */
-        .main-bar-chart-section {
-            display: flex;
-            background-color: #212121; /* Fundo escuro como na imagem */
-            padding: 20px;
-            border-radius: 12px;
-            height: 350px; /* Altura principal */
+        .grupo-input {
             position: relative;
-            grid-column: 1 / 3; /* Ocupa as colunas 1 e 2 */
+            margin-bottom: 15px;
         }
-        /* Eixo Y */
-        .y-axis {
-            width: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #d1d5db;
-            text-align: right;
-            padding-right: 10px;
-            font-weight: 600;
-        }
-        /* Contêiner Principal das Barras e Eixo X */
-        .main-bar-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            border-left: 1px solid #4b5563;
-            border-bottom: 1px solid #4b5563;
-        }
-        /* Área das Barras e Legenda */
-        .bars-area {
-            flex: 1;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end; /* Alinha barras na base */
-            padding: 10px 0;
-        }
-        /* Legenda Superior do Gráfico */
-        .chart-main-legend {
+
+        .grupo-input i {
             position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            font-size: 0.8rem;
-            color: #fff;
-        }
-        .chart-main-legend span {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--azul-escuro);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
         }
 
-        /* Contêiner de Barra Agrupada por Mês */
-        .bar-group-month {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 5px; /* Lacunas reduzidas */
-            height: 100%;
-        }
-        .month-bar {
-            width: 15px; /* Tamanho reduzido */
-            border-radius: 4px 4px 0 0;
-            transition: height 0.3s ease;
-        }
-        .bar-hu { background-color: #4dd0e1; }
-        .bar-desvio { background-color: #f06292; }
-        .bar-mu { background-color: #1e88e5; }
+        .icone-esq { left: 15px; }
+        .icone-dir { right: 15px; cursor: pointer; color: var(--cor-icone-olho) !important; transition: color 0.3s ease; }
 
-        /* Alturas simulando o gráfico principal */
-        /* Jan */
-        .jan .bar-hu { height: 50%; } .jan .bar-desvio { height: 35%; } .jan .bar-mu { height: 35%; }
-        /* Fev */
-        .fev .bar-hu { height: 45%; } .fev .bar-desvio { height: 28%; } .fev .bar-mu { height: 35%; }
-        /* Mar */
-        .mar .bar-hu { height: 35%; } .mar .bar-desvio { height: 20%; } .mar .bar-mu { height: 20%; }
-        /* Abr */
-        .abr .bar-hu { height: 28%; } .abr .bar-desvio { height: 50%; } .abr .bar-mu { height: 30%; }
-        /* Mai */
-        .mai .bar-hu { height: 48%; } .mai .bar-desvio { height: 18%; } .mai .bar-mu { height: 28%; }
-        /* Jun */
-        .jun .bar-hu { height: 20%; } .jun .bar-desvio { height: 30%; } .jun .bar-mu { height: 75%; }
+        .grupo-input input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            color: var(--cinza-texto);
+            background-color: transparent;
+            outline: none;
+            transition: border-color 0.3s, color 0.3s;
+        }
 
-        /* Eixo X */
-        .x-axis {
-            height: 30px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 0.9rem;
-            color: #d1d5db;
+        .grupo-input input::placeholder {
+            color: var(--cinza-texto);
+        }
+
+        .grupo-input input:focus {
+            border-color: var(--azul-escuro);
+        }
+
+        .btn-entrar {
+            width: 100%;
+            background-color: var(--azul-escuro);
+            color: #ffffff;
+            border: none;
+            padding: 15px;
+            border-radius: 30px;
+            font-size: 1rem;
             font-weight: 600;
-        }
-        .month-label { flex: 1; text-align: center; }
-
-        /* Estilos do Tema Escuro */
-        .dark-theme {
-            background-color: #0f172a;
-            color: #d1d5db;
-        }
-        .dark-theme #dashboard-container {
-            background-color: #1e293b;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        .dark-theme .header-group {
-            color: #1e88e5;
-        }
-        .dark-theme .theme-toggle-btn {
-            background-color: rgba(255,255,255,0.1);
-        }
-        .dark-theme .theme-icon {
-            stroke: #fcd34d;
-        }
-        .dark-theme .main-bar-chart-section {
-            background-color: #1a1a1a;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
         }
 
+        .btn-entrar:hover {
+            background-color: #033663;
+        }
+
+        .rodape-login {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 0.85rem;
+        }
+
+        .rodape-login a {
+            text-decoration: none;
+            color: var(--cinza-texto);
+            transition: color 0.3s ease;
+        }
+
+        .rodape-login a span {
+            color: var(--azul-escuro);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .rodape-login a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <div id="dashboard-container">
-        <!-- Título e Logotipo -->
-        <div class="header-group">
-            <i class="ph ph-truck icon-truck"></i>
-            <h1>DASHBOARD</h1>
-        </div>
 
-        <!-- Botão de troca de tema -->
-        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
-            <!-- Ícone Tema Claro (Contorno) -->
-            <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
-                <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
+    <!-- Botão de troca de tema -->
+    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
+        <!-- Ícone Tema Claro (Contorno) -->
+        <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+            <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
+        </svg>
+        <!-- Ícone Tema Escuro (Preenchido) -->
+        <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+            <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
+        </svg>
+    </button>
+
+    <!-- 5 Caminhões animados no fundo -->
+    <i class="ph ph-truck caminhao-fundo cam-1"></i>
+    <i class="ph ph-truck caminhao-fundo cam-2"></i>
+    <i class="ph ph-truck caminhao-fundo cam-3"></i>
+    <i class="ph ph-truck caminhao-fundo cam-4"></i>
+    <i class="ph ph-truck caminhao-fundo cam-5"></i>
+
+    <!-- Card Principal -->
+    <div class="login-card">
+        <div class="cabecalho-logo">
+            <p>Expedição em Fluxo</p>
+            
+            <!-- SVG Customizado do Logotipo -->
+            <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
+                <!-- Corpo e Cabine -->
+                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+                
+                <!-- Rodas (Azul com miolo branco para vazar) -->
+                <circle cx="38" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+                <circle cx="38" cy="52" r="3" fill="#ffffff"/>
+                
+                <circle cx="78" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+                <circle cx="78" cy="52" r="3" fill="#ffffff"/>
+
+                <!-- Janela da Cabine -->
+                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+
+                <!-- Seta cortando o caminhão -->
+                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
+
+                <!-- Tracinhos de velocidade -->
+                <rect x="8" y="25" width="10" height="4" rx="1.5" fill="var(--azul-escuro)"/>
+                <rect x="2" y="33" width="16" height="4" rx="1.5" fill="var(--azul-escuro)"/>
             </svg>
-            <!-- Ícone Tema Escuro (Preenchido) -->
-            <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
-                <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
-            </svg>
-        </button>
 
-        <!-- Sidebar (Canto Esquerdo) -->
-        <aside class="sidebar">
-            <i class="ph ph-squares-four"></i>
-            <i class="ph ph-list-bullets"></i>
-            <i class="ph ph-map-trifold"></i>
-            <i class="ph ph-package"></i>
-            <i class="ph ph-gear"></i>
-            <div class="sidebar-collapse-btn">
-                <i class="ph ph-arrow-right"></i>
-                <i class="ph ph-arrow-right"></i>
-            </div>
-        </aside>
-
-        <!-- KPI Seção Superior (Lado a Lado) -->
-        <div class="top-kpi-section">
-            <div class="card kpi-card card-pendentes">
-                <h2 class="card-title">TOTAL PENDENTES</h2>
-                <span class="kpi-value">30</span>
-            </div>
-            <div class="card kpi-card card-finalizados">
-                <h2 class="card-title">TOTAL FINALIZADOS</h2>
-                <span class="kpi-value">100</span>
-            </div>
+            <h1>LOGIN</h1>
         </div>
 
-        <!-- Área de gráficos e ranking (Meio e inferior) -->
-        <div class="charts-ranking-section">
-            <!-- Card Categorias -->
-            <div class="card categories-card">
-                <div class="category-info">
-                    <h2 class="card-title">Categorias</h2>
-                    <div class="category-legend">
-                        <p><span class="legend-point point-hu"></span> HU Pendente</p>
-                        <p><span class="legend-point point-desvio"></span> Desvio de Rota</p>
-                        <p><span class="legend-point point-mu"></span> MU Pendente</p>
-                    </div>
-                </div>
-                <div class="pie-chart"></div>
+        <form>
+            <div class="grupo-input">
+                <i class="ph ph-user icone-esq"></i>
+                <input type="text" placeholder="E-mail ou Usuário" required>
             </div>
 
-            <!-- Card Ranking Resolution -->
-            <div class="card ranking-card">
-                <h2 class="card-title">Ranking Resolução</h2>
-                <ol class="ranking-list">
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ol>
+            <div class="grupo-input">
+                <i class="ph ph-warehouse icone-esq"></i>
+                <input type="text" id="cd" placeholder="CD" required>
             </div>
 
-            <!-- Card CAD'S Ofensores (Vertical) -->
-            <div class="card cad-card-vertical">
-                <h2 class="card-title">CAD'S Ofensores</h2>
-                <div class="bar-chart-vertical">
-                    <div class="vertical-bar bar-1"></div>
-                    <div class="vertical-bar bar-2"></div>
-                    <div class="vertical-bar bar-3"></div>
-                    <div class="vertical-bar bar-4"></div>
-                    <div class="vertical-bar bar-5"></div>
-                </div>
-            </div>
+            <button type="submit" class="btn-entrar">ENTRAR</button>
+        </form>
 
-            <!-- Gráfico Principal (Inferior com barras agrupadas) -->
-            <div class="main-bar-chart-section">
-                <!-- Legenda Superior Simulada -->
-                <div class="chart-main-legend">
-                    <span><span class="legend-point point-hu"></span> Hu Pendentes</span>
-                    <span><span class="legend-point point-desvio"></span> Desvio de rota</span>
-                    <span><span class="legend-point point-mu"></span> MU Pendentes</span>
-                </div>
-                <!-- Eixo Y Numerado -->
-                <div class="y-axis">
-                    <span>7.000</span>
-                    <span>6.000</span>
-                    <span>5.000</span>
-                    <span>4.000</span>
-                    <span>3.000</span>
-                    <span>2.000</span>
-                    <span>1.000</span>
-                    <span>0</span>
-                </div>
-                <!-- Contêiner Principal das Barras e Eixo X -->
-                <div class="main-bar-container">
-                    <div class="bars-area">
-                        <!-- Jan -->
-                        <div class="bar-group-month jan">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Fev -->
-                        <div class="bar-group-month fev">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Mar -->
-                        <div class="bar-group-month mar">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Abr -->
-                        <div class="bar-group-month abr">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Mai -->
-                        <div class="bar-group-month mai">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                        <!-- Jun -->
-                        <div class="bar-group-month jun">
-                            <div class="month-bar bar-hu"></div>
-                            <div class="month-bar bar-desvio"></div>
-                            <div class="month-bar bar-mu"></div>
-                        </div>
-                    </div>
-                    <!-- Eixo X com Rótulos de Mês -->
-                    <div class="x-axis">
-                        <span class="month-label">Jan</span>
-                        <span class="month-label">Fev</span>
-                        <span class="month-label">Mar</span>
-                        <span class="month-label">Abr</span>
-                        <span class="month-label">Mai</span>
-                        <span class="month-label">Jun</span>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+
     <script>
         // Lógica do Tema (Salva a preferência no navegador)
         const themeToggle = document.getElementById('theme-toggle');
@@ -569,6 +333,8 @@
             }
             localStorage.setItem('theme', theme);
         });
+
     </script>
+
 </body>
 </html>
