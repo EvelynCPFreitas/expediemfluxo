@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Expedição em Fluxo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        /* =========================================
+           BARRA LATERAL (SIDEBAR)
+           ========================================= */
+        .sidebar {
+            width: 250px;
+            background-color: #e2e8f0; /* Cinza claro idêntico à imagem */
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #cbd5e1;
+            padding-bottom: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 25px 20px;
+            color: #004b87;
+            font-weight: 900;
+            font-size: 0.9rem;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-svg { width: 45px; height: auto; }
+
+        .nav-menu { flex: 1; margin-top: 30px; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            color: #004b87;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(0, 75, 135, 0.1);
+        }
+
+        .nav-item i { font-size: 1.5rem; }
+
+        .sidebar-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            color: #004b87;
+            font-size: 1.8rem;
+        }
+
+        .sidebar-footer i { cursor: pointer; }
+
+        /* =========================================
+           CONTEÚDO PRINCIPAL (DASHBOARD)
+           ========================================= */
+        .main-content {
+            flex: 1;
+            padding: 30px 50px;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            color: #004b87;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* GRID DO DASHBOARD */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 25px;
+        }
+
+        /* ESTILO BASE DOS CARDS */
+        .card {
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* CORES EM DEGRADÊ DOS CARDS */
+        .card-red {
+            background: linear-gradient(to right, #1a0000, #f82525);
+            text-align: center;
+            align-items: center;
+        }
+        
+        .card-green {
+            background: linear-gradient(to right, #001a10, #1de68f);
+            text-align: center;
+            align-items: center;
+        }
+
+        .card-purple { background: linear-gradient(to right, #15002b, #a529f7); }
+        .card-cyan { background: linear-gradient(to right, #001924, #1eddf5); }
+        
+        .card-orange {
+            background: linear-gradient(to right, #2e0d00, #fa6f19);
+            grid-column: 3;
+            grid-row: 1 / 3; /* Ocupa as duas linhas superiores */
+        }
+        
+        .card-dark {
+            background: #4a4a4a;
+            grid-column: 1 / 3; /* Ocupa as colunas 1 e 2 */
+            grid-row: 3;
+            margin-top: 25px;
+            height: 300px;
+            padding: 15px;
+        }
+
+        /* TIPOGRAFIA DOS NÚMEROS (30 e 100) */
+        .card-number {
+            font-size: 4rem;
+            font-weight: 900;
+            font-style: italic;
+            font-family: serif; /* Dá aquele aspecto clássico da imagem */
+            margin-top: 10px;
+        }
+
+        /* =========================================
+           GRÁFICOS FALSOS (CSS PURO)
+           ========================================= */
+        
+        /* Gráfico de Pizza (Roxo) */
+        .pie-chart-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .legend { font-size: 0.85rem; font-weight: 600; font-style: italic; display: flex; flex-direction: column; gap: 8px;}
+        .legend-item { display: flex; align-items: center; gap: 8px; justify-content: space-between; width: 120px;}
+        .legend-color { width: 12px; height: 12px; border-radius: 2px; }
+        .pie {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: conic-gradient(#8cbaf6 0% 50%, #ea5c85 50% 80%, #3e84f4 80% 100%);
+            margin-right: 15px;
+        }
+
+        /* Lista Ranking (Azul Claro) */
+        .ranking-list {
+            list-style: none;
+            font-weight: 900;
+            font-style: italic;
+            font-size: 1.2rem;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Gráfico de Barras Laranja */
+        .bar-chart-orange {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 100%;
+            margin-top: 20px;
+            padding-bottom: 10px;
+        }
+        .bar-white {
+            background-color: white;
+            width: 35px;
+            border-radius: 4px 4px 0 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        /* Gráfico Bottom (Escuro) - Simplificado visualmente */
+        .dark-chart-header {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.7rem;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+        .dark-legend { display: flex; align-items: center; gap: 5px; }
+        .dark-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+        
+        .dark-chart-area {
+            display: flex;
+            align-items: flex-end;
+            height: 80%;
+            border-left: 1px solid #777;
+            border-bottom: 1px solid #777;
+            padding-left: 10px;
+            gap: 30px;
+            position: relative;
+        }
+        .y-axis { position: absolute; left: -35px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.6rem; color: #aaa; }
+        
+        .month-group { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 2px; position: relative; height: 100%;}
+        .month-label { position: absolute; bottom: -20px; font-size: 0.7rem; color: #aaa; }
+        
+        .bar-sm { width: 15px; }
+        .c-blue1 { background-color: #8ce1f8; }
+        .c-pink { background-color: #f7558f; }
+        .c-blue2 { background-color: #4b8df8; }
+
+    </style>
+</head>
+<body>
+
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <!-- Mini Logo -->
+            <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
+                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="#e2e8f0" stroke="#004b87" stroke-width="2.5"/>
+                <circle cx="38" cy="52" r="7" fill="#004b87" stroke="#004b87" stroke-width="1.5"/>
+                <circle cx="38" cy="52" r="3" fill="#e2e8f0"/>
+                <circle cx="78" cy="52" r="7" fill="#004b87" stroke="#004b87" stroke-width="1.5"/>
+                <circle cx="78" cy="52" r="3" fill="#e2e8f0"/>
+                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#e2e8f0" stroke="#004b87" stroke-width="2.5"/>
+                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#e2e8f0" stroke="#004b87" stroke-width="2.5"/>
+                <rect x="5" y="25" width="12" height="3" rx="1.5" fill="#004b87"/>
+                <rect x="0" y="33" width="18" height="3" rx="1.5" fill="#004b87"/>
+            </svg>
+            EXPEDIÇÃO EM FLUXO
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active">
+                <i class="ph ph-squares-four"></i> Dashboard
+            </a>
+            <a href="#" class="nav-item">
+                <i class="ph ph-package"></i> HU's Pendentes
+            </a>
+            <a href="#" class="nav-item">
+                <i class="ph ph-arrows-split"></i> Desvio de Rota
+            </a>
+            <a href="#" class="nav-item">
+                <i class="ph ph-boxes"></i> MU's Pendentes
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <i class="ph ph-user"></i>
+            <i class="ph ph-caret-double-left"></i>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+        <h1 class="page-title">DASHBOARD</h1>
+
+        <div class="dashboard-grid">
+            
+            <!-- Cartão 1: Total Pendentes -->
+            <div class="card card-red">
+                <h2>Total<br>Pendentes</h2>
+                <div class="card-number">30</div>
+            </div>
+
+            <!-- Cartão 2: Total Finalizados -->
+            <div class="card card-green">
+                <h2>Total<br>Finalizados</h2>
+                <div class="card-number">100</div>
+            </div>
+
+            <!-- Cartão 3: Laranja Lateral -->
+            <div class="card card-orange">
+                <h2>CAD'S Ofensores</h2>
+                <div class="bar-chart-orange">
+                    <div class="bar-white" style="height: 30%;"></div>
+                    <div class="bar-white" style="height: 50%;"></div>
+                    <div class="bar-white" style="height: 80%;"></div>
+                    <div class="bar-white" style="height: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Cartão 4: Categorias -->
+            <div class="card card-purple">
+                <h2>Categorias</h2>
+                <div class="pie-chart-container">
+                    <div class="legend">
+                        <div class="legend-item">HU Pendente <div class="legend-color" style="background: #8cbaf6;"></div></div>
+                        <div class="legend-item">Desvio de Rota <div class="legend-color" style="background: #ea5c85;"></div></div>
+                        <div class="legend-item">MU Pendente <div class="legend-color" style="background: #3e84f4;"></div></div>
+                    </div>
+                    <div class="pie"></div>
+                </div>
+            </div>
+
+            <!-- Cartão 5: Ranking Resolução -->
+            <div class="card card-cyan">
+                <h2>Ranking Resolução</h2>
+                <ul class="ranking-list">
+                    <li>1.</li>
+                    <li>2.</li>
+                    <li>3.</li>
+                </ul>
+            </div>
+
+        </div> <!-- Fim do Grid Superior -->
+
+        <!-- Gráfico Inferior Escuro (Ocupa as 2 colunas abaixo do Roxo e Azul) -->
+        <div class="card card-dark">
+            <div class="dark-chart-header">
+                <div class="dark-legend"><div class="dark-legend-dot c-blue1"></div> Hu Pendentes</div>
+                <div class="dark-legend"><div class="dark-legend-dot c-pink"></div> Desvio de rota</div>
+                <div class="dark-legend"><div class="dark-legend-dot c-blue2"></div> MU Pendentes</div>
+            </div>
+            
+            <div class="dark-chart-area">
+                <div class="y-axis">
+                    <span>7.000</span><span>6.000</span><span>5.000</span><span>4.000</span><span>3.000</span><span>2.000</span><span>1.000</span><span>0</span>
+                </div>
+                
+                <div class="month-group"><div class="bar-sm c-blue1" style="height: 70%;"></div><div class="bar-sm c-pink" style="height: 45%;"></div><div class="bar-sm c-blue2" style="height: 45%;"></div><span class="month-label">Jan</span></div>
+                <div class="month-group"><div class="bar-sm c-blue1" style="height: 55%;"></div><div class="bar-sm c-pink" style="height: 25%;"></div><div class="bar-sm c-blue2" style="height: 38%;"></div><span class="month-label">Fev</span></div>
+                <div class="month-group"><div class="bar-sm c-blue1" style="height: 40%;"></div><div class="bar-sm c-pink" style="height: 20%;"></div><div class="bar-sm c-blue2" style="height: 20%;"></div><span class="month-label">Mar</span></div>
+                <div class="month-group"><div class="bar-sm c-blue1" style="height: 30%;"></div><div class="bar-sm c-pink" style="height: 70%;"></div><div class="bar-sm c-blue2" style="height: 35%;"></div><span class="month-label">Abr</span></div>
+                <div class="month-group"><div class="bar-sm c-blue1" style="height: 60%;"></div><div class="bar-sm c-pink" style="height: 15%;"></div><div class="bar-sm c-blue2" style="height: 25%;"></div><span class="month-label">Mai</span></div>
+                <div class="month-group"><div class="bar-sm c-blue1" style="height: 15%;"></div><div class="bar-sm c-pink" style="height: 35%;"></div><div class="bar-sm c-blue2" style="height: 95%;"></div><span class="month-label">Jun</span></div>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>
