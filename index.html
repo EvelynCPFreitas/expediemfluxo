@@ -486,20 +486,24 @@
             }
         });
 
+     // =========================================
+        // LÓGICA DE LOGIN E REDIRECIONAMENTO
         // =========================================
-        // LÓGICA PARA REDIRECIONAR APÓS O LOGIN
-        // =========================================
-        const loginForm = document.querySelector('form');
+        const form = document.querySelector('form');
         
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Impede a página de recarregar em branco
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); // Evita que a página recarregue
+            
+            // Pega o valor digitado no campo CD
+            const cdValue = document.getElementById('cd').value;
+            
+            // Salva o CD no navegador (deixando tudo em maiúsculo)
+            localStorage.setItem('userCD', cdValue.toUpperCase());
+            
+            // Redireciona para o dashboard
             window.location.href = 'dashboard.html'; 
         });
 
     </script>
-</body>
-</html>
-    </script>
-
 </body>
 </html>
