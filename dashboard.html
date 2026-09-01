@@ -8,6 +8,41 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <style>
+        /* =========================================
+           VARIÁVEIS DE TEMA (CLARO/ESCURO)
+           ========================================= */
+        :root {
+            /* Tema Claro */
+            --bg-body: #ffffff;
+            --bg-sidebar: #e2e8f0;
+            --border-sidebar: #cbd5e1;
+            --text-primary: #333333;
+            --text-sidebar: #004b87;
+            --bg-hover: rgba(0, 75, 135, 0.1);
+            --logo-fill: #e2e8f0;
+            --logo-stroke: #004b87;
+            
+            /* Botão Tema */
+            --btn-theme-bg: rgba(0,0,0,0.05);
+            --btn-theme-color: #004b87;
+        }
+
+        .dark-theme {
+            /* Tema Escuro */
+            --bg-body: #0f172a;
+            --bg-sidebar: #1e293b;
+            --border-sidebar: #334155;
+            --text-primary: #f1f5f9;
+            --text-sidebar: #60a5fa; /* Azul claro para contraste */
+            --bg-hover: rgba(96, 165, 250, 0.15);
+            --logo-fill: #1e293b;
+            --logo-stroke: #60a5fa;
+            
+            /* Botão Tema */
+            --btn-theme-bg: rgba(255,255,255,0.1);
+            --btn-theme-color: #fcd34d;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,20 +53,60 @@
         body {
             display: flex;
             height: 100vh;
-            background-color: #ffffff;
-            color: #333;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        /* =========================================
+           BOTÃO DE TROCA DE TEMA
+           ========================================= */
+        .theme-toggle-btn {
+            position: fixed;
+            top: 30px;
+            right: 50px;
+            background-color: var(--btn-theme-bg);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(128, 128, 128, 0.2);
+        }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: var(--btn-theme-color);
+            stroke-width: 1.5;
+            transition: stroke 0.3s ease;
+        }
+
+        #theme-icon-dark { display: none; }
+        .dark-theme #theme-icon-light { display: none; }
+        .dark-theme #theme-icon-dark { display: block; fill: var(--btn-theme-color); }
+
 
         /* =========================================
            BARRA LATERAL (SIDEBAR)
            ========================================= */
         .sidebar {
             width: 250px;
-            background-color: #e2e8f0; /* Cinza claro idêntico à imagem */
+            background-color: var(--bg-sidebar);
             display: flex;
             flex-direction: column;
-            border-right: 2px solid #cbd5e1;
+            border-right: 2px solid var(--border-sidebar);
             padding-bottom: 20px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .logo-container {
@@ -39,10 +114,11 @@
             align-items: center;
             gap: 10px;
             padding: 25px 20px;
-            color: #004b87;
+            color: var(--text-sidebar);
             font-weight: 900;
             font-size: 0.9rem;
             letter-spacing: -0.5px;
+            transition: color 0.3s ease;
         }
 
         .logo-svg { width: 45px; height: auto; }
@@ -54,15 +130,15 @@
             align-items: center;
             gap: 15px;
             padding: 15px 25px;
-            color: #004b87;
+            color: var(--text-sidebar);
             font-weight: 700;
             font-size: 1.05rem;
             text-decoration: none;
-            transition: background 0.2s;
+            transition: background 0.2s, color 0.3s ease;
         }
 
         .nav-item:hover, .nav-item.active {
-            background-color: rgba(0, 75, 135, 0.1);
+            background-color: var(--bg-hover);
         }
 
         .nav-item i { font-size: 1.5rem; }
@@ -72,8 +148,9 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 25px;
-            color: #004b87;
+            color: var(--text-sidebar);
             font-size: 1.8rem;
+            transition: color 0.3s ease;
         }
 
         .sidebar-footer i { cursor: pointer; }
@@ -85,15 +162,17 @@
             flex: 1;
             padding: 30px 50px;
             overflow-y: auto;
+            position: relative;
         }
 
         .page-title {
-            color: #004b87;
+            color: var(--text-sidebar);
             font-size: 1.8rem;
             font-weight: 900;
             margin-bottom: 30px;
             text-transform: uppercase;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            transition: color 0.3s ease;
         }
 
         /* GRID DO DASHBOARD */
@@ -115,6 +194,10 @@
             justify-content: space-between;
         }
 
+        .dark-theme .card {
+            box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
         .card h2 {
             font-size: 1.3rem;
             font-weight: 700;
@@ -122,34 +205,27 @@
         }
 
         /* CORES EM DEGRADÊ DOS CARDS */
-        .card-red {
-            background: linear-gradient(to right, #1a0000, #f82525);
-            text-align: center;
-            align-items: center;
-        }
-        
-        .card-green {
-            background: linear-gradient(to right, #001a10, #1de68f);
-            text-align: center;
-            align-items: center;
-        }
-
+        .card-red { background: linear-gradient(to right, #1a0000, #f82525); text-align: center; align-items: center; }
+        .card-green { background: linear-gradient(to right, #001a10, #1de68f); text-align: center; align-items: center; }
         .card-purple { background: linear-gradient(to right, #15002b, #a529f7); }
         .card-cyan { background: linear-gradient(to right, #001924, #1eddf5); }
-        
         .card-orange {
             background: linear-gradient(to right, #2e0d00, #fa6f19);
             grid-column: 3;
-            grid-row: 1 / 3; /* Ocupa as duas linhas superiores */
+            grid-row: 1 / 3; 
         }
-        
         .card-dark {
-            background: #4a4a4a;
-            grid-column: 1 / 3; /* Ocupa as colunas 1 e 2 */
+            background: #334155;
+            grid-column: 1 / 3; 
             grid-row: 3;
             margin-top: 25px;
             height: 300px;
             padding: 15px;
+        }
+
+        .dark-theme .card-dark {
+            background: #1e293b;
+            border: 1px solid var(--border-sidebar);
         }
 
         /* TIPOGRAFIA DOS NÚMEROS (30 e 100) */
@@ -157,7 +233,7 @@
             font-size: 4rem;
             font-weight: 900;
             font-style: italic;
-            font-family: serif; /* Dá aquele aspecto clássico da imagem */
+            font-family: serif; 
             margin-top: 10px;
         }
 
@@ -165,7 +241,6 @@
            GRÁFICOS FALSOS (CSS PURO)
            ========================================= */
         
-        /* Gráfico de Pizza (Roxo) */
         .pie-chart-container {
             display: flex;
             align-items: center;
@@ -182,7 +257,6 @@
             margin-right: 15px;
         }
 
-        /* Lista Ranking (Azul Claro) */
         .ranking-list {
             list-style: none;
             font-weight: 900;
@@ -194,7 +268,6 @@
             gap: 10px;
         }
 
-        /* Gráfico de Barras Laranja */
         .bar-chart-orange {
             display: flex;
             align-items: flex-end;
@@ -210,7 +283,6 @@
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
 
-        /* Gráfico Bottom (Escuro) - Simplificado visualmente */
         .dark-chart-header {
             display: flex;
             justify-content: center;
@@ -249,17 +321,17 @@
     <!-- BARRA LATERAL -->
     <aside class="sidebar">
         <div class="logo-container">
-            <!-- Mini Logo -->
+            <!-- Mini Logo ajustado com Variáveis CSS para responder ao Tema -->
             <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
-                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="#e2e8f0" stroke="#004b87" stroke-width="2.5"/>
-                <circle cx="38" cy="52" r="7" fill="#004b87" stroke="#004b87" stroke-width="1.5"/>
-                <circle cx="38" cy="52" r="3" fill="#e2e8f0"/>
-                <circle cx="78" cy="52" r="7" fill="#004b87" stroke="#004b87" stroke-width="1.5"/>
-                <circle cx="78" cy="52" r="3" fill="#e2e8f0"/>
-                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#e2e8f0" stroke="#004b87" stroke-width="2.5"/>
-                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#e2e8f0" stroke="#004b87" stroke-width="2.5"/>
-                <rect x="5" y="25" width="12" height="3" rx="1.5" fill="#004b87"/>
-                <rect x="0" y="33" width="18" height="3" rx="1.5" fill="#004b87"/>
+                <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="var(--logo-fill)" stroke="var(--logo-stroke)" stroke-width="2.5" style="transition: all 0.3s ease;"/>
+                <circle cx="38" cy="52" r="7" fill="var(--logo-stroke)" stroke="var(--logo-stroke)" stroke-width="1.5" style="transition: all 0.3s ease;"/>
+                <circle cx="38" cy="52" r="3" fill="var(--logo-fill)" style="transition: all 0.3s ease;"/>
+                <circle cx="78" cy="52" r="7" fill="var(--logo-stroke)" stroke="var(--logo-stroke)" stroke-width="1.5" style="transition: all 0.3s ease;"/>
+                <circle cx="78" cy="52" r="3" fill="var(--logo-fill)" style="transition: all 0.3s ease;"/>
+                <path d="M72 22 H81 L85 32 H72 V22 Z" fill="var(--logo-fill)" stroke="var(--logo-stroke)" stroke-width="2.5" style="transition: all 0.3s ease;"/>
+                <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="var(--logo-fill)" stroke="var(--logo-stroke)" stroke-width="2.5" style="transition: all 0.3s ease;"/>
+                <rect x="5" y="25" width="12" height="3" rx="1.5" fill="var(--logo-stroke)" style="transition: all 0.3s ease;"/>
+                <rect x="0" y="33" width="18" height="3" rx="1.5" fill="var(--logo-stroke)" style="transition: all 0.3s ease;"/>
             </svg>
             EXPEDIÇÃO EM FLUXO
         </div>
@@ -269,7 +341,6 @@
                 <i class="ph ph-squares-four"></i> Dashboard
             </a>
             <a href="#" class="nav-item">
-                <!-- Ícone Customizado SVG (Caixas no Palete) -->
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 1.5rem; height: 1.5rem; flex-shrink: 0;">
                     <!-- Caixas Linha de Cima -->
                     <rect x="2" y="2" width="6" height="5.5" />
@@ -312,6 +383,19 @@
 
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
+        
+        <!-- Botão de troca de tema (Posicionado no canto superior direito) -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
+            <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+                <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
+            </svg>
+            <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+                <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
+            </svg>
+        </button>
+
         <h1 class="page-title">DASHBOARD</h1>
 
         <div class="dashboard-grid">
@@ -387,5 +471,31 @@
         </div>
 
     </main>
+
+    <script>
+        // =========================================
+        // LÓGICA DO TEMA
+        // =========================================
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Verifica o tema salvo ou o padrão do sistema ao carregar a página
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            body.classList.add(currentTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            body.classList.add('dark-theme');
+        }
+
+        // Alterna o tema ao clicar
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            let theme = 'light-theme';
+            if (body.classList.contains('dark-theme')) {
+                theme = 'dark-theme';
+            }
+            localStorage.setItem('theme', theme); // Salva a escolha para as outras telas
+        });
+    </script>
 </body>
 </html>
