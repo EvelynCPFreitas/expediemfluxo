@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Expedição em Fluxo</title>
-    <!-- Importando fonte e ícones -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -240,55 +239,98 @@
         .rodape-login a:hover {
             text-decoration: underline;
         }
+
+        /* =========================================
+            ESTILOS DO DROPDOWN CUSTOMIZADO
+            ========================================= */
+        .custom-dropdown {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background-color: var(--fundo-card);
+            border: 1px solid var(--cinza-borda);
+            border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-height: 200px; 
+            overflow-y: auto; 
+            z-index: 100;
+            list-style: none;
+            display: none; 
+            padding: 5px 0;
+            text-align: left;
+        }
+
+        .dark-theme .custom-dropdown {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .custom-dropdown li {
+            padding: 12px 20px;
+            color: var(--cinza-texto);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .custom-dropdown li:hover {
+            background-color: var(--azul-escuro);
+            color: #ffffff;
+        }
+
+        .custom-dropdown li.hidden {
+            display: none;
+        }
+        
+        /* Personalização da barra de rolagem */
+        .custom-dropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-dropdown::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        .custom-dropdown::-webkit-scrollbar-thumb {
+            background-color: var(--cinza-borda); 
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Botão de troca de tema -->
     <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
-        <!-- Ícone Tema Claro (Contorno) -->
         <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
             <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
         </svg>
-        <!-- Ícone Tema Escuro (Preenchido) -->
         <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
             <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
         </svg>
     </button>
 
-    <!-- 5 Caminhões animados no fundo -->
     <i class="ph ph-truck caminhao-fundo cam-1"></i>
     <i class="ph ph-truck caminhao-fundo cam-2"></i>
     <i class="ph ph-truck caminhao-fundo cam-3"></i>
     <i class="ph ph-truck caminhao-fundo cam-4"></i>
     <i class="ph ph-truck caminhao-fundo cam-5"></i>
 
-    <!-- Card Principal -->
     <div class="login-card">
         <div class="cabecalho-logo">
             <p>Expedição em Fluxo</p>
             
-            <!-- SVG Customizado do Logotipo -->
             <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
-                <!-- Corpo e Cabine -->
                 <path d="M28 12 C28 10 29.5 9 31 9 H68 C69.5 9 71 10 71 12 V18 H84 C85.5 18 87 19 87.5 20.5 L94.5 35.5 C94.8 36.5 95 37.5 95 38.5 V48 C95 50 93.5 51.5 91.5 51.5 H25 C22.8 51.5 21 49.7 21 47.5 V38 H28 V12 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
                 
-                <!-- Rodas (Azul com miolo branco para vazar) -->
                 <circle cx="38" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
                 <circle cx="38" cy="52" r="3" fill="#ffffff"/>
                 
                 <circle cx="78" cy="52" r="7" fill="var(--azul-escuro)" stroke="var(--azul-escuro)" stroke-width="1.8"/>
                 <circle cx="78" cy="52" r="3" fill="#ffffff"/>
 
-                <!-- Janela da Cabine -->
                 <path d="M72 22 H81 L85 32 H72 V22 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
 
-                <!-- Seta cortando o caminhão -->
                 <path d="M21 24 H50 V16 L65 28.5 L50 41 V33 H21 V24 Z" fill="#ffffff" stroke="var(--azul-escuro)" stroke-width="1.8"/>
 
-                <!-- Tracinhos de velocidade -->
                 <rect x="8" y="25" width="10" height="4" rx="1.5" fill="var(--azul-escuro)"/>
                 <rect x="2" y="33" width="16" height="4" rx="1.5" fill="var(--azul-escuro)"/>
             </svg>
@@ -296,73 +338,74 @@
             <h1>LOGIN</h1>
         </div>
 
-       <form>
+        <form>
             <div class="grupo-input">
                 <i class="ph ph-user icone-esq"></i>
-                <input type="text" placeholder="E-mail ou Usuário" required>
+                <input type="text" placeholder="Usuário" required>
             </div>
 
             <div class="grupo-input">
                 <i class="ph ph-warehouse icone-esq"></i>
-                <input type="text" id="cd" placeholder="CD" required list="lista-cds" autocomplete="off">
+                <input type="text" id="cd" placeholder="CD" required autocomplete="off">
+                <i class="ph ph-caret-down icone-dir" style="pointer-events: none;"></i>
                 
-                <datalist id="lista-cds">
-                    <option value="BRBA01"></option>
-                    <option value="BRBA02"></option>
-                    <option value="BRCE01"></option>
-                    <option value="BRDF01"></option>
-                    <option value="BRDF02"></option>
-                    <option value="BRES01"></option>
-                    <option value="BRMG01"></option>
-                    <option value="BRMG02"></option>
-                    <option value="BRMG03"></option>
-                    <option value="BRMG04"></option>
-                    <option value="BRMS01"></option>
-                    <option value="BRPE01"></option>
-                    <option value="BRPR01"></option>
-                    <option value="BRPR04"></option>
-                    <option value="BRRC01"></option>
-                    <option value="BRRC02"></option>
-                    <option value="BRRC03"></option>
-                    <option value="BRRC04"></option>
-                    <option value="BRRC05"></option>
-                    <option value="BRRJ01"></option>
-                    <option value="BRRJ02"></option>
-                    <option value="BRRS01"></option>
-                    <option value="BRRS03"></option>
-                    <option value="BRRS04"></option>
-                    <option value="BRSC02"></option>
-                    <option value="BRSP02"></option>
-                    <option value="BRSP03"></option>
-                    <option value="BRSP04"></option>
-                    <option value="BRSP05"></option>
-                    <option value="BRSP06"></option>
-                    <option value="BRSP09"></option>
-                    <option value="BRSP10"></option>
-                    <option value="BRSP11"></option>
-                    <option value="BRSP14"></option>
-                    <option value="BRSP15"></option>
-                    <option value="BRSP18"></option>
-                    <option value="BRSP19"></option>
-                    <option value="BRSP21"></option>
-                    <option value="BRSP23"></option>
-                    <option value="BRSP24"></option>
-                    <option value="BRSP25"></option>
-                    <option value="BRSP26"></option>
-                    <option value="BRSP27"></option>
-                    <option value="BRSP28"></option>
-                    <option value="BRSP29"></option>
-                    <option value="BRSP30"></option>
-                    <option value="BRSP31"></option>
-                    <option value="BRSP33"></option>
-                    <option value="BRSP34"></option>
-                    <option value="BRSP35"></option>
-                    <option value="BRSP38"></option>
-                    <option value="BRSP51"></option>
-                    <option value="BRSP52"></option>
-                    <option value="BRSP53"></option>
-                    <option value="BRSP55"></option>
-                </datalist>
+                <ul class="custom-dropdown" id="cd-dropdown">
+                    <li>BRBA01</li>
+                    <li>BRBA02</li>
+                    <li>BRCE01</li>
+                    <li>BRDF01</li>
+                    <li>BRDF02</li>
+                    <li>BRES01</li>
+                    <li>BRMG01</li>
+                    <li>BRMG02</li>
+                    <li>BRMG03</li>
+                    <li>BRMG04</li>
+                    <li>BRMS01</li>
+                    <li>BRPE01</li>
+                    <li>BRPR01</li>
+                    <li>BRPR04</li>
+                    <li>BRRC01</li>
+                    <li>BRRC02</li>
+                    <li>BRRC03</li>
+                    <li>BRRC04</li>
+                    <li>BRRC05</li>
+                    <li>BRRJ01</li>
+                    <li>BRRJ02</li>
+                    <li>BRRS01</li>
+                    <li>BRRS03</li>
+                    <li>BRRS04</li>
+                    <li>BRSC02</li>
+                    <li>BRSP02</li>
+                    <li>BRSP03</li>
+                    <li>BRSP04</li>
+                    <li>BRSP05</li>
+                    <li>BRSP06</li>
+                    <li>BRSP09</li>
+                    <li>BRSP10</li>
+                    <li>BRSP11</li>
+                    <li>BRSP14</li>
+                    <li>BRSP15</li>
+                    <li>BRSP18</li>
+                    <li>BRSP19</li>
+                    <li>BRSP21</li>
+                    <li>BRSP23</li>
+                    <li>BRSP24</li>
+                    <li>BRSP25</li>
+                    <li>BRSP26</li>
+                    <li>BRSP27</li>
+                    <li>BRSP28</li>
+                    <li>BRSP29</li>
+                    <li>BRSP30</li>
+                    <li>BRSP31</li>
+                    <li>BRSP33</li>
+                    <li>BRSP34</li>
+                    <li>BRSP35</li>
+                    <li>BRSP38</li>
+                    <li>BRSP51</li>
+                    <li>BRSP52</li>
+                    <li>BRSP53</li>
+                    <li>BRSP55</li>
+                </ul>
             </div>
 
             <button type="submit" class="btn-entrar">ENTRAR</button>
@@ -371,7 +414,9 @@
     </div>
 
     <script>
-        // Lógica do Tema (Salva a preferência no navegador)
+        // =========================================
+        // LÓGICA DO TEMA
+        // =========================================
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
 
@@ -390,6 +435,48 @@
                 theme = 'dark-theme';
             }
             localStorage.setItem('theme', theme);
+        });
+
+        // =========================================
+        // LÓGICA DO DROPDOWN CUSTOMIZADO DE CD
+        // =========================================
+        const cdInput = document.getElementById('cd');
+        const cdDropdown = document.getElementById('cd-dropdown');
+        const cdItems = cdDropdown.querySelectorAll('li');
+
+        // Mostrar o dropdown ao clicar ou focar no input
+        cdInput.addEventListener('focus', () => {
+            cdDropdown.style.display = 'block';
+        });
+
+        // Filtrar itens enquanto o usuário digita
+        cdInput.addEventListener('input', (e) => {
+            const filtro = e.target.value.toLowerCase();
+            cdDropdown.style.display = 'block'; 
+
+            cdItems.forEach(item => {
+                const texto = item.textContent.toLowerCase();
+                if (texto.includes(filtro)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+
+        // Ao clicar em uma opção da lista, preenche o input e fecha a lista
+        cdItems.forEach(item => {
+            item.addEventListener('click', () => {
+                cdInput.value = item.textContent;
+                cdDropdown.style.display = 'none';
+            });
+        });
+
+        // Fechar o dropdown ao clicar fora dele
+        document.addEventListener('click', (e) => {
+            if (!cdInput.contains(e.target) && !cdDropdown.contains(e.target)) {
+                cdDropdown.style.display = 'none';
+            }
         });
 
     </script>
