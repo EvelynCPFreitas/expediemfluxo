@@ -479,6 +479,26 @@
             }
         });
 
+        // Fechar o dropdown ao clicar fora dele
+        document.addEventListener('click', (e) => {
+            if (!cdInput.contains(e.target) && !cdDropdown.contains(e.target)) {
+                cdDropdown.style.display = 'none';
+            }
+        });
+
+        // =========================================
+        // LÓGICA PARA REDIRECIONAR APÓS O LOGIN
+        // =========================================
+        const loginForm = document.querySelector('form');
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Impede a página de recarregar em branco
+            window.location.href = 'dashboard.html'; 
+        });
+
+    </script>
+</body>
+</html>
     </script>
 
 </body>
