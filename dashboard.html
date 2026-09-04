@@ -187,7 +187,6 @@
             gap: 20px;
             padding: 0;
             color: var(--text-sidebar);
-            font-size: 1.8rem;
             transition: flex-direction 0.3s ease, padding 0.3s ease;
         }
 
@@ -215,8 +214,14 @@
             display: inline;
         }
 
+        /* Ajuste do tamanho dos ícones do rodapé para ficarem iguais */
+        .profile-container i.ph-user {
+            font-size: 1.5rem;
+        }
+
         /* Botão de abrir/fechar a sidebar */
         #sidebar-toggle { 
+            font-size: 1.5rem;
             cursor: pointer; 
             transition: transform 0.3s ease;
         }
@@ -240,7 +245,7 @@
         .profile-dropdown {
             position: absolute;
             bottom: 40px; 
-            left: 50%;
+            left: 0; /* Alinha o dropdown pela esquerda para não cortar na tela */
             background-color: var(--bg-body);
             border: 1px solid var(--border-sidebar);
             border-radius: 8px;
@@ -252,7 +257,7 @@
             min-width: 130px;
             opacity: 0;
             visibility: hidden;
-            transform: translateX(-50%) translateY(10px);
+            transform: translateY(10px);
             transition: all 0.3s ease;
             z-index: 100;
         }
@@ -265,20 +270,20 @@
             content: '';
             position: absolute;
             bottom: -6px;
-            left: 50%;
+            left: 15px; /* Seta alinhada com o ícone de usuário */
             width: 12px;
             height: 12px;
             background-color: var(--bg-body);
             border-bottom: 1px solid var(--border-sidebar);
             border-right: 1px solid var(--border-sidebar);
-            transform: translateX(-50%) rotate(45deg);
+            transform: rotate(45deg);
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .profile-container:hover .profile-dropdown {
             opacity: 1;
             visibility: visible;
-            transform: translateX(-50%) translateY(0);
+            transform: translateY(0);
         }
 
         .dropdown-name {
