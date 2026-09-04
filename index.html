@@ -341,7 +341,7 @@
         <form>
             <div class="grupo-input">
                 <i class="ph ph-user icone-esq"></i>
-                <input type="text" placeholder="Usuário" required>
+                <input type="text" id="userNameInput" placeholder="Usuário" required>
             </div>
 
             <div class="grupo-input">
@@ -479,14 +479,7 @@
             }
         });
 
-        // Fechar o dropdown ao clicar fora dele
-        document.addEventListener('click', (e) => {
-            if (!cdInput.contains(e.target) && !cdDropdown.contains(e.target)) {
-                cdDropdown.style.display = 'none';
-            }
-        });
-
-     // =========================================
+        // =========================================
         // LÓGICA DE LOGIN E REDIRECIONAMENTO
         // =========================================
         const form = document.querySelector('form');
@@ -494,10 +487,12 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault(); // Evita que a página recarregue
             
-            // Pega o valor digitado no campo CD
+            // Pega os valores digitados
+            const userNameValue = document.getElementById('userNameInput').value;
             const cdValue = document.getElementById('cd').value;
             
-            // Salva o CD no navegador (deixando tudo em maiúsculo)
+            // Salva o Nome de Usuário e o CD no navegador
+            localStorage.setItem('userName', userNameValue);
             localStorage.setItem('userCD', cdValue.toUpperCase());
             
             // Redireciona para o dashboard
