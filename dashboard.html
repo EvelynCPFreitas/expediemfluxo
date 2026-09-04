@@ -245,7 +245,7 @@
         .profile-dropdown {
             position: absolute;
             bottom: 40px; 
-            left: 0; /* Alinha o dropdown pela esquerda para não cortar na tela */
+            left: 0; 
             background-color: var(--bg-body);
             border: 1px solid var(--border-sidebar);
             border-radius: 8px;
@@ -270,7 +270,7 @@
             content: '';
             position: absolute;
             bottom: -6px;
-            left: 15px; /* Seta alinhada com o ícone de usuário */
+            left: 15px; 
             width: 12px;
             height: 12px;
             background-color: var(--bg-body);
@@ -343,7 +343,8 @@
         /* GRID DO DASHBOARD */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            /* As duas primeiras colunas (cards pequenos) têm tamanho máximo de 340px, a última pega o resto */
+            grid-template-columns: minmax(250px, 340px) minmax(250px, 340px) 1fr;
             grid-template-rows: auto auto;
             gap: 25px;
         }
@@ -390,7 +391,7 @@
         
         .card-dark {
             background: #334155;
-            grid-column: 1 / 3; 
+            grid-column: 1 / -1; /* Ocupa de ponta a ponta na parte inferior */
             grid-row: 3;
             margin-top: 25px;
             height: 300px;
