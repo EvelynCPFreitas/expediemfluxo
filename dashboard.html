@@ -450,6 +450,7 @@
 </head>
 <body>
 
+    <!-- BARRA LATERAL -->
     <aside class="sidebar">
         <div class="logo-container">
             <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
@@ -505,9 +506,10 @@
                 <div class="profile-container">
                     <i class="ph ph-user"></i>
                     
+                    <!-- Menu flutuante (Tooltip) -->
                     <div class="profile-dropdown">
                         <span class="dropdown-name">Eve</span>
-                        <a href="#" class="dropdown-logout">
+                        <a href="#" id="logout-btn" class="dropdown-logout">
                             <i class="ph ph-sign-out"></i> Sair
                         </a>
                     </div>
@@ -518,6 +520,7 @@
         </div>
     </aside>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
         
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
@@ -634,6 +637,22 @@
                 cdDisplay.textContent = 'Admin';
             }
         });
+
+        // =========================================
+        // LÓGICA DE LOGOUT
+        // =========================================
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                
+                // Limpa o CD salvo (e qualquer outro dado de sessão se houver)
+                localStorage.removeItem('userCD'); 
+                
+                // Redireciona para a tela de login
+                window.location.href = 'index.html'; 
+            });
+        }
     </script>
 </body>
 </html>
