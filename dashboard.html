@@ -165,6 +165,96 @@
         .sidebar-footer i { cursor: pointer; }
 
         /* =========================================
+           DROPDOWN DO PERFIL (HOVER)
+           ========================================= */
+        .profile-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px; 
+            margin-left: -5px;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            bottom: 40px; 
+            left: -10px;
+            background-color: var(--bg-body);
+            border: 1px solid var(--border-sidebar);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 130px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .dark-theme .profile-dropdown {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .profile-dropdown::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 20px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--bg-body);
+            border-bottom: 1px solid var(--border-sidebar);
+            border-right: 1px solid var(--border-sidebar);
+            transform: rotate(45deg);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .profile-container:hover .profile-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-sidebar);
+            padding-bottom: 8px;
+            margin-bottom: 2px;
+            text-align: center;
+            white-space: nowrap;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .dropdown-logout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #ef4444; 
+            text-decoration: none;
+            font-weight: 700;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .dropdown-logout i {
+            font-size: 1.2rem;
+        }
+
+        .dropdown-logout:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        /* =========================================
            CONTEÚDO PRINCIPAL (DASHBOARD)
            ========================================= */
         .main-content {
@@ -360,7 +450,6 @@
 </head>
 <body>
 
-    <!-- BARRA LATERAL -->
     <aside class="sidebar">
         <div class="logo-container">
             <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
@@ -413,14 +502,22 @@
 
         <div class="sidebar-footer">
             <div class="user-info">
-                <i class="ph ph-user"></i>
+                <div class="profile-container">
+                    <i class="ph ph-user"></i>
+                    
+                    <div class="profile-dropdown">
+                        <span class="dropdown-name">Eve</span>
+                        <a href="#" class="dropdown-logout">
+                            <i class="ph ph-sign-out"></i> Sair
+                        </a>
+                    </div>
+                </div>
                 <span id="display-cd">Buscando...</span>
             </div>
             <i class="ph ph-caret-double-left"></i>
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
         
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
