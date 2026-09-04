@@ -508,7 +508,7 @@
                     
                     <!-- Menu flutuante (Tooltip) -->
                     <div class="profile-dropdown">
-                        <span class="dropdown-name">Eve</span>
+                        <span id="display-username" class="dropdown-name">Usuário</span>
                         <a href="#" id="logout-btn" class="dropdown-logout">
                             <i class="ph ph-sign-out"></i> Sair
                         </a>
@@ -628,6 +628,7 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Lógica do CD
             const cdDisplay = document.getElementById('display-cd');
             const savedCD = localStorage.getItem('userCD');
             
@@ -635,6 +636,18 @@
                 cdDisplay.textContent = savedCD;
             } else {
                 cdDisplay.textContent = 'Admin';
+            }
+
+            // Lógica do Nome do Usuário
+            const usernameDisplay = document.getElementById('display-username');
+            // Verifique se a chave usada no index.html para salvar o usuário é 'userName'
+            // Caso seja outra (ex: 'userLogin', 'usuario'), altere a string abaixo:
+            const savedUsername = localStorage.getItem('userName'); 
+
+            if (savedUsername) {
+                usernameDisplay.textContent = savedUsername;
+            } else {
+                usernameDisplay.textContent = 'Usuário';
             }
         });
 
@@ -646,8 +659,9 @@
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault(); 
                 
-                // Limpa o CD salvo (e qualquer outro dado de sessão se houver)
+                // Limpa o CD e o Nome de Usuário salvos
                 localStorage.removeItem('userCD'); 
+                localStorage.removeItem('userName'); 
                 
                 // Redireciona para a tela de login
                 window.location.href = 'index.html'; 
