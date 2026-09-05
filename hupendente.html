@@ -261,6 +261,7 @@
 
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
         
+        /* CABEÇALHO */
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         
@@ -309,7 +310,7 @@
         }
 
         .modal-content {
-            background-color: #d1d9e2; /* Fundo cinza/azul claro */
+            background-color: #d1d9e2; 
             border-radius: 20px;
             padding: 25px 30px;
             width: 320px;
@@ -343,7 +344,7 @@
             font-weight: 900;
             margin-left: auto;
             margin-right: auto;
-            padding-left: 24px; /* Centraliza compensando o icone de fechar */
+            padding-left: 24px; 
         }
 
         .modal-close {
@@ -361,7 +362,6 @@
             margin-bottom: 25px;
         }
 
-        /* Input no formato de pílula idêntico à imagem */
         .input-pill {
             display: flex;
             align-items: center;
@@ -379,6 +379,7 @@
             color: #004b87;
             margin-right: 5px;
             font-size: 0.95rem;
+            white-space: nowrap;
         }
 
         .dark-theme .input-prefix { color: #8ca4c0; }
@@ -421,10 +422,8 @@
 </head>
 <body>
 
-    <!-- Lista de Opções Autocomplete para Origem/Destino -->
     <datalist id="cd-list">
-        <!-- Lista preenchida pelo javascript para os dropdowns customizados -->
-    </datalist>
+        </datalist>
 
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
@@ -626,7 +625,6 @@
 
     </main>
 
-    <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -652,7 +650,7 @@
                 
                 <div class="input-pill">
                     <span class="input-prefix">Origem:</span>
-                    <input type="text">
+                    <input type="text" id="modal-origem">
                 </div>
                 
                 <div class="input-pill">
@@ -733,10 +731,17 @@
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
         const btnFecharModal = document.getElementById('fechar-modal-btn');
+        const modalOrigemInput = document.getElementById('modal-origem');
 
-        // Abrir Modal
+        // Abrir Modal e puxar CD
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
+            
+            // Puxa o CD que foi logado e preenche no campo Origem
+            const savedCD = localStorage.getItem('userCD');
+            if (savedCD) {
+                modalOrigemInput.value = savedCD;
+            }
         });
 
         // Fechar Modal pelo "X"
