@@ -100,7 +100,7 @@
            BARRA LATERAL (SIDEBAR) - RETRÁTIL
            ========================================= */
         .sidebar {
-            width: 80px; /* Estado padrão: Fechado */
+            width: 80px; 
             background-color: var(--bg-sidebar);
             display: flex;
             flex-direction: column;
@@ -111,7 +111,7 @@
         }
 
         .sidebar.expanded {
-            width: 250px; /* Estado Expandido */
+            width: 250px; 
         }
 
         .logo-container {
@@ -135,13 +135,8 @@
 
         .logo-svg { width: 45px; height: auto; flex-shrink: 0; }
 
-        .logo-text {
-            display: none; /* Esconde o texto da logo */
-        }
-
-        .sidebar.expanded .logo-text {
-            display: block;
-        }
+        .logo-text { display: none; }
+        .sidebar.expanded .logo-text { display: block; }
 
         .nav-menu { flex: 1; margin-top: 30px; }
 
@@ -164,13 +159,8 @@
             padding: 15px 25px;
         }
 
-        .nav-text {
-            display: none; /* Esconde os textos do menu */
-        }
-
-        .sidebar.expanded .nav-text {
-            display: block;
-        }
+        .nav-text { display: none; }
+        .sidebar.expanded .nav-text { display: block; }
 
         .nav-item:hover, .nav-item.active {
             background-color: var(--bg-hover);
@@ -178,7 +168,6 @@
 
         .nav-item i { font-size: 1.5rem; flex-shrink: 0; }
 
-        /* Rodapé da Sidebar */
         .sidebar-footer {
             display: flex;
             flex-direction: column;
@@ -205,21 +194,11 @@
             letter-spacing: 0.5px;
         }
 
-        #display-cd {
-            display: none; /* Esconde o CAD */
-            white-space: nowrap;
-        }
+        #display-cd { display: none; white-space: nowrap; }
+        .sidebar.expanded #display-cd { display: inline; }
 
-        .sidebar.expanded #display-cd {
-            display: inline;
-        }
+        .profile-container i.ph-user { font-size: 1.5rem; }
 
-        /* Ajuste do tamanho dos ícones do rodapé para ficarem iguais */
-        .profile-container i.ph-user {
-            font-size: 1.5rem;
-        }
-
-        /* Botão de abrir/fechar a sidebar */
         #sidebar-toggle { 
             font-size: 1.5rem;
             cursor: pointer; 
@@ -227,7 +206,7 @@
         }
 
         .sidebar.expanded #sidebar-toggle {
-            transform: rotate(180deg); /* Vira a setinha quando abre */
+            transform: rotate(180deg);
         }
 
         /* =========================================
@@ -262,9 +241,7 @@
             z-index: 100;
         }
 
-        .dark-theme .profile-dropdown {
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
+        .dark-theme .profile-dropdown { box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
         .profile-dropdown::after {
             content: '';
@@ -312,22 +289,32 @@
             transition: background 0.2s;
         }
 
-        .dropdown-logout i {
-            font-size: 1.2rem;
-        }
-
-        .dropdown-logout:hover {
-            background-color: rgba(239, 68, 68, 0.1);
-        }
+        .dropdown-logout i { font-size: 1.2rem; }
+        .dropdown-logout:hover { background-color: rgba(239, 68, 68, 0.1); }
 
         /* =========================================
-           CONTEÚDO PRINCIPAL (DASHBOARD)
+           CONTEÚDO PRINCIPAL E NAVEGAÇÃO DAS ABAS
            ========================================= */
         .main-content {
             flex: 1;
             padding: 30px 50px;
             overflow-y: auto;
             position: relative;
+        }
+
+        /* Controla a exibição das telas */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .page-title {
@@ -343,13 +330,11 @@
         /* GRID DO DASHBOARD */
         .dashboard-grid {
             display: grid;
-            /* As duas primeiras colunas (cards pequenos) têm tamanho máximo de 340px, a última pega o resto */
             grid-template-columns: minmax(250px, 340px) minmax(250px, 340px) 1fr;
             grid-template-rows: auto auto;
             gap: 25px;
         }
 
-        /* ESTILO BASE DOS CARDS */
         .card {
             border-radius: 12px;
             padding: 15px 20px; 
@@ -360,9 +345,7 @@
             justify-content: center; 
         }
 
-        .dark-theme .card {
-            box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.4);
-        }
+        .dark-theme .card { box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.4); }
 
         .card h2 {
             font-size: 1.2rem; 
@@ -370,12 +353,8 @@
             margin-bottom: 5px; 
         }
 
-        /* ALTURA ESPECÍFICA PARA OS 4 CARTÕES PEQUENOS */
-        .card-red, .card-green, .card-purple, .card-cyan {
-            height: 145px; 
-        }
+        .card-red, .card-green, .card-purple, .card-cyan { height: 145px; }
 
-        /* CORES EM DEGRADÊ DOS CARDS */
         .card-red { background: linear-gradient(to right, #1a0000, #f82525); text-align: center; align-items: center; }
         .card-green { background: linear-gradient(to right, #001a10, #1de68f); text-align: center; align-items: center; }
         .card-purple { background: linear-gradient(to right, #15002b, #a529f7); }
@@ -391,7 +370,7 @@
         
         .card-dark {
             background: #334155;
-            grid-column: 1 / -1; /* Ocupa de ponta a ponta na parte inferior */
+            grid-column: 1 / -1; 
             grid-row: 3;
             margin-top: 25px;
             height: 300px;
@@ -404,7 +383,6 @@
             border: 1px solid var(--border-sidebar);
         }
 
-        /* TIPOGRAFIA DOS NÚMEROS (30 e 100) */
         .card-number {
             font-size: 3.5rem; 
             font-weight: 900;
@@ -413,100 +391,42 @@
             margin-top: 0;
         }
 
+        /* Card genérico para as novas abas que ainda não tem conteúdo */
+        .placeholder-card {
+            background-color: var(--bg-sidebar);
+            color: var(--text-primary);
+            border: 2px dashed var(--border-sidebar);
+            border-radius: 12px;
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
         /* =========================================
            GRÁFICOS FALSOS (CSS PURO)
            ========================================= */
-        
-        .pie-chart-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 5px; 
-        }
+        .pie-chart-container { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; }
         .legend { font-size: 0.8rem; font-weight: 600; font-style: italic; display: flex; flex-direction: column; gap: 6px;}
         .legend-item { display: flex; align-items: center; gap: 8px; justify-content: space-between; width: 110px;}
         .legend-color { width: 10px; height: 10px; border-radius: 2px; }
         
-        .pie {
-            width: 75px; height: 75px; 
-            border-radius: 50%;
-            background: conic-gradient(#8cbaf6 0% 50%, #ea5c85 50% 80%, #3e84f4 80% 100%);
-            margin-right: 10px;
-        }
+        .pie { width: 75px; height: 75px; border-radius: 50%; background: conic-gradient(#8cbaf6 0% 50%, #ea5c85 50% 80%, #3e84f4 80% 100%); margin-right: 10px; }
 
-        .ranking-list {
-            list-style: none;
-            font-weight: 900;
-            font-style: italic;
-            font-size: 1.1rem; 
-            margin-top: 5px; 
-            display: flex;
-            flex-direction: column;
-            gap: 6px; 
-        }
+        .ranking-list { list-style: none; font-weight: 900; font-style: italic; font-size: 1.1rem; margin-top: 5px; display: flex; flex-direction: column; gap: 6px; }
 
-        .bar-chart-orange {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            height: 100%;
-            margin-top: 20px;
-            padding-bottom: 10px;
-        }
-        .bar-white {
-            background-color: white;
-            width: 35px;
-            border-radius: 4px 4px 0 0;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
+        .bar-chart-orange { display: flex; align-items: flex-end; justify-content: space-around; height: 100%; margin-top: 20px; padding-bottom: 10px; }
+        .bar-white { background-color: white; width: 35px; border-radius: 4px 4px 0 0; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
 
-        .dark-chart-header {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            font-size: 0.7rem;
-            color: #ddd;
-            margin-bottom: 15px;
-        }
+        .dark-chart-header { display: flex; justify-content: center; gap: 20px; font-size: 0.7rem; color: #ddd; margin-bottom: 15px; }
         .dark-legend { display: flex; align-items: center; gap: 5px; }
         .dark-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
         
-        .dark-chart-area {
-            display: flex;
-            align-items: flex-end;
-            height: 75%; 
-            border-left: 1px solid #777;
-            border-bottom: 1px solid #777;
-            padding-left: 10px;
-            gap: 30px;
-            position: relative;
-            margin-left: 45px; 
-            margin-bottom: 25px; 
-        }
-
-        .y-axis { 
-            position: absolute; 
-            left: -45px; 
-            top: 0; 
-            bottom: 0; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-            font-size: 0.6rem; 
-            color: #aaa; 
-            width: 40px; 
-            text-align: right; 
-            padding-right: 5px; 
-        }
-        
+        .dark-chart-area { display: flex; align-items: flex-end; height: 75%; border-left: 1px solid #777; border-bottom: 1px solid #777; padding-left: 10px; gap: 30px; position: relative; margin-left: 45px; margin-bottom: 25px; }
+        .y-axis { position: absolute; left: -45px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.6rem; color: #aaa; width: 40px; text-align: right; padding-right: 5px; }
         .month-group { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 2px; position: relative; height: 100%;}
-        
-        .month-label { 
-            position: absolute; 
-            bottom: -22px; 
-            font-size: 0.7rem; 
-            color: #aaa; 
-        }
+        .month-label { position: absolute; bottom: -22px; font-size: 0.7rem; color: #aaa; }
         
         .bar-sm { width: 15px; }
         .c-blue1 { background-color: #8ce1f8; }
@@ -518,7 +438,7 @@
 <body>
 
     <!-- BARRA LATERAL -->
-    <!-- Adicionamos o ID 'sidebar' e as tags span para os textos -->
+    <!-- Adicionamos atributos 'data-target' nos botões do menu -->
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
             <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
@@ -536,11 +456,11 @@
         </div>
 
         <nav class="nav-menu">
-            <a href="#" class="nav-item active">
+            <a href="#" class="nav-item active" data-target="view-dashboard">
                 <i class="ph ph-squares-four"></i> 
                 <span class="nav-text">Dashboard</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item" data-target="view-hu">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.5rem; height: 1.5rem; flex-shrink: 0;">
                     <rect x="2" y="2" width="6" height="5.5" />
                     <rect x="4.25" y="2" width="1.5" height="2.5" />
@@ -562,11 +482,11 @@
                 </svg>
                 <span class="nav-text">HU's Pendentes</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item" data-target="view-desvio">
                 <i class="ph ph-arrows-split"></i> 
                 <span class="nav-text">Desvio de Rota</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item" data-target="view-mu">
                 <i class="ph ph-package"></i> 
                 <span class="nav-text">MU's Pendentes</span>
             </a>
@@ -576,8 +496,6 @@
             <div class="user-info">
                 <div class="profile-container">
                     <i class="ph ph-user"></i>
-                    
-                    <!-- Menu flutuante (Tooltip) -->
                     <div class="profile-dropdown">
                         <span id="display-username" class="dropdown-name">Usuário</span>
                         <a href="#" id="logout-btn" class="dropdown-logout">
@@ -587,8 +505,6 @@
                 </div>
                 <span id="display-cd">Buscando...</span>
             </div>
-            
-            <!-- Setinha dupla para direita, muda por CSS quando abrir -->
             <i class="ph ph-caret-double-right" id="sidebar-toggle"></i>
         </div>
     </aside>
@@ -596,6 +512,7 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
         
+        <!-- O Botão de Tema fica fora das seções para nunca sumir -->
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
             <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
@@ -607,73 +524,97 @@
             </svg>
         </button>
 
-        <h1 class="page-title">DASHBOARD</h1>
+        <!-- SEÇÃO 1: DASHBOARD (Ativa por padrão) -->
+        <section id="view-dashboard" class="view-section active">
+            <h1 class="page-title">DASHBOARD</h1>
 
-        <div class="dashboard-grid">
-            
-            <div class="card card-red">
-                <h2>Total<br>Pendentes</h2>
-                <div class="card-number">30</div>
-            </div>
-
-            <div class="card card-green">
-                <h2>Total<br>Finalizados</h2>
-                <div class="card-number">100</div>
-            </div>
-
-            <div class="card card-orange">
-                <h2>CAD'S Ofensores</h2>
-                <div class="bar-chart-orange">
-                    <div class="bar-white" style="height: 30%;"></div>
-                    <div class="bar-white" style="height: 50%;"></div>
-                    <div class="bar-white" style="height: 80%;"></div>
-                    <div class="bar-white" style="height: 100%;"></div>
+            <div class="dashboard-grid">
+                <div class="card card-red">
+                    <h2>Total<br>Pendentes</h2>
+                    <div class="card-number">30</div>
                 </div>
-            </div>
 
-            <div class="card card-purple">
-                <h2>Categorias</h2>
-                <div class="pie-chart-container">
-                    <div class="legend">
-                        <div class="legend-item">HU Pendente <div class="legend-color" style="background: #8cbaf6;"></div></div>
-                        <div class="legend-item">Desvio de Rota <div class="legend-color" style="background: #ea5c85;"></div></div>
-                        <div class="legend-item">MU Pendente <div class="legend-color" style="background: #3e84f4;"></div></div>
+                <div class="card card-green">
+                    <h2>Total<br>Finalizados</h2>
+                    <div class="card-number">100</div>
+                </div>
+
+                <div class="card card-orange">
+                    <h2>CAD'S Ofensores</h2>
+                    <div class="bar-chart-orange">
+                        <div class="bar-white" style="height: 30%;"></div>
+                        <div class="bar-white" style="height: 50%;"></div>
+                        <div class="bar-white" style="height: 80%;"></div>
+                        <div class="bar-white" style="height: 100%;"></div>
                     </div>
-                    <div class="pie"></div>
+                </div>
+
+                <div class="card card-purple">
+                    <h2>Categorias</h2>
+                    <div class="pie-chart-container">
+                        <div class="legend">
+                            <div class="legend-item">HU Pendente <div class="legend-color" style="background: #8cbaf6;"></div></div>
+                            <div class="legend-item">Desvio de Rota <div class="legend-color" style="background: #ea5c85;"></div></div>
+                            <div class="legend-item">MU Pendente <div class="legend-color" style="background: #3e84f4;"></div></div>
+                        </div>
+                        <div class="pie"></div>
+                    </div>
+                </div>
+
+                <div class="card card-cyan">
+                    <h2>Ranking Resolução</h2>
+                    <ul class="ranking-list">
+                        <li>1.</li>
+                        <li>2.</li>
+                        <li>3.</li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="card card-cyan">
-                <h2>Ranking Resolução</h2>
-                <ul class="ranking-list">
-                    <li>1.</li>
-                    <li>2.</li>
-                    <li>3.</li>
-                </ul>
-            </div>
-
-        </div>
-
-        <div class="card card-dark">
-            <div class="dark-chart-header">
-                <div class="dark-legend"><div class="dark-legend-dot c-blue1"></div> Hu Pendentes</div>
-                <div class="dark-legend"><div class="dark-legend-dot c-pink"></div> Desvio de rota</div>
-                <div class="dark-legend"><div class="dark-legend-dot c-blue2"></div> MU Pendentes</div>
-            </div>
-            
-            <div class="dark-chart-area">
-                <div class="y-axis">
-                    <span>7.000</span><span>6.000</span><span>5.000</span><span>4.000</span><span>3.000</span><span>2.000</span><span>1.000</span><span>0</span>
+            <div class="card card-dark">
+                <div class="dark-chart-header">
+                    <div class="dark-legend"><div class="dark-legend-dot c-blue1"></div> Hu Pendentes</div>
+                    <div class="dark-legend"><div class="dark-legend-dot c-pink"></div> Desvio de rota</div>
+                    <div class="dark-legend"><div class="dark-legend-dot c-blue2"></div> MU Pendentes</div>
                 </div>
                 
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 70%;"></div><div class="bar-sm c-pink" style="height: 45%;"></div><div class="bar-sm c-blue2" style="height: 45%;"></div><span class="month-label">Jan</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 55%;"></div><div class="bar-sm c-pink" style="height: 25%;"></div><div class="bar-sm c-blue2" style="height: 38%;"></div><span class="month-label">Fev</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 40%;"></div><div class="bar-sm c-pink" style="height: 20%;"></div><div class="bar-sm c-blue2" style="height: 20%;"></div><span class="month-label">Mar</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 30%;"></div><div class="bar-sm c-pink" style="height: 70%;"></div><div class="bar-sm c-blue2" style="height: 35%;"></div><span class="month-label">Abr</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 60%;"></div><div class="bar-sm c-pink" style="height: 15%;"></div><div class="bar-sm c-blue2" style="height: 25%;"></div><span class="month-label">Mai</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 15%;"></div><div class="bar-sm c-pink" style="height: 35%;"></div><div class="bar-sm c-blue2" style="height: 95%;"></div><span class="month-label">Jun</span></div>
+                <div class="dark-chart-area">
+                    <div class="y-axis">
+                        <span>7.000</span><span>6.000</span><span>5.000</span><span>4.000</span><span>3.000</span><span>2.000</span><span>1.000</span><span>0</span>
+                    </div>
+                    <div class="month-group"><div class="bar-sm c-blue1" style="height: 70%;"></div><div class="bar-sm c-pink" style="height: 45%;"></div><div class="bar-sm c-blue2" style="height: 45%;"></div><span class="month-label">Jan</span></div>
+                    <div class="month-group"><div class="bar-sm c-blue1" style="height: 55%;"></div><div class="bar-sm c-pink" style="height: 25%;"></div><div class="bar-sm c-blue2" style="height: 38%;"></div><span class="month-label">Fev</span></div>
+                    <div class="month-group"><div class="bar-sm c-blue1" style="height: 40%;"></div><div class="bar-sm c-pink" style="height: 20%;"></div><div class="bar-sm c-blue2" style="height: 20%;"></div><span class="month-label">Mar</span></div>
+                    <div class="month-group"><div class="bar-sm c-blue1" style="height: 30%;"></div><div class="bar-sm c-pink" style="height: 70%;"></div><div class="bar-sm c-blue2" style="height: 35%;"></div><span class="month-label">Abr</span></div>
+                    <div class="month-group"><div class="bar-sm c-blue1" style="height: 60%;"></div><div class="bar-sm c-pink" style="height: 15%;"></div><div class="bar-sm c-blue2" style="height: 25%;"></div><span class="month-label">Mai</span></div>
+                    <div class="month-group"><div class="bar-sm c-blue1" style="height: 15%;"></div><div class="bar-sm c-pink" style="height: 35%;"></div><div class="bar-sm c-blue2" style="height: 95%;"></div><span class="month-label">Jun</span></div>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- SEÇÃO 2: HU's Pendentes -->
+        <section id="view-hu" class="view-section">
+            <h1 class="page-title">HU'S PENDENTES</h1>
+            <div class="placeholder-card">
+                O conteúdo da página de HU's Pendentes será carregado aqui.
+            </div>
+        </section>
+
+        <!-- SEÇÃO 3: Desvio de Rota -->
+        <section id="view-desvio" class="view-section">
+            <h1 class="page-title">DESVIO DE ROTA</h1>
+            <div class="placeholder-card">
+                O conteúdo da página de Desvio de Rota será carregado aqui.
+            </div>
+        </section>
+
+        <!-- SEÇÃO 4: MU's Pendentes -->
+        <section id="view-mu" class="view-section">
+            <h1 class="page-title">MU'S PENDENTES</h1>
+            <div class="placeholder-card">
+                O conteúdo da página de MU's Pendentes será carregado aqui.
+            </div>
+        </section>
 
     </main>
 
@@ -701,7 +642,6 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Lógica do CD
             const cdDisplay = document.getElementById('display-cd');
             const savedCD = localStorage.getItem('userCD');
             
@@ -711,7 +651,6 @@
                 cdDisplay.textContent = 'Admin';
             }
 
-            // Lógica do Nome do Usuário
             const usernameDisplay = document.getElementById('display-username');
             const savedUsername = localStorage.getItem('userName'); 
 
@@ -735,18 +674,43 @@
         }
 
         // =========================================
+        // LÓGICA DE NAVEGAÇÃO ENTRE ABAS
+        // =========================================
+        const navItems = document.querySelectorAll('.nav-item');
+        const viewSections = document.querySelectorAll('.view-section');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                
+                // 1. Tira a marcação 'active' de todos os itens do menu
+                navItems.forEach(nav => nav.classList.remove('active'));
+                
+                // 2. Adiciona a marcação 'active' no item clicado
+                item.classList.add('active');
+
+                // 3. Esconde todas as seções principais
+                viewSections.forEach(section => section.classList.remove('active'));
+
+                // 4. Mostra apenas a seção correspondente ao 'data-target' clicado
+                const targetId = item.getAttribute('data-target');
+                const targetSection = document.getElementById(targetId);
+                
+                if(targetSection) {
+                    targetSection.classList.add('active');
+                }
+            });
+        });
+
+        // =========================================
         // LÓGICA DE LOGOUT
         // =========================================
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault(); 
-                
-                // Limpa o CD e o Nome de Usuário salvos
                 localStorage.removeItem('userCD'); 
                 localStorage.removeItem('userName'); 
-                
-                // Redireciona para a tela de login
                 window.location.href = 'index.html'; 
             });
         }
