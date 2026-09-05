@@ -451,7 +451,7 @@
             background-color: #d1d9e2; 
             border-radius: 20px;
             padding: 25px 30px;
-            width: 340px;
+            width: 360px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             border: 1px solid #aebac9;
             transform: translateY(-20px);
@@ -885,7 +885,6 @@
             </div>
             
             <div class="modal-body">
-                <input type="hidden" id="edit-row-index">
                 <div class="input-pill">
                     <span class="input-prefix">HU:</span>
                     <input type="text" id="edit-hu">
@@ -927,9 +926,16 @@
                     </select>
                 </div>
 
-                <div class="input-pill" id="container-edit-agendamento">
-                    <span class="input-prefix">Agendamento:</span>
-                    <input type="text" id="edit-agendamento" placeholder="DD/MM/AAAA HH:MM">
+                <!-- CAMPO DE AGENDAMENTO EXATAMENTE IGUAL À IMAGEM (DATA E HORA SEPARADOS) -->
+                <div id="container-edit-agendamento" style="display: none; flex-direction: column; gap: 10px;">
+                    <div class="input-pill">
+                        <input type="date" id="edit-data-agendamento" style="width: 100%;">
+                        <i class="ph ph-calendar" style="font-size: 1.2rem; color: #004b87;"></i>
+                    </div>
+                    <div class="input-pill">
+                        <input type="time" id="edit-hora-agendamento" style="width: 100%;">
+                        <i class="ph ph-clock" style="font-size: 1.2rem; color: #004b87;"></i>
+                    </div>
                 </div>
             </div>
 
@@ -1037,7 +1043,18 @@
         const modalEditar = document.getElementById('modal-editar');
         const btnFecharEditar = document.getElementById('fechar-editar-btn');
         const btnAtualizarRegistro = document.getElementById('btn-atualizar-registro');
+        const editStatusSelect = document.getElementById('edit-status');
+        const containerEditAgendamento = document.getElementById('container-edit-agendamento');
         let linhaEmEdicao = null;
+
+        // Mostra ou esconde campos de agendamento conforme o status selecionado na edição
+        editStatusSelect.addEventListener('change', () => {
+            if (editStatusSelect.value === 'Agendado') {
+                containerEditAgendamento.style.display = 'flex';
+            } else {
+                containerEditAgendamento.style.display = 'none';
+            }
+        });
 
         document.addEventListener('click', (e) => {
             // Ação do Olho (Detalhes)
@@ -1103,8 +1120,24 @@
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
                 
                 const statusAtual = linhaEmEdicao.getAttribute('data-status');
-                document.getElementById('edit-status').value = statusAtual;
-                document.getElementById('edit-agendamento').value = linhaEmEdicao.getAttribute('data-agendamento');
+                editStatusSelect.value = statusAtual;
+
+                if (statusAtual === 'Agendado') {
+                    containerEditAgendamento.style.display = 'flex';
+                    const agendamentoStr = linhaEmEdicao.getAttribute('data-agendamento'); // ex: "01/09/2026 00:00"
+                    if (agendamentoStr && agendamentoStr.includes(' ')) {
+                        const partes = agendamentoStr.split(' ');
+                        const dataPartes = partes[0].split('/');
+                        if (dataPartes.length === 3) {
+                            document.getElementById('edit-data-agendamento').value = `${dataPartes[2]}-${dataPartes[1]}-${dataPartes[0]}`;
+                        }
+                        document.getElementById('edit-hora-agendamento').value = partes[1];
+                    }
+                } else {
+                    containerEditAgendamento.style.display = 'none';
+                    document.getElementById('edit-data-agendamento').value = '';
+                    document.getElementById('edit-hora-agendamento').value = '';
+                }
 
                 modalEditar.classList.add('active');
             }
@@ -1126,9 +1159,18 @@
             const novoTsDestino = document.getElementById('edit-ts-destino').value.trim();
             const novaOrigem = document.getElementById('edit-origem').value.trim();
             const novoDestino = document.getElementById('edit-destino').value.trim();
-            const novoStatus = document.getElementById('edit-status').value;
-            const novoAgendamento = document.getElementById('edit-agendamento').value.trim();
+            const novoStatus = editStatusSelect.value;
             
+            let novoAgendamentoFormatado = '';
+            if (novoStatus === 'Agendado') {
+                const dataVal = document.getElementById('edit-data-agendamento').value;
+                const horaVal = document.getElementById('edit-hora-agendamento').value;
+                if (dataVal) {
+                    const dParts = dataVal.split('-');
+                    novoAgendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaVal || '00:00'}`;
+                }
+            }
+
             const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
 
             if (!novoHu || !novoIs || !novaOrigem || !novoDestino) {
@@ -1136,7 +1178,6 @@
                 return;
             }
 
-            // Atualiza atributos da linha
             linhaEmEdicao.setAttribute('data-hu', novoHu);
             linhaEmEdicao.setAttribute('data-is', novoIs);
             linhaEmEdicao.setAttribute('data-ts-origem', novoTsOrigem);
@@ -1146,9 +1187,8 @@
             
             const statusAntigo = linhaEmEdicao.getAttribute('data-status');
             linhaEmEdicao.setAttribute('data-status', novoStatus);
-            linhaEmEdicao.setAttribute('data-agendamento', novoStatus === 'Agendado' ? novoAgendamento : '');
+            linhaEmEdicao.setAttribute('data-agendamento', novoAgendamentoFormatado);
 
-            // Atualiza histórico se o status mudou
             const agora = new Date();
             const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
             
@@ -1158,7 +1198,6 @@
                 linhaEmEdicao.setAttribute('data-historico', historicoAtual);
             }
 
-            // Atualiza visualmente a linha na tabela
             let badgeClass = 'status-pendente';
             if (novoStatus === 'Agendado') badgeClass = 'status-agendado';
             if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
@@ -1168,7 +1207,7 @@
             linhaEmEdicao.cells[3].textContent = novaOrigem;
             linhaEmEdicao.cells[4].textContent = novoDestino;
             linhaEmEdicao.cells[5].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
-            linhaEmEdicao.cells[6].textContent = novoStatus === 'Agendado' ? novoAgendamento : '';
+            linhaEmEdicao.cells[6].textContent = novoAgendamentoFormatado;
 
             modalEditar.classList.remove('active');
             linhaEmEdicao = null;
