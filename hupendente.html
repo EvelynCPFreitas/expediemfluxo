@@ -999,7 +999,6 @@
         btnFecharModal.addEventListener('click', () => modalOverlay.classList.remove('active'));
         modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
 
-        // Modais secundários de Avanço
         const modalEscolha = document.getElementById('modal-escolha-avancar');
         const modalAgendamento = document.getElementById('modal-input-agendamento');
         const modalTs = document.getElementById('modal-input-ts');
@@ -1009,7 +1008,6 @@
         document.getElementById('fechar-modal-agendamento-btn').addEventListener('click', () => modalAgendamento.classList.remove('active'));
         document.getElementById('fechar-modal-ts-btn').addEventListener('click', () => modalTs.classList.remove('active'));
 
-        // Clique no botão de Avançar (Seta em círculo)
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-avancar')) {
                 linhaEmProcesso = e.target.closest('tr');
@@ -1018,15 +1016,12 @@
                 if (statusAtual === 'Pendente') {
                     modalEscolha.classList.add('active');
                 } else if (statusAtual === 'Agendado') {
-                    // Vai para Expedido (Exige TS de Origem)
                     modalTs.classList.add('active');
                 } else if (statusAtual === 'Expedido') {
-                    // Vai para Finalizado direto
                     atualizarStatusLinha(linhaEmProcesso, 'Finalizado');
                 }
             }
 
-            // Ações do modal de escolha (Pendente -> Agendar ou Expedir)
             if (e.target.id === 'btn-escolha-agendar') {
                 modalEscolha.classList.remove('active');
                 modalAgendamento.classList.add('active');
@@ -1037,7 +1032,6 @@
             }
         });
 
-        // Confirmar Agendamento
         document.getElementById('btn-confirmar-agendamento').addEventListener('click', () => {
             const dataVal = document.getElementById('input-data-agend').value;
             const horaVal = document.getElementById('input-hora-agend').value;
@@ -1055,7 +1049,6 @@
             document.getElementById('input-hora-agend').value = '';
         });
 
-        // Confirmar TS (Expedido)
         document.getElementById('btn-confirmar-ts').addEventListener('click', () => {
             const tsVal = document.getElementById('input-ts-origem-val').value.trim();
             if (!tsVal) {
@@ -1093,7 +1086,6 @@
             }
         }
 
-        // Modal Detalhes & Edição
         const modalDetalhes = document.getElementById('modal-detalhes');
         const btnFecharDetalhes = document.getElementById('fechar-detalhes-btn');
         const detalhesConteudo = document.getElementById('detalhes-conteudo');
@@ -1190,8 +1182,8 @@
             novaLinha.setAttribute('data-destino', destino);
             novaLinha.setAttribute('data-status', 'Pendente');
             novaLinha.setAttribute('data-agendamento', '');
-            novaLinha.setAttribute('data-ts-origem', ts);
-            novaLinha.setAttribute('data-ts-destino', '');
+            novaLinha.setAttribute('data-ts-origem', '');
+            novaLinha.setAttribute('data-ts-destino', ts); // TS do modal vai automaticamente para TS Destino
             novaLinha.setAttribute('data-data-reg', dataFormatada);
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
