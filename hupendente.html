@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -196,7 +195,60 @@
         .search-input-wrapper i { position: absolute; left: 8px; color: #004b87; font-size: 0.9rem; }
         .dark-theme .search-input-wrapper i { color: #8ca4c0; }
         .search-input { width: 160px; padding-left: 25px !important; }
-        .small-input { width: 80px; } /* Levemente aumentado para acomodar os códigos */
+        .small-input { width: 85px; }
+
+        /* ESTILOS DO DROPDOWN CUSTOMIZADO */
+        .custom-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+        .custom-dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 140px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 5px;
+            padding: 5px 0;
+            list-style: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 1000;
+        }
+        .custom-dropdown-list.show { display: block; }
+        
+        /* Scrollbar customizada */
+        .custom-dropdown-list::-webkit-scrollbar { width: 6px; }
+        .custom-dropdown-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        
+        .custom-dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: #555;
+            font-weight: 600;
+            transition: background-color 0.1s, color 0.1s;
+        }
+        .custom-dropdown-item:hover {
+            background-color: #004b87; /* Azul idêntico à tela inicial */
+            color: #ffffff;
+        }
+
+        /* Dark mode do Dropdown Customizado */
+        .dark-theme .custom-dropdown-list {
+            background: #0f172a;
+            border-color: #334155;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+        }
+        .dark-theme .custom-dropdown-list::-webkit-scrollbar-thumb { background: #334155; }
+        .dark-theme .custom-dropdown-item { color: #cbd5e1; }
+        .dark-theme .custom-dropdown-item:hover {
+            background-color: #1e293b;
+            color: #fcd34d;
+        }
 
         .hu-filter-finalizar { margin-left: auto; cursor: pointer; transition: opacity 0.2s; }
         .hu-filter-finalizar:hover { opacity: 0.7; }
@@ -207,14 +259,10 @@
             transition: background-color 0.3s, border-color 0.3s;
             border: 1px solid transparent; 
         }
-        .dark-theme .hu-table-container { 
-            background-color: #0f172a; 
-            border: 1px solid #1e293b; 
-        }
+        .dark-theme .hu-table-container { background-color: #0f172a; border: 1px solid #1e293b; }
 
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
         
-        /* CABEÇALHO */
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         
@@ -242,64 +290,6 @@
     </style>
 </head>
 <body>
-
-    <datalist id="cd-list">
-        <option value="BRBA01"></option>
-        <option value="BRBA02"></option>
-        <option value="BRCE01"></option>
-        <option value="BRDF01"></option>
-        <option value="BRDF02"></option>
-        <option value="BRES01"></option>
-        <option value="BRMG01"></option>
-        <option value="BRMG02"></option>
-        <option value="BRMG03"></option>
-        <option value="BRMG04"></option>
-        <option value="BRMS01"></option>
-        <option value="BRPE01"></option>
-        <option value="BRPR01"></option>
-        <option value="BRPR04"></option>
-        <option value="BRRC01"></option>
-        <option value="BRRC02"></option>
-        <option value="BRRC03"></option>
-        <option value="BRRC04"></option>
-        <option value="BRRC05"></option>
-        <option value="BRRJ01"></option>
-        <option value="BRRJ02"></option>
-        <option value="BRRS01"></option>
-        <option value="BRRS03"></option>
-        <option value="BRRS04"></option>
-        <option value="BRSC02"></option>
-        <option value="BRSP02"></option>
-        <option value="BRSP03"></option>
-        <option value="BRSP04"></option>
-        <option value="BRSP05"></option>
-        <option value="BRSP06"></option>
-        <option value="BRSP09"></option>
-        <option value="BRSP10"></option>
-        <option value="BRSP11"></option>
-        <option value="BRSP14"></option>
-        <option value="BRSP15"></option>
-        <option value="BRSP18"></option>
-        <option value="BRSP19"></option>
-        <option value="BRSP21"></option>
-        <option value="BRSP23"></option>
-        <option value="BRSP24"></option>
-        <option value="BRSP25"></option>
-        <option value="BRSP26"></option>
-        <option value="BRSP27"></option>
-        <option value="BRSP28"></option>
-        <option value="BRSP29"></option>
-        <option value="BRSP30"></option>
-        <option value="BRSP31"></option>
-        <option value="BRSP33"></option>
-        <option value="BRSP34"></option>
-        <option value="BRSP35"></option>
-        <option value="BRSP38"></option>
-        <option value="BRSP51"></option>
-        <option value="BRSP52"></option>
-        <option value="BRSP53"></option>
-        <option value="BRSP55"></option>
-    </datalist>
 
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
@@ -414,8 +404,23 @@
                 <i class="ph ph-magnifying-glass"></i>
                 <input type="text" placeholder="Buscar" class="search-input">
             </div>
-            <div style="display: flex; gap: 5px; align-items: center;">Origem <input type="text" class="small-input" list="cd-list"></div>
-            <div style="display: flex; gap: 5px; align-items: center;">Destino <input type="text" class="small-input" list="cd-list"></div>
+            
+            <div style="display: flex; gap: 5px; align-items: center;">
+                Origem 
+                <div class="custom-dropdown-container">
+                    <input type="text" class="small-input custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list"></ul>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 5px; align-items: center;">
+                Destino 
+                <div class="custom-dropdown-container">
+                    <input type="text" class="small-input custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list"></ul>
+                </div>
+            </div>
+
             <div style="display: flex; gap: 5px; align-items: center;">Desvio <input type="text" class="small-input"></div>
             <div style="display: flex; gap: 5px; align-items: center;">Status <input type="text" class="small-input"></div>
             <div>Data</div>
@@ -495,7 +500,6 @@
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
 
-        // Mantém o tema sincronizado ao navegar entre as páginas
         const currentTheme = localStorage.getItem('theme');
         if (currentTheme) {
             body.classList.add(currentTheme);
@@ -512,7 +516,6 @@
             localStorage.setItem('theme', theme); 
         });
 
-        // Carrega as informações do usuário logado
         document.addEventListener('DOMContentLoaded', () => {
             const cdDisplay = document.getElementById('display-cd');
             const savedCD = localStorage.getItem('userCD');
@@ -549,6 +552,78 @@
                 window.location.href = 'index.html'; 
             });
         }
+
+        // =========================================
+        // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs)
+        // =========================================
+        const listaCDs = [
+            "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", 
+            "BRMG01", "BRMG02", "BRMG03", "BRMG04", "BRMS01", "BRPE01", 
+            "BRPR01", "BRPR04", "BRRC01", "BRRC02", "BRRC03", "BRRC04", 
+            "BRRC05", "BRRJ01", "BRRJ02", "BRRS01", "BRRS03", "BRRS04", 
+            "BRSC02", "BRSP02", "BRSP03", "BRSP04", "BRSP05", "BRSP06", 
+            "BRSP09", "BRSP10", "BRSP11", "BRSP14", "BRSP15", "BRSP18", 
+            "BRSP19", "BRSP21", "BRSP23", "BRSP24", "BRSP25", "BRSP26", 
+            "BRSP27", "BRSP28", "BRSP29", "BRSP30", "BRSP31", "BRSP33", 
+            "BRSP34", "BRSP35", "BRSP38", "BRSP51", "BRSP52", "BRSP53", 
+            "BRSP55"
+        ];
+
+        const dropdownInputs = document.querySelectorAll('.custom-dropdown-input');
+
+        dropdownInputs.forEach(input => {
+            const listElement = input.nextElementSibling; // A <ul> que vem logo após o input
+
+            // Função para renderizar e filtrar a lista
+            const renderList = (filterText = '') => {
+                listElement.innerHTML = '';
+                const txt = filterText.toLowerCase();
+                const filtrados = listaCDs.filter(cd => cd.toLowerCase().includes(txt));
+
+                if (filtrados.length === 0) {
+                    const li = document.createElement('li');
+                    li.textContent = 'Não encontrado';
+                    li.className = 'custom-dropdown-item';
+                    li.style.pointerEvents = 'none'; // Evita clique
+                    li.style.color = '#999';
+                    listElement.appendChild(li);
+                } else {
+                    filtrados.forEach(cd => {
+                        const li = document.createElement('li');
+                        li.textContent = cd;
+                        li.className = 'custom-dropdown-item';
+                        
+                        // Ao clicar no item, preenche o input e esconde a lista
+                        li.addEventListener('mousedown', () => {
+                            input.value = cd;
+                            listElement.classList.remove('show');
+                        });
+                        listElement.appendChild(li);
+                    });
+                }
+            };
+
+            // Quando clica/foca no input, mostra tudo
+            input.addEventListener('focus', () => {
+                renderList(input.value);
+                listElement.classList.add('show');
+            });
+
+            // Conforme digita, vai filtrando
+            input.addEventListener('input', (e) => {
+                renderList(e.target.value);
+                listElement.classList.add('show');
+            });
+
+            // Quando tira o foco do input, esconde a lista
+            input.addEventListener('blur', () => {
+                // Pequeno atraso para dar tempo de registrar o 'mousedown' no item da lista
+                setTimeout(() => {
+                    listElement.classList.remove('show');
+                }, 150);
+            });
+        });
+
     </script>
 </body>
 </html>
