@@ -22,6 +22,7 @@
             --logo-stroke: #004b87;
             --btn-theme-bg: rgba(0,0,0,0.05);
             --btn-theme-color: #004b87;
+            --table-border: #cbd5e1;
         }
 
         .dark-theme {
@@ -35,6 +36,7 @@
             --logo-stroke: #8ca4c0;
             --btn-theme-bg: rgba(255,255,255,0.1);
             --btn-theme-color: #fcd34d;
+            --table-border: #1e293b;
         }
 
         * {
@@ -387,7 +389,7 @@
         .cal-btn-apply:hover { background: rgba(0,75,135,0.15); }
 
 
-        /* CONTAINER DA TABELA */
+        /* CONTAINER DA TABELA E LINHAS DIVISÓRIAS */
         .hu-table-container {
             background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
             transition: background-color 0.3s, border-color 0.3s;
@@ -406,7 +408,16 @@
         .hu-table th:first-child { border-top-left-radius: 8px; }
         .hu-table th:last-child { border-top-right-radius: 8px; }
         
-        .hu-table th, .hu-table td { padding: 12px 10px; border-bottom: 1px solid transparent; transition: border-color 0.3s; }
+        .hu-table th, .hu-table td { padding: 12px 10px; }
+        
+        /* ADICIONANDO LINHA DIVISÓRIA ENTRE AS LINHAS DA TABELA */
+        .hu-table tbody tr {
+            border-bottom: 1px solid var(--table-border);
+        }
+        .hu-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
         .hu-table td { color: #444; }
         .dark-theme .hu-table td { color: #cbd5e1; }
         .hu-table th { font-weight: 700; }
@@ -964,7 +975,7 @@
             if (savedUsername) { usernameDisplay.textContent = savedUsername; } 
             else { usernameDisplay.textContent = 'Usuário'; }
 
-            atualizarKPIs(); // Atualiza os contadores ao carregar a página
+            atualizarKPIs();
         });
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
@@ -1110,7 +1121,7 @@
                 tr.cells[6].textContent = '';
             }
 
-            atualizarKPIs(); // Recalcula os contadores após a alteração
+            atualizarKPIs();
         }
 
         const modalDetalhes = document.getElementById('modal-detalhes');
@@ -1238,7 +1249,7 @@
             document.getElementById('input-ts').value = '';
             document.getElementById('modal-origem').value = '';
 
-            atualizarKPIs(); // Recalcula os contadores ao adicionar novo registro
+            atualizarKPIs();
         });
 
         // =========================================
