@@ -426,7 +426,7 @@
         .table-actions i:hover { transform: scale(1.1); }
 
         /* =========================================
-           MODAIS (NOVO REGISTRO & DETALHES)
+           MODAIS (NOVO, DETALHES & EDIÇÃO)
            ========================================= */
         .modal-overlay {
             position: fixed;
@@ -524,7 +524,7 @@
 
         .dark-theme .input-prefix { color: #8ca4c0; }
 
-        .input-pill input {
+        .input-pill input, .input-pill select {
             border: none;
             background: transparent;
             outline: none;
@@ -533,9 +533,11 @@
             font-weight: 600;
             font-size: 0.95rem;
             width: 100%;
+            font-family: 'Inter', sans-serif;
         }
 
-        .dark-theme .input-pill input { color: #f1f5f9; }
+        .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
+        .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
 
         .modal-footer {
             display: flex;
@@ -773,6 +775,7 @@
                         <td></td>
                         <td>
                             <div class="table-actions">
+                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
                                 <i class="ph-fill ph-check-circle" style="color: #555;"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
@@ -788,6 +791,7 @@
                         <td>01/09/2026 00:00</td>
                         <td>
                             <div class="table-actions">
+                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
                                 <i class="ph-fill ph-check-circle" style="color: #555;"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
@@ -803,6 +807,7 @@
                         <td></td>
                         <td>
                             <div class="table-actions">
+                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
                                 <i class="ph-fill ph-check-circle" style="color: #555;"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
@@ -871,6 +876,69 @@
         </div>
     </div>
 
+    <!-- MODAL DE EDIÇÃO DO REGISTRO -->
+    <div class="modal-overlay" id="modal-editar">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-editar-btn"></i>
+            </div>
+            
+            <div class="modal-body">
+                <input type="hidden" id="edit-row-index">
+                <div class="input-pill">
+                    <span class="input-prefix">HU:</span>
+                    <input type="text" id="edit-hu">
+                </div>
+                
+                <div class="input-pill">
+                    <span class="input-prefix">IS:</span>
+                    <input type="text" id="edit-is">
+                </div>
+                
+                <div class="input-pill">
+                    <span class="input-prefix">TS Origem:</span>
+                    <input type="text" id="edit-ts-origem">
+                </div>
+
+                <div class="input-pill">
+                    <span class="input-prefix">TS Destino:</span>
+                    <input type="text" id="edit-ts-destino">
+                </div>
+                
+                <div class="input-pill">
+                    <span class="input-prefix">Origem:</span>
+                    <input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
+                </div>
+                
+                <div class="input-pill">
+                    <span class="input-prefix">Destino:</span>
+                    <input type="text" id="edit-destino" class="custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
+                </div>
+
+                <div class="input-pill">
+                    <span class="input-prefix">Status:</span>
+                    <select id="edit-status">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Agendado">Agendado</option>
+                        <option value="Finalizado">Finalizado</option>
+                    </select>
+                </div>
+
+                <div class="input-pill" id="container-edit-agendamento">
+                    <span class="input-prefix">Agendamento:</span>
+                    <input type="text" id="edit-agendamento" placeholder="DD/MM/AAAA HH:MM">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-salvar" id="btn-atualizar-registro">Atualizar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // =========================================
         // LÓGICA DO TEMA E LOCALSTORAGE
@@ -932,7 +1000,7 @@
         }
 
         // =========================================
-        // LÓGICA DOS MODAIS (NOVO & DETALHES)
+        // LÓGICA DOS MODAIS (NOVO, DETALHES & EDIÇÃO)
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
@@ -965,7 +1033,14 @@
         const btnFecharDetalhes = document.getElementById('fechar-detalhes-btn');
         const detalhesConteudo = document.getElementById('detalhes-conteudo');
 
+        // Modal Edição (Ícone do lápis)
+        const modalEditar = document.getElementById('modal-editar');
+        const btnFecharEditar = document.getElementById('fechar-editar-btn');
+        const btnAtualizarRegistro = document.getElementById('btn-atualizar-registro');
+        let linhaEmEdicao = null;
+
         document.addEventListener('click', (e) => {
+            // Ação do Olho (Detalhes)
             if (e.target.classList.contains('btn-detalhes')) {
                 const tr = e.target.closest('tr');
                 const hu = tr.getAttribute('data-hu');
@@ -992,7 +1067,6 @@
 
                 htmlDetalhes += `<div>Destino: <span style="font-weight:400;">${destino}</span></div>`;
 
-                // TS Destino logo abaixo de Destino
                 if (tsDestino) {
                     htmlDetalhes += `<div>TS Destino: <span style="font-weight:400;">${tsDestino}</span></div>`;
                 }
@@ -1016,16 +1090,88 @@
                 detalhesConteudo.innerHTML = htmlDetalhes;
                 modalDetalhes.classList.add('active');
             }
-        });
 
-        btnFecharDetalhes.addEventListener('click', () => {
-            modalDetalhes.classList.remove('active');
-        });
+            // Ação do Lápis (Editar)
+            if (e.target.classList.contains('btn-editar')) {
+                linhaEmEdicao = e.target.closest('tr');
+                
+                document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
+                document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
+                document.getElementById('edit-ts-origem').value = linhaEmEdicao.getAttribute('data-ts-origem');
+                document.getElementById('edit-ts-destino').value = linhaEmEdicao.getAttribute('data-ts-destino');
+                document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
+                document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
+                
+                const statusAtual = linhaEmEdicao.getAttribute('data-status');
+                document.getElementById('edit-status').value = statusAtual;
+                document.getElementById('edit-agendamento').value = linhaEmEdicao.getAttribute('data-agendamento');
 
-        modalDetalhes.addEventListener('click', (e) => {
-            if (e.target === modalDetalhes) {
-                modalDetalhes.classList.remove('active');
+                modalEditar.classList.add('active');
             }
+        });
+
+        btnFecharDetalhes.addEventListener('click', () => { modalDetalhes.classList.remove('active'); });
+        modalDetalhes.addEventListener('click', (e) => { if (e.target === modalDetalhes) modalDetalhes.classList.remove('active'); });
+
+        btnFecharEditar.addEventListener('click', () => { modalEditar.classList.remove('active'); });
+        modalEditar.addEventListener('click', (e) => { if (e.target === modalEditar) modalEditar.classList.remove('active'); });
+
+        // Ação Atualizar Registro Editado
+        btnAtualizarRegistro.addEventListener('click', () => {
+            if (!linhaEmEdicao) return;
+
+            const novoHu = document.getElementById('edit-hu').value.trim();
+            const novoIs = document.getElementById('edit-is').value.trim();
+            const novoTsOrigem = document.getElementById('edit-ts-origem').value.trim();
+            const novoTsDestino = document.getElementById('edit-ts-destino').value.trim();
+            const novaOrigem = document.getElementById('edit-origem').value.trim();
+            const novoDestino = document.getElementById('edit-destino').value.trim();
+            const novoStatus = document.getElementById('edit-status').value;
+            const novoAgendamento = document.getElementById('edit-agendamento').value.trim();
+            
+            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+
+            if (!novoHu || !novoIs || !novaOrigem || !novoDestino) {
+                alert('Preencha os campos obrigatórios (HU, IS, Origem e Destino).');
+                return;
+            }
+
+            // Atualiza atributos da linha
+            linhaEmEdicao.setAttribute('data-hu', novoHu);
+            linhaEmEdicao.setAttribute('data-is', novoIs);
+            linhaEmEdicao.setAttribute('data-ts-origem', novoTsOrigem);
+            linhaEmEdicao.setAttribute('data-ts-destino', novoTsDestino);
+            linhaEmEdicao.setAttribute('data-origem', novaOrigem);
+            linhaEmEdicao.setAttribute('data-destino', novoDestino);
+            
+            const statusAntigo = linhaEmEdicao.getAttribute('data-status');
+            linhaEmEdicao.setAttribute('data-status', novoStatus);
+            linhaEmEdicao.setAttribute('data-agendamento', novoStatus === 'Agendado' ? novoAgendamento : '');
+
+            // Atualiza histórico se o status mudou
+            const agora = new Date();
+            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+            
+            let historicoAtual = linhaEmEdicao.getAttribute('data-historico');
+            if (statusAntigo !== novoStatus) {
+                historicoAtual += ` | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
+                linhaEmEdicao.setAttribute('data-historico', historicoAtual);
+            }
+
+            // Atualiza visualmente a linha na tabela
+            let badgeClass = 'status-pendente';
+            if (novoStatus === 'Agendado') badgeClass = 'status-agendado';
+            if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
+
+            linhaEmEdicao.cells[1].textContent = novoHu;
+            linhaEmEdicao.cells[2].textContent = novoIs;
+            linhaEmEdicao.cells[3].textContent = novaOrigem;
+            linhaEmEdicao.cells[4].textContent = novoDestino;
+            linhaEmEdicao.cells[5].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
+            linhaEmEdicao.cells[6].textContent = novoStatus === 'Agendado' ? novoAgendamento : '';
+
+            modalEditar.classList.remove('active');
+            linhaEmEdicao = null;
         });
 
         // Ação Salvar Novo Registro
@@ -1044,15 +1190,8 @@
             }
 
             const agora = new Date();
-            const dia = String(agora.getDate()).padStart(2, '0');
-            const mes = String(agora.getMonth() + 1).padStart(2, '0');
-            const ano = agora.getFullYear();
-            const hora = String(agora.getHours()).padStart(2, '0');
-            const minuto = String(agora.getMinutes()).padStart(2, '0');
-            const dataFormatada = `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 
-            let tsOrigemVal = ts ? ts : "";
-            let tsDestinoVal = "";
             let historicoInicial = `Pendente - ${usuarioLogado} (${dataFormatada})`;
 
             const novaLinha = document.createElement('tr');
@@ -1062,8 +1201,8 @@
             novaLinha.setAttribute('data-destino', destino);
             novaLinha.setAttribute('data-status', 'Pendente');
             novaLinha.setAttribute('data-agendamento', '');
-            novaLinha.setAttribute('data-ts-origem', tsOrigemVal);
-            novaLinha.setAttribute('data-ts-destino', tsDestinoVal);
+            novaLinha.setAttribute('data-ts-origem', ts);
+            novaLinha.setAttribute('data-ts-destino', '');
             novaLinha.setAttribute('data-data-reg', dataFormatada);
             novaLinha.setAttribute('data-historico', historicoInicial);
 
@@ -1077,6 +1216,7 @@
                 <td></td>
                 <td>
                     <div class="table-actions">
+                        <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
                         <i class="ph-fill ph-check-circle" style="color: #555;"></i>
                         <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                     </div>
