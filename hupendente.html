@@ -186,10 +186,10 @@
         }
         .dark-theme .hu-filter-bar { background-color: #1e293b; color: #8ca4c0; }
 
-        .hu-filter-bar input {
-            padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px;
+        .hu-filter-bar input, .hu-filter-bar select {
+            padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px; font-size: 0.85rem; font-family: 'Inter', sans-serif;
         }
-        .dark-theme .hu-filter-bar input { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
+        .dark-theme .hu-filter-bar input, .dark-theme .hu-filter-bar select { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
         
         .search-input-wrapper { position: relative; display: flex; align-items: center; }
         .search-input-wrapper i { position: absolute; left: 8px; color: #004b87; font-size: 0.9rem; }
@@ -369,7 +369,7 @@
             padding: 6px 15px;
             background-color: transparent;
             transition: border-color 0.3s;
-            position: relative; /* Necessário para ancorar a lista dropdown interna */
+            position: relative; 
             overflow: visible;
         }
 
@@ -422,6 +422,11 @@
     </style>
 </head>
 <body>
+
+    <!-- Lista de Opções Autocomplete -->
+    <datalist id="cd-list">
+        <!-- Preenchida pelo javascript -->
+    </datalist>
 
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
@@ -554,7 +559,18 @@
             </div>
 
             <div style="display: flex; gap: 5px; align-items: center;">Status <input type="text" class="small-input"></div>
-            <div>Data</div>
+            
+            <!-- NOVO CAMPO DATA COMO NA IMAGEM -->
+            <div style="display: flex; gap: 5px; align-items: center; margin-left: 5px;">
+                Data:
+                <select class="small-input" style="width: 100px;">
+                    <option value="" selected disabled>Selecione...</option>
+                    <option value="criacao">Criação</option>
+                    <option value="agendamento">Agendamento</option>
+                </select>
+                <input type="text" class="small-input" style="width: 125px;" placeholder="Filtrar por ETD..." onfocus="(this.type='date')" onblur="if(!this.value) this.type='text'">
+            </div>
+
         </div>
 
         <div class="hu-table-container">
