@@ -539,6 +539,21 @@
         .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
         .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
 
+        /* Remove os ícones padrão nativos de data/hora para evitar duplicidade */
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0;
+            color: transparent;
+            cursor: pointer;
+            height: auto;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: auto;
+        }
+
         .modal-footer {
             display: flex;
             justify-content: center;
@@ -926,15 +941,15 @@
                     </select>
                 </div>
 
-                <!-- CAMPO DE AGENDAMENTO EXATAMENTE IGUAL À IMAGEM (DATA E HORA SEPARADOS) -->
+                <!-- CAMPO DE AGENDAMENTO COM APENAS UM ÍCONE CADA -->
                 <div id="container-edit-agendamento" style="display: none; flex-direction: column; gap: 10px;">
                     <div class="input-pill">
                         <input type="date" id="edit-data-agendamento" style="width: 100%;">
-                        <i class="ph ph-calendar" style="font-size: 1.2rem; color: #004b87;"></i>
+                        <i class="ph ph-calendar" style="font-size: 1.2rem; color: #004b87; position: absolute; right: 15px; pointer-events: none;"></i>
                     </div>
                     <div class="input-pill">
                         <input type="time" id="edit-hora-agendamento" style="width: 100%;">
-                        <i class="ph ph-clock" style="font-size: 1.2rem; color: #004b87;"></i>
+                        <i class="ph ph-clock" style="font-size: 1.2rem; color: #004b87; position: absolute; right: 15px; pointer-events: none;"></i>
                     </div>
                 </div>
             </div>
@@ -1047,7 +1062,6 @@
         const containerEditAgendamento = document.getElementById('container-edit-agendamento');
         let linhaEmEdicao = null;
 
-        // Mostra ou esconde campos de agendamento conforme o status selecionado na edição
         editStatusSelect.addEventListener('change', () => {
             if (editStatusSelect.value === 'Agendado') {
                 containerEditAgendamento.style.display = 'flex';
@@ -1057,7 +1071,6 @@
         });
 
         document.addEventListener('click', (e) => {
-            // Ação do Olho (Detalhes)
             if (e.target.classList.contains('btn-detalhes')) {
                 const tr = e.target.closest('tr');
                 const hu = tr.getAttribute('data-hu');
@@ -1108,7 +1121,6 @@
                 modalDetalhes.classList.add('active');
             }
 
-            // Ação do Lápis (Editar)
             if (e.target.classList.contains('btn-editar')) {
                 linhaEmEdicao = e.target.closest('tr');
                 
@@ -1124,7 +1136,7 @@
 
                 if (statusAtual === 'Agendado') {
                     containerEditAgendamento.style.display = 'flex';
-                    const agendamentoStr = linhaEmEdicao.getAttribute('data-agendamento'); // ex: "01/09/2026 00:00"
+                    const agendamentoStr = linhaEmEdicao.getAttribute('data-agendamento');
                     if (agendamentoStr && agendamentoStr.includes(' ')) {
                         const partes = agendamentoStr.split(' ');
                         const dataPartes = partes[0].split('/');
@@ -1149,7 +1161,6 @@
         btnFecharEditar.addEventListener('click', () => { modalEditar.classList.remove('active'); });
         modalEditar.addEventListener('click', (e) => { if (e.target === modalEditar) modalEditar.classList.remove('active'); });
 
-        // Ação Atualizar Registro Editado
         btnAtualizarRegistro.addEventListener('click', () => {
             if (!linhaEmEdicao) return;
 
@@ -1213,7 +1224,6 @@
             linhaEmEdicao = null;
         });
 
-        // Ação Salvar Novo Registro
         btnSalvarRegistro.addEventListener('click', () => {
             const hu = document.getElementById('input-hu').value.trim();
             const is = document.getElementById('input-is').value.trim();
