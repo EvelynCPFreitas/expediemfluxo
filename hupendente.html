@@ -200,16 +200,20 @@
         .hu-filter-finalizar { margin-left: auto; cursor: pointer; transition: opacity 0.2s; }
         .hu-filter-finalizar:hover { opacity: 0.7; }
 
-        /* CONTAINER DA TABELA */
+        /* CONTAINER DA TABELA - COM CONTORNO NO MODO ESCURO */
         .hu-table-container {
             background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, border-color 0.3s;
+            border: 1px solid transparent; /* Invisível no tema claro para manter o alinhamento */
         }
-        .dark-theme .hu-table-container { background-color: #0f172a; }
+        .dark-theme .hu-table-container { 
+            background-color: #0f172a; 
+            border: 1px solid #1e293b; /* Contorno da mesma cor do cabeçalho */
+        }
 
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
         
-        /* CABEÇALHO COM A MESMA COR DE FONTE DO FUNDO DA JANELA (#d1d9e2) */
+        /* CABEÇALHO */
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         
