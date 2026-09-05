@@ -221,7 +221,6 @@
         }
         .custom-dropdown-list.show { display: block; }
         
-        /* Scrollbar customizada */
         .custom-dropdown-list::-webkit-scrollbar { width: 6px; }
         .custom-dropdown-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         
@@ -237,7 +236,6 @@
             color: #ffffff;
         }
 
-        /* Dark mode do Dropdown Customizado */
         .dark-theme .custom-dropdown-list {
             background: #0f172a;
             border-color: #334155;
@@ -263,7 +261,6 @@
 
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
         
-        /* CABEÇALHO */
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         
@@ -288,9 +285,146 @@
         .dark-theme .table-actions i { color: #8ca4c0; }
         .table-actions i { cursor: pointer; transition: transform 0.2s; }
         .table-actions i:hover { transform: scale(1.1); }
+
+        /* =========================================
+           MODAL - NOVO REGISTRO
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #d1d9e2; /* Fundo cinza/azul claro */
+            border-radius: 20px;
+            padding: 25px 30px;
+            width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid #aebac9;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .dark-theme .modal-content {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #004b87;
+        }
+
+        .dark-theme .modal-header { color: #8ca4c0; }
+
+        .modal-header h2 {
+            font-size: 1.1rem;
+            font-weight: 900;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 24px; /* Centraliza compensando o icone de fechar */
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        .modal-close:hover { opacity: 0.6; }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        /* Input no formato de pílula idêntico à imagem */
+        .input-pill {
+            display: flex;
+            align-items: center;
+            border: 1px solid #004b87;
+            border-radius: 20px;
+            padding: 6px 15px;
+            background-color: transparent;
+            transition: border-color 0.3s;
+        }
+
+        .dark-theme .input-pill { border-color: #8ca4c0; }
+
+        .input-prefix {
+            font-weight: 900;
+            color: #004b87;
+            margin-right: 5px;
+            font-size: 0.95rem;
+        }
+
+        .dark-theme .input-prefix { color: #8ca4c0; }
+
+        .input-pill input {
+            border: none;
+            background: transparent;
+            outline: none;
+            flex: 1;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .dark-theme .input-pill input { color: #f1f5f9; }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-salvar {
+            background-color: #004b87;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: filter 0.2s, background-color 0.3s;
+        }
+
+        .btn-salvar:hover { filter: brightness(1.2); }
+        .dark-theme .btn-salvar { background-color: #334155; color: #fcd34d; }
+
     </style>
 </head>
 <body>
+
+    <!-- Lista de Opções Autocomplete para Origem/Destino -->
+    <datalist id="cd-list">
+        <!-- Lista preenchida pelo javascript para os dropdowns customizados -->
+    </datalist>
 
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
@@ -492,6 +626,47 @@
 
     </main>
 
+    <!-- MODAL DE NOVO REGISTRO -->
+    <div class="modal-overlay" id="modal-novo-registro">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Novo Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-modal-btn"></i>
+            </div>
+            
+            <div class="modal-body">
+                <div class="input-pill">
+                    <span class="input-prefix">HU:</span>
+                    <input type="text">
+                </div>
+                
+                <div class="input-pill">
+                    <span class="input-prefix">IS:</span>
+                    <input type="text">
+                </div>
+                
+                <div class="input-pill">
+                    <span class="input-prefix">TS:</span>
+                    <input type="text">
+                </div>
+                
+                <div class="input-pill">
+                    <span class="input-prefix">Origem:</span>
+                    <input type="text">
+                </div>
+                
+                <div class="input-pill">
+                    <span class="input-prefix">Destino:</span>
+                    <input type="text">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-salvar">Salvar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // =========================================
         // LÓGICA DO TEMA E LOCALSTORAGE
@@ -553,6 +728,30 @@
         }
 
         // =========================================
+        // LÓGICA DO MODAL (NOVO REGISTRO)
+        // =========================================
+        const btnAbrirModal = document.querySelector('.btn-novo-registro');
+        const modalOverlay = document.getElementById('modal-novo-registro');
+        const btnFecharModal = document.getElementById('fechar-modal-btn');
+
+        // Abrir Modal
+        btnAbrirModal.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+        });
+
+        // Fechar Modal pelo "X"
+        btnFecharModal.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+        });
+
+        // Fechar Modal clicando fora
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+
+        // =========================================
         // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs)
         // =========================================
         const listaCDs = [
@@ -571,9 +770,8 @@
         const dropdownInputs = document.querySelectorAll('.custom-dropdown-input');
 
         dropdownInputs.forEach(input => {
-            const listElement = input.nextElementSibling; // A <ul> que vem logo após o input
+            const listElement = input.nextElementSibling;
 
-            // Função para renderizar e filtrar a lista
             const renderList = (filterText = '') => {
                 listElement.innerHTML = '';
                 const txt = filterText.toLowerCase();
@@ -583,7 +781,7 @@
                     const li = document.createElement('li');
                     li.textContent = 'Não encontrado';
                     li.className = 'custom-dropdown-item';
-                    li.style.pointerEvents = 'none'; // Evita clique
+                    li.style.pointerEvents = 'none'; 
                     li.style.color = '#999';
                     listElement.appendChild(li);
                 } else {
@@ -592,7 +790,6 @@
                         li.textContent = cd;
                         li.className = 'custom-dropdown-item';
                         
-                        // Ao clicar no item, preenche o input e esconde a lista
                         li.addEventListener('mousedown', () => {
                             input.value = cd;
                             listElement.classList.remove('show');
@@ -602,21 +799,17 @@
                 }
             };
 
-            // Quando clica/foca no input, mostra tudo
             input.addEventListener('focus', () => {
                 renderList(input.value);
                 listElement.classList.add('show');
             });
 
-            // Conforme digita, vai filtrando
             input.addEventListener('input', (e) => {
                 renderList(e.target.value);
                 listElement.classList.add('show');
             });
 
-            // Quando tira o foco do input, esconde a lista
             input.addEventListener('blur', () => {
-                // Pequeno atraso para dar tempo de registrar o 'mousedown' no item da lista
                 setTimeout(() => {
                     listElement.classList.remove('show');
                 }, 150);
