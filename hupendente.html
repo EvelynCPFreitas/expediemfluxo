@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo</title>
+    <title>Expedição em Fluxo - HU's Pendentes</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -261,7 +261,6 @@
 
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
         
-        /* CABEÇALHO */
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         
@@ -370,6 +369,8 @@
             padding: 6px 15px;
             background-color: transparent;
             transition: border-color 0.3s;
+            position: relative; /* Necessário para ancorar a lista dropdown interna */
+            overflow: visible;
         }
 
         .dark-theme .input-pill { border-color: #8ca4c0; }
@@ -421,9 +422,6 @@
     </style>
 </head>
 <body>
-
-    <datalist id="cd-list">
-        </datalist>
 
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
@@ -625,6 +623,7 @@
 
     </main>
 
+    <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -648,14 +647,17 @@
                     <input type="text">
                 </div>
                 
+                <!-- ORIGEM: Dropdown Inteligente no Modal -->
                 <div class="input-pill">
                     <span class="input-prefix">Origem:</span>
-                    <input type="text" id="modal-origem">
+                    <input type="text" class="custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
                 </div>
                 
+                <!-- DESTINO: Preenchido automaticamente com o localStorage -->
                 <div class="input-pill">
                     <span class="input-prefix">Destino:</span>
-                    <input type="text">
+                    <input type="text" id="modal-destino">
                 </div>
             </div>
 
@@ -731,16 +733,16 @@
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
         const btnFecharModal = document.getElementById('fechar-modal-btn');
-        const modalOrigemInput = document.getElementById('modal-origem');
+        const modalDestinoInput = document.getElementById('modal-destino'); // Agora é o campo Destino
 
-        // Abrir Modal e puxar CD
+        // Abrir Modal e puxar CD para o Destino
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
             
-            // Puxa o CD que foi logado e preenche no campo Origem
+            // Puxa o CD que foi logado e preenche no campo Destino
             const savedCD = localStorage.getItem('userCD');
             if (savedCD) {
-                modalOrigemInput.value = savedCD;
+                modalDestinoInput.value = savedCD;
             }
         });
 
