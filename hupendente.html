@@ -763,7 +763,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-hu-corpo">
-                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-agendamento="" data-ts-origem="" data-ts-destino="" data-data-reg="27/10/2026 14:00" data-historico="Pendente - admin (27/10/2026 14:00)">
+                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-agendamento="" data-ts-origem="" data-ts-destino="" data-data-reg="27/10/2026 14:00" data-historico="Pendente - Evelyn (27/10/2026 14:00)">
                         <td><input type="checkbox"></td>
                         <td>15878526144691</td>
                         <td>74564567</td>
@@ -778,7 +778,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-ts-origem="123456" data-ts-destino="" data-data-reg="01/09/2026 00:00" data-historico="Pendente - jblucas (01/08/2026 12:00) | Agendado - epacheco (01/09/2026 00:00)">
+                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-ts-origem="123456" data-ts-destino="" data-data-reg="01/09/2026 00:00" data-historico="Pendente - Evelyn (01/08/2026 12:00) | Agendado - Evelyn (01/09/2026 00:00)">
                         <td><input type="checkbox"></td>
                         <td>77859526454822</td>
                         <td>65114795</td>
@@ -793,7 +793,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-hu="92217863644863" data-is="21875314" data-origem="PR06" data-destino="RJ10" data-status="Finalizado" data-agendamento="" data-ts-origem="" data-ts-destino="78910" data-data-reg="30/10/2026 10:00" data-historico="Pendente - admin (29/10/2026 10:00) | Finalizado - admin (30/10/2026 10:00)">
+                    <tr data-hu="92217863644863" data-is="21875314" data-origem="PR06" data-destino="RJ10" data-status="Finalizado" data-agendamento="" data-ts-origem="" data-ts-destino="78910" data-data-reg="30/10/2026 10:00" data-historico="Pendente - Evelyn (29/10/2026 10:00) | Finalizado - Evelyn (30/10/2026 10:00)">
                         <td><input type="checkbox"></td>
                         <td>92217863644863</td>
                         <td>21875314</td>
@@ -814,6 +814,7 @@
 
     </main>
 
+    <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -856,6 +857,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE DETALHES DO REGISTRO -->
     <div class="modal-overlay" id="modal-detalhes">
         <div class="modal-content" style="width: 360px;">
             <div class="modal-header" style="color: #004b87;">
@@ -864,7 +866,8 @@
             </div>
             
             <div class="modal-body detalhes-body" id="detalhes-conteudo">
-                </div>
+                <!-- Preenchido dinamicamente via JS -->
+            </div>
         </div>
     </div>
 
@@ -974,7 +977,6 @@
                 const tsDestino = tr.getAttribute('data-ts-destino');
                 const dataReg = tr.getAttribute('data-data-reg');
                 const historico = tr.getAttribute('data-historico');
-                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
 
                 let htmlDetalhes = `
                     <div>Data do Registo: <span style="font-weight:400;">${dataReg}</span></div>
@@ -1025,13 +1027,15 @@
             }
         });
 
-        // Ação Salvar Novo Registro
+        // Ação Salvar Novo Registro (Puxa o nome do usuário logado do localStorage)
         btnSalvarRegistro.addEventListener('click', () => {
             const hu = document.getElementById('input-hu').value.trim();
             const is = document.getElementById('input-is').value.trim();
             const ts = document.getElementById('input-ts').value.trim();
             const origem = document.getElementById('modal-origem').value.trim();
             const destino = document.getElementById('modal-destino').value.trim();
+            
+            // Puxa o nome atual do usuário logado (ex: Evelyn)
             const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
 
             if (!hu || !is || !origem || !destino) {
