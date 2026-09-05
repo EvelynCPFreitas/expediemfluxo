@@ -683,19 +683,19 @@
         <div class="hu-cards-container">
             <div class="hu-card hu-card-total">
                 <div class="hu-card-title">Total</div>
-                <div class="hu-card-value">0</div>
+                <div class="hu-card-value" id="kpi-total">0</div>
             </div>
             <div class="hu-card hu-card-pendente">
                 <div class="hu-card-title">Pendente</div>
-                <div class="hu-card-value">0</div>
+                <div class="hu-card-value" id="kpi-pendente">0</div>
             </div>
             <div class="hu-card hu-card-expedido">
                 <div class="hu-card-title">Expedido</div>
-                <div class="hu-card-value">0</div>
+                <div class="hu-card-value" id="kpi-expedido">0</div>
             </div>
             <div class="hu-card hu-card-finalizado">
                 <div class="hu-card-title">Finalizado</div>
-                <div class="hu-card-value">0</div>
+                <div class="hu-card-value" id="kpi-finalizado">0</div>
             </div>
         </div>
 
@@ -963,6 +963,8 @@
             const savedUsername = localStorage.getItem('userName'); 
             if (savedUsername) { usernameDisplay.textContent = savedUsername; } 
             else { usernameDisplay.textContent = 'Usuário'; }
+
+            atualizarKPIs(); // Atualiza os contadores ao carregar a página
         });
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
@@ -979,6 +981,29 @@
                 localStorage.removeItem('userName'); 
                 window.location.href = 'index.html'; 
             });
+        }
+
+        // =========================================
+        // FUNÇÃO DE ATUALIZAÇÃO DOS CARDS (KPIs)
+        // =========================================
+        function atualizarKPIs() {
+            const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
+            let total = linhas.length;
+            let pendente = 0;
+            let expedido = 0;
+            let finalizado = 0;
+
+            linhas.forEach(tr => {
+                const status = tr.getAttribute('data-status');
+                if (status === 'Pendente') pendente++;
+                if (status === 'Expedido') expedido++;
+                if (status === 'Finalizado') finalizado++;
+            });
+
+            document.getElementById('kpi-total').textContent = total;
+            document.getElementById('kpi-pendente').textContent = pendente;
+            document.getElementById('kpi-expedido').textContent = expedido;
+            document.getElementById('kpi-finalizado').textContent = finalizado;
         }
 
         // =========================================
@@ -1084,6 +1109,8 @@
             } else {
                 tr.cells[6].textContent = '';
             }
+
+            atualizarKPIs(); // Recalcula os contadores após a alteração
         }
 
         const modalDetalhes = document.getElementById('modal-detalhes');
@@ -1183,7 +1210,7 @@
             novaLinha.setAttribute('data-status', 'Pendente');
             novaLinha.setAttribute('data-agendamento', '');
             novaLinha.setAttribute('data-ts-origem', '');
-            novaLinha.setAttribute('data-ts-destino', ts); // TS do modal vai automaticamente para TS Destino
+            novaLinha.setAttribute('data-ts-destino', ts); 
             novaLinha.setAttribute('data-data-reg', dataFormatada);
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
@@ -1210,6 +1237,8 @@
             document.getElementById('input-is').value = '';
             document.getElementById('input-ts').value = '';
             document.getElementById('modal-origem').value = '';
+
+            atualizarKPIs(); // Recalcula os contadores ao adicionar novo registro
         });
 
         // =========================================
