@@ -423,11 +423,6 @@
 </head>
 <body>
 
-    <!-- Lista de Opções Autocomplete -->
-    <datalist id="cd-list">
-        <!-- Preenchida pelo javascript -->
-    </datalist>
-
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
             <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
@@ -560,15 +555,12 @@
 
             <div style="display: flex; gap: 5px; align-items: center;">Status <input type="text" class="small-input"></div>
             
-            <!-- NOVO CAMPO DATA COMO NA IMAGEM -->
             <div style="display: flex; gap: 5px; align-items: center; margin-left: 5px;">
-                Data:
+                <span style="font-weight: 700;">Data:</span>
                 <select class="small-input" style="width: 100px;">
                     <option value="" selected disabled>Selecione...</option>
-                    <option value="criacao">Criação</option>
-                    <option value="agendamento">Agendamento</option>
                 </select>
-                <input type="text" class="small-input" style="width: 125px;" placeholder="Filtrar por ETD..." onfocus="(this.type='date')" onblur="if(!this.value) this.type='text'">
+                <input type="date" class="small-input" style="width: 125px;">
             </div>
 
         </div>
@@ -639,7 +631,6 @@
 
     </main>
 
-    <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -663,14 +654,12 @@
                     <input type="text">
                 </div>
                 
-                <!-- ORIGEM: Dropdown Inteligente no Modal -->
                 <div class="input-pill">
                     <span class="input-prefix">Origem:</span>
                     <input type="text" class="custom-dropdown-input" autocomplete="off">
                     <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
                 </div>
                 
-                <!-- DESTINO: Dropdown Inteligente no Modal (Preenchido com o localStorage) -->
                 <div class="input-pill">
                     <span class="input-prefix">Destino:</span>
                     <input type="text" id="modal-destino" class="custom-dropdown-input" autocomplete="off">
@@ -756,7 +745,7 @@
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
             
-            // Puxa o CD que foi logado e preenche no campo Destino
+            // Puxa o CD do login e preenche no campo Destino
             const savedCD = localStorage.getItem('userCD');
             if (savedCD) {
                 modalDestinoInput.value = savedCD;
