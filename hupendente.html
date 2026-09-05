@@ -539,7 +539,6 @@
         .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
         .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
 
-        /* Remove os ícones padrão nativos de data/hora para evitar duplicidade */
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator {
             background: transparent;
@@ -791,7 +790,7 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-check-circle" style="color: #555;"></i>
+                                <i class="ph-fill ph-arrow-circle-right" style="cursor: pointer;" title="Avançar"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
@@ -807,7 +806,7 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-check-circle" style="color: #555;"></i>
+                                <i class="ph-fill ph-arrow-circle-right" style="cursor: pointer;" title="Avançar"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
@@ -823,7 +822,7 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-check-circle" style="color: #555;"></i>
+                                <i class="ph-fill ph-arrow-circle-right" style="cursor: pointer;" title="Avançar"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
@@ -941,15 +940,12 @@
                     </select>
                 </div>
 
-                <!-- CAMPO DE AGENDAMENTO COM APENAS UM ÍCONE CADA -->
                 <div id="container-edit-agendamento" style="display: none; flex-direction: column; gap: 10px;">
                     <div class="input-pill">
                         <input type="date" id="edit-data-agendamento" style="width: 100%;">
-                        <i class="ph ph-calendar" style="font-size: 1.2rem; color: #004b87; position: absolute; right: 15px; pointer-events: none;"></i>
                     </div>
                     <div class="input-pill">
                         <input type="time" id="edit-hora-agendamento" style="width: 100%;">
-                        <i class="ph ph-clock" style="font-size: 1.2rem; color: #004b87; position: absolute; right: 15px; pointer-events: none;"></i>
                     </div>
                 </div>
             </div>
@@ -1245,7 +1241,7 @@
 
             const novaLinha = document.createElement('tr');
             novaLinha.setAttribute('data-hu', hu);
-            novaLinha.setAttribute('data-is', is);
+            novaLin-ha.setAttribute('data-is', is);
             novaLinha.setAttribute('data-origem', origem);
             novaLinha.setAttribute('data-destino', destino);
             novaLinha.setAttribute('data-status', 'Pendente');
@@ -1266,7 +1262,7 @@
                 <td>
                     <div class="table-actions">
                         <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                        <i class="ph-fill ph-check-circle" style="color: #555;"></i>
+                        <i class="ph-fill ph-arrow-circle-right" style="cursor: pointer;" title="Avançar"></i>
                         <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                     </div>
                 </td>
