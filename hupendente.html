@@ -414,10 +414,12 @@
         .status-badge { padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
         .status-pendente { background-color: #ffcccc; color: #ff6b6b; }
         .status-agendado { background-color: #ffcce6; color: #ff66b2; }
+        .status-expedido { background-color: #fff3cc; color: #e88d00; }
         .status-finalizado { background-color: #ccffeb; color: #33ffad; }
         
         .dark-theme .status-pendente { background-color: rgba(255, 107, 107, 0.2); }
         .dark-theme .status-agendado { background-color: rgba(255, 102, 178, 0.2); }
+        .dark-theme .status-expedido { background-color: rgba(232, 141, 0, 0.2); }
         .dark-theme .status-finalizado { background-color: rgba(51, 255, 173, 0.2); }
 
         .table-actions { display: flex; justify-content: center; gap: 8px; font-size: 1.3rem; color: #666; }
@@ -426,7 +428,7 @@
         .table-actions i:hover { transform: scale(1.1); }
 
         /* =========================================
-           MODAIS (NOVO, DETALHES & EDIÇÃO)
+           MODAIS
            ========================================= */
         .modal-overlay {
             position: fixed;
@@ -539,23 +541,10 @@
         .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
         .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
 
-        input[type="date"]::-webkit-calendar-picker-indicator,
-        input[type="time"]::-webkit-calendar-picker-indicator {
-            background: transparent;
-            bottom: 0;
-            color: transparent;
-            cursor: pointer;
-            height: auto;
-            left: 0;
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: auto;
-        }
-
         .modal-footer {
             display: flex;
             justify-content: center;
+            gap: 10px;
         }
 
         .btn-salvar {
@@ -574,7 +563,6 @@
         .btn-salvar:hover { filter: brightness(1.2); }
         .dark-theme .btn-salvar { background: linear-gradient(to bottom, #475569, #334155); border: 1px solid #1e293b; color: #f1f5f9; }
 
-        /* Estilos específicos da Modal de Detalhes */
         .detalhes-body {
             font-size: 0.9rem;
             font-weight: 700;
@@ -790,39 +778,7 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right" style="cursor: pointer;" title="Avançar"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-ts-origem="123456" data-ts-destino="654321" data-data-reg="01/09/2026 00:00" data-historico="Pendente - Evelyn (01/08/2026 12:00) | Agendado - Evelyn (01/09/2026 00:00)">
-                        <td><input type="checkbox"></td>
-                        <td>77859526454822</td>
-                        <td>65114795</td>
-                        <td>SP15</td>
-                        <td>SC02</td>
-                        <td><span class="status-badge status-agendado">Agendado</span></td>
-                        <td>01/09/2026 00:00</td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right" style="cursor: pointer;" title="Avançar"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-hu="92217863644863" data-is="21875314" data-origem="PR06" data-destino="RJ10" data-status="Finalizado" data-agendamento="" data-ts-origem="" data-ts-destino="78910" data-data-reg="30/10/2026 10:00" data-historico="Pendente - Evelyn (29/10/2026 10:00) | Finalizado - Evelyn (30/10/2026 10:00)">
-                        <td><input type="checkbox"></td>
-                        <td>92217863644863</td>
-                        <td>21875314</td>
-                        <td>PR06</td>
-                        <td>RJ10</td>
-                        <td><span class="status-badge status-finalizado">Finalizado</span></td>
-                        <td></td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right" style="cursor: pointer;" title="Avançar"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
@@ -876,6 +832,65 @@
         </div>
     </div>
 
+    <!-- MODAL DE ESCOLHA (AGENDAR OU EXPEDIR) -->
+    <div class="modal-overlay" id="modal-escolha-avancar">
+        <div class="modal-content" style="width: 300px; text-align: center;">
+            <div class="modal-header">
+                <h2>Avançar Status</h2>
+                <i class="ph ph-x modal-close" id="fechar-escolha-btn"></i>
+            </div>
+            <div class="modal-body" style="gap: 15px;">
+                <p style="font-weight: 600; font-size: 0.95rem;">Selecione a próxima ação:</p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn-salvar" id="btn-escolha-agendar" style="padding: 8px 20px;">Agendar</button>
+                    <button class="btn-salvar" id="btn-escolha-expedir" style="padding: 8px 20px;">Expedir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PREENCHER AGENDAMENTO -->
+    <div class="modal-overlay" id="modal-input-agendamento">
+        <div class="modal-content" style="width: 320px;">
+            <div class="modal-header">
+                <h2>Agendar Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-modal-agendamento-btn"></i>
+            </div>
+            <div class="modal-body">
+                <div class="input-pill">
+                    <span class="input-prefix">Data:</span>
+                    <input type="date" id="input-data-agend" style="width: 100%;">
+                </div>
+                <div class="input-pill">
+                    <span class="input-prefix">Hora:</span>
+                    <input type="time" id="input-hora-agend" style="width: 100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-salvar" id="btn-confirmar-agendamento">Confirmar Agendamento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PREENCHER TS DE ORIGEM -->
+    <div class="modal-overlay" id="modal-input-ts">
+        <div class="modal-content" style="width: 320px;">
+            <div class="modal-header">
+                <h2>Expedir Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-modal-ts-btn"></i>
+            </div>
+            <div class="modal-body">
+                <div class="input-pill">
+                    <span class="input-prefix">TS Origem:</span>
+                    <input type="text" id="input-ts-origem-val" placeholder="Digite a TS de Origem">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-salvar" id="btn-confirmar-ts">Confirmar Expedição</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE DETALHES DO REGISTRO -->
     <div class="modal-overlay" id="modal-detalhes">
         <div class="modal-content" style="width: 360px;">
@@ -883,10 +898,7 @@
                 <h2 style="font-size: 1rem;">Detalhes do Registro</h2>
                 <i class="ph ph-x modal-close" id="fechar-detalhes-btn"></i>
             </div>
-            
-            <div class="modal-body detalhes-body" id="detalhes-conteudo">
-                <!-- Preenchido dinamicamente via JS -->
-            </div>
+            <div class="modal-body detalhes-body" id="detalhes-conteudo"></div>
         </div>
     </div>
 
@@ -897,62 +909,24 @@
                 <h2>Editar Registro</h2>
                 <i class="ph ph-x modal-close" id="fechar-editar-btn"></i>
             </div>
-            
             <div class="modal-body">
-                <div class="input-pill">
-                    <span class="input-prefix">HU:</span>
-                    <input type="text" id="edit-hu">
-                </div>
-                
-                <div class="input-pill">
-                    <span class="input-prefix">IS:</span>
-                    <input type="text" id="edit-is">
-                </div>
-                
-                <div class="input-pill">
-                    <span class="input-prefix">TS Origem:</span>
-                    <input type="text" id="edit-ts-origem">
-                </div>
-
-                <div class="input-pill">
-                    <span class="input-prefix">TS Destino:</span>
-                    <input type="text" id="edit-ts-destino">
-                </div>
-                
-                <div class="input-pill">
-                    <span class="input-prefix">Origem:</span>
-                    <input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off">
-                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
-                </div>
-                
-                <div class="input-pill">
-                    <span class="input-prefix">Destino:</span>
-                    <input type="text" id="edit-destino" class="custom-dropdown-input" autocomplete="off">
-                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
-                </div>
-
+                <div class="input-pill"><span class="input-prefix">HU:</span><input type="text" id="edit-hu"></div>
+                <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="edit-is"></div>
+                <div class="input-pill"><span class="input-prefix">TS Origem:</span><input type="text" id="edit-ts-origem"></div>
+                <div class="input-pill"><span class="input-prefix">TS Destino:</span><input type="text" id="edit-ts-destino"></div>
+                <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
+                <div class="input-pill"><span class="input-prefix">Destino:</span><input type="text" id="edit-destino" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill">
                     <span class="input-prefix">Status:</span>
                     <select id="edit-status">
                         <option value="Pendente">Pendente</option>
                         <option value="Agendado">Agendado</option>
+                        <option value="Expedido">Expedido</option>
                         <option value="Finalizado">Finalizado</option>
                     </select>
                 </div>
-
-                <div id="container-edit-agendamento" style="display: none; flex-direction: column; gap: 10px;">
-                    <div class="input-pill">
-                        <input type="date" id="edit-data-agendamento" style="width: 100%;">
-                    </div>
-                    <div class="input-pill">
-                        <input type="time" id="edit-hora-agendamento" style="width: 100%;">
-                    </div>
-                </div>
             </div>
-
-            <div class="modal-footer">
-                <button class="btn-salvar" id="btn-atualizar-registro">Atualizar</button>
-            </div>
+            <div class="modal-footer"><button class="btn-salvar" id="btn-atualizar-registro">Atualizar</button></div>
         </div>
     </div>
 
@@ -991,21 +965,12 @@
             else { usernameDisplay.textContent = 'Usuário'; }
         });
 
-        // =========================================
-        // LÓGICA DE ABRIR/FECHAR A SIDEBAR
-        // =========================================
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
-
         if (sidebarToggleBtn && sidebar) {
-            sidebarToggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('expanded');
-            });
+            sidebarToggleBtn.addEventListener('click', () => { sidebar.classList.toggle('expanded'); });
         }
 
-        // =========================================
-        // LÓGICA DE LOGOUT
-        // =========================================
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
@@ -1017,7 +982,7 @@
         }
 
         // =========================================
-        // LÓGICA DOS MODAIS (NOVO, DETALHES & EDIÇÃO)
+        // LÓGICA DOS MODAIS E FLUXO DE AVANÇAR STATUS
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
@@ -1026,45 +991,117 @@
         const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
         const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
-        // Modal Novo Registro
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
             const savedCD = localStorage.getItem('userCD');
-            if (savedCD) {
-                modalDestinoInput.value = savedCD;
+            if (savedCD) modalDestinoInput.value = savedCD;
+        });
+        btnFecharModal.addEventListener('click', () => modalOverlay.classList.remove('active'));
+        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+
+        // Modais secundários de Avanço
+        const modalEscolha = document.getElementById('modal-escolha-avancar');
+        const modalAgendamento = document.getElementById('modal-input-agendamento');
+        const modalTs = document.getElementById('modal-input-ts');
+        let linhaEmProcesso = null;
+
+        document.getElementById('fechar-escolha-btn').addEventListener('click', () => modalEscolha.classList.remove('active'));
+        document.getElementById('fechar-modal-agendamento-btn').addEventListener('click', () => modalAgendamento.classList.remove('active'));
+        document.getElementById('fechar-modal-ts-btn').addEventListener('click', () => modalTs.classList.remove('active'));
+
+        // Clique no botão de Avançar (Seta em círculo)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-avancar')) {
+                linhaEmProcesso = e.target.closest('tr');
+                const statusAtual = linhaEmProcesso.getAttribute('data-status');
+
+                if (statusAtual === 'Pendente') {
+                    modalEscolha.classList.add('active');
+                } else if (statusAtual === 'Agendado') {
+                    // Vai para Expedido (Exige TS de Origem)
+                    modalTs.classList.add('active');
+                } else if (statusAtual === 'Expedido') {
+                    // Vai para Finalizado direto
+                    atualizarStatusLinha(linhaEmProcesso, 'Finalizado');
+                }
+            }
+
+            // Ações do modal de escolha (Pendente -> Agendar ou Expedir)
+            if (e.target.id === 'btn-escolha-agendar') {
+                modalEscolha.classList.remove('active');
+                modalAgendamento.classList.add('active');
+            }
+            if (e.target.id === 'btn-escolha-expedir') {
+                modalEscolha.classList.remove('active');
+                modalTs.classList.add('active');
             }
         });
 
-        btnFecharModal.addEventListener('click', () => {
-            modalOverlay.classList.remove('active');
-        });
-
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('active');
+        // Confirmar Agendamento
+        document.getElementById('btn-confirmar-agendamento').addEventListener('click', () => {
+            const dataVal = document.getElementById('input-data-agend').value;
+            const horaVal = document.getElementById('input-hora-agend').value;
+            if (!dataVal || !horaVal) {
+                alert('É obrigatório preencher a data e o horário para agendar.');
+                return;
             }
+            const dParts = dataVal.split('-');
+            const agendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaVal}`;
+            
+            linhaEmProcesso.setAttribute('data-agendamento', agendamentoFormatado);
+            atualizarStatusLinha(linhaEmProcesso, 'Agendado');
+            modalAgendamento.classList.remove('active');
+            document.getElementById('input-data-agend').value = '';
+            document.getElementById('input-hora-agend').value = '';
         });
 
-        // Modal Detalhes (Ícone do olho)
+        // Confirmar TS (Expedido)
+        document.getElementById('btn-confirmar-ts').addEventListener('click', () => {
+            const tsVal = document.getElementById('input-ts-origem-val').value.trim();
+            if (!tsVal) {
+                alert('É obrigatório preencher a TS de Origem para expedir.');
+                return;
+            }
+
+            linhaEmProcesso.setAttribute('data-ts-origem', tsVal);
+            atualizarStatusLinha(linhaEmProcesso, 'Expedido');
+            modalTs.classList.remove('active');
+            document.getElementById('input-ts-origem-val').value = '';
+        });
+
+        function atualizarStatusLinha(tr, novoStatus) {
+            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+            const agora = new Date();
+            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+
+            tr.setAttribute('data-status', novoStatus);
+            
+            let historicoAtual = tr.getAttribute('data-historico');
+            historicoAtual += ` | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
+            tr.setAttribute('data-historico', historicoAtual);
+
+            let badgeClass = 'status-pendente';
+            if (novoStatus === 'Agendado') badgeClass = 'status-agendado';
+            if (novoStatus === 'Expedido') badgeClass = 'status-expedido';
+            if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
+
+            tr.cells[5].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
+            if (novoStatus === 'Agendado') {
+                tr.cells[6].textContent = tr.getAttribute('data-agendamento');
+            } else {
+                tr.cells[6].textContent = '';
+            }
+        }
+
+        // Modal Detalhes & Edição
         const modalDetalhes = document.getElementById('modal-detalhes');
         const btnFecharDetalhes = document.getElementById('fechar-detalhes-btn');
         const detalhesConteudo = document.getElementById('detalhes-conteudo');
-
-        // Modal Edição (Ícone do lápis)
         const modalEditar = document.getElementById('modal-editar');
         const btnFecharEditar = document.getElementById('fechar-editar-btn');
         const btnAtualizarRegistro = document.getElementById('btn-atualizar-registro');
         const editStatusSelect = document.getElementById('edit-status');
-        const containerEditAgendamento = document.getElementById('container-edit-agendamento');
         let linhaEmEdicao = null;
-
-        editStatusSelect.addEventListener('change', () => {
-            if (editStatusSelect.value === 'Agendado') {
-                containerEditAgendamento.style.display = 'flex';
-            } else {
-                containerEditAgendamento.style.display = 'none';
-            }
-        });
 
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-detalhes')) {
@@ -1086,32 +1123,13 @@
                     <div>IS: <span style="font-weight:400;">${is}</span></div>
                     <div>Origem: <span style="font-weight:400;">${origem}</span></div>
                 `;
-
-                if (tsOrigem) {
-                    htmlDetalhes += `<div>TS Origem: <span style="font-weight:400;">${tsOrigem}</span></div>`;
-                }
-
+                if (tsOrigem) htmlDetalhes += `<div>TS Origem: <span style="font-weight:400;">${tsOrigem}</span></div>`;
                 htmlDetalhes += `<div>Destino: <span style="font-weight:400;">${destino}</span></div>`;
+                if (tsDestino) htmlDetalhes += `<div>TS Destino: <span style="font-weight:400;">${tsDestino}</span></div>`;
 
-                if (tsDestino) {
-                    htmlDetalhes += `<div>TS Destino: <span style="font-weight:400;">${tsDestino}</span></div>`;
-                }
-
-                htmlDetalhes += `
-                    <div class="historico-box">
-                        Histórico:
-                        <div class="historico-lista">
-                `;
-
-                const historicoArray = historico.split(' | ');
-                historicoArray.forEach(item => {
-                    htmlDetalhes += `<div>• ${item}</div>`;
-                });
-
-                htmlDetalhes += `
-                        </div>
-                    </div>
-                `;
+                htmlDetalhes += `<div class="historico-box">Histórico:<div class="historico-lista">`;
+                historico.split(' | ').forEach(item => { htmlDetalhes += `<div>• ${item}</div>`; });
+                htmlDetalhes += `</div></div>`;
 
                 detalhesConteudo.innerHTML = htmlDetalhes;
                 modalDetalhes.classList.add('active');
@@ -1119,103 +1137,32 @@
 
             if (e.target.classList.contains('btn-editar')) {
                 linhaEmEdicao = e.target.closest('tr');
-                
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
                 document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
                 document.getElementById('edit-ts-origem').value = linhaEmEdicao.getAttribute('data-ts-origem');
                 document.getElementById('edit-ts-destino').value = linhaEmEdicao.getAttribute('data-ts-destino');
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
-                
-                const statusAtual = linhaEmEdicao.getAttribute('data-status');
-                editStatusSelect.value = statusAtual;
-
-                if (statusAtual === 'Agendado') {
-                    containerEditAgendamento.style.display = 'flex';
-                    const agendamentoStr = linhaEmEdicao.getAttribute('data-agendamento');
-                    if (agendamentoStr && agendamentoStr.includes(' ')) {
-                        const partes = agendamentoStr.split(' ');
-                        const dataPartes = partes[0].split('/');
-                        if (dataPartes.length === 3) {
-                            document.getElementById('edit-data-agendamento').value = `${dataPartes[2]}-${dataPartes[1]}-${dataPartes[0]}`;
-                        }
-                        document.getElementById('edit-hora-agendamento').value = partes[1];
-                    }
-                } else {
-                    containerEditAgendamento.style.display = 'none';
-                    document.getElementById('edit-data-agendamento').value = '';
-                    document.getElementById('edit-hora-agendamento').value = '';
-                }
-
+                editStatusSelect.value = linhaEmEdicao.getAttribute('data-status');
                 modalEditar.classList.add('active');
             }
         });
 
-        btnFecharDetalhes.addEventListener('click', () => { modalDetalhes.classList.remove('active'); });
+        btnFecharDetalhes.addEventListener('click', () => modalDetalhes.classList.remove('active'));
         modalDetalhes.addEventListener('click', (e) => { if (e.target === modalDetalhes) modalDetalhes.classList.remove('active'); });
-
-        btnFecharEditar.addEventListener('click', () => { modalEditar.classList.remove('active'); });
+        btnFecharEditar.addEventListener('click', () => modalEditar.classList.remove('active'));
         modalEditar.addEventListener('click', (e) => { if (e.target === modalEditar) modalEditar.classList.remove('active'); });
 
         btnAtualizarRegistro.addEventListener('click', () => {
             if (!linhaEmEdicao) return;
-
-            const novoHu = document.getElementById('edit-hu').value.trim();
-            const novoIs = document.getElementById('edit-is').value.trim();
-            const novoTsOrigem = document.getElementById('edit-ts-origem').value.trim();
-            const novoTsDestino = document.getElementById('edit-ts-destino').value.trim();
-            const novaOrigem = document.getElementById('edit-origem').value.trim();
-            const novoDestino = document.getElementById('edit-destino').value.trim();
-            const novoStatus = editStatusSelect.value;
+            linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value.trim());
+            linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value.trim());
+            linhaEmEdicao.setAttribute('data-ts-origem', document.getElementById('edit-ts-origem').value.trim());
+            linhaEmEdicao.setAttribute('data-ts-destino', document.getElementById('edit-ts-destino').value.trim());
+            linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value.trim());
+            linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value.trim());
             
-            let novoAgendamentoFormatado = '';
-            if (novoStatus === 'Agendado') {
-                const dataVal = document.getElementById('edit-data-agendamento').value;
-                const horaVal = document.getElementById('edit-hora-agendamento').value;
-                if (dataVal) {
-                    const dParts = dataVal.split('-');
-                    novoAgendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaVal || '00:00'}`;
-                }
-            }
-
-            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-
-            if (!novoHu || !novoIs || !novaOrigem || !novoDestino) {
-                alert('Preencha os campos obrigatórios (HU, IS, Origem e Destino).');
-                return;
-            }
-
-            linhaEmEdicao.setAttribute('data-hu', novoHu);
-            linhaEmEdicao.setAttribute('data-is', novoIs);
-            linhaEmEdicao.setAttribute('data-ts-origem', novoTsOrigem);
-            linhaEmEdicao.setAttribute('data-ts-destino', novoTsDestino);
-            linhaEmEdicao.setAttribute('data-origem', novaOrigem);
-            linhaEmEdicao.setAttribute('data-destino', novoDestino);
-            
-            const statusAntigo = linhaEmEdicao.getAttribute('data-status');
-            linhaEmEdicao.setAttribute('data-status', novoStatus);
-            linhaEmEdicao.setAttribute('data-agendamento', novoAgendamentoFormatado);
-
-            const agora = new Date();
-            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-            
-            let historicoAtual = linhaEmEdicao.getAttribute('data-historico');
-            if (statusAntigo !== novoStatus) {
-                historicoAtual += ` | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
-                linhaEmEdicao.setAttribute('data-historico', historicoAtual);
-            }
-
-            let badgeClass = 'status-pendente';
-            if (novoStatus === 'Agendado') badgeClass = 'status-agendado';
-            if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
-
-            linhaEmEdicao.cells[1].textContent = novoHu;
-            linhaEmEdicao.cells[2].textContent = novoIs;
-            linhaEmEdicao.cells[3].textContent = novaOrigem;
-            linhaEmEdicao.cells[4].textContent = novoDestino;
-            linhaEmEdicao.cells[5].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
-            linhaEmEdicao.cells[6].textContent = novoAgendamentoFormatado;
-
+            atualizarStatusLinha(linhaEmEdicao, editStatusSelect.value);
             modalEditar.classList.remove('active');
             linhaEmEdicao = null;
         });
@@ -1226,22 +1173,19 @@
             const ts = document.getElementById('input-ts').value.trim();
             const origem = document.getElementById('modal-origem').value.trim();
             const destino = document.getElementById('modal-destino').value.trim();
-            
             const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
 
             if (!hu || !is || !origem || !destino) {
-                alert('Por favor, preencha os campos obrigatórios (HU, IS, Origem e Destino).');
+                alert('Preencha os campos obrigatórios.');
                 return;
             }
 
             const agora = new Date();
             const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 
-            let historicoInicial = `Pendente - ${usuarioLogado} (${dataFormatada})`;
-
             const novaLinha = document.createElement('tr');
             novaLinha.setAttribute('data-hu', hu);
-            novaLin-ha.setAttribute('data-is', is);
+            novaLinha.setAttribute('data-is', is);
             novaLinha.setAttribute('data-origem', origem);
             novaLinha.setAttribute('data-destino', destino);
             novaLinha.setAttribute('data-status', 'Pendente');
@@ -1249,7 +1193,7 @@
             novaLinha.setAttribute('data-ts-origem', ts);
             novaLinha.setAttribute('data-ts-destino', '');
             novaLinha.setAttribute('data-data-reg', dataFormatada);
-            novaLinha.setAttribute('data-historico', historicoInicial);
+            novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
             novaLinha.innerHTML = `
                 <td><input type="checkbox"></td>
@@ -1262,14 +1206,13 @@
                 <td>
                     <div class="table-actions">
                         <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                        <i class="ph-fill ph-arrow-circle-right" style="cursor: pointer;" title="Avançar"></i>
+                        <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
                         <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                     </div>
                 </td>
             `;
 
             tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
-
             modalOverlay.classList.remove('active');
             document.getElementById('input-hu').value = '';
             document.getElementById('input-is').value = '';
@@ -1278,7 +1221,7 @@
         });
 
         // =========================================
-        // LÓGICA DO CALENDÁRIO MULTI-SELEÇÃO COM APLICAR
+        // LÓGICA DO CALENDÁRIO MULTI-SELEÇÃO
         // =========================================
         const dateDisplayBtn = document.getElementById('date-display-btn');
         const calendarPopup = document.getElementById('calendar-popup');
@@ -1289,25 +1232,22 @@
         const calClear = document.getElementById('cal-clear');
         const calApply = document.getElementById('cal-apply');
 
-        let currentMonth = 8; // Setembro
+        let currentMonth = 8; 
         let currentYear = 2026;
         let selectedDates = new Set();
-
         const monthsNames = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
         function renderCalendar(month, year) {
             calGrid.innerHTML = '';
             calMonthYear.textContent = `${monthsNames[month]} de ${year}`;
-
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDays = new Date(year, month + 1, 0).getDate();
             const prevTotalDays = new Date(year, month, 0).getDate();
 
             for (let i = firstDayIndex; i > 0; i--) {
-                const dayNum = prevTotalDays - i + 1;
                 const div = document.createElement('div');
                 div.className = 'cal-day other-month';
-                div.textContent = dayNum;
+                div.textContent = prevTotalDays - i + 1;
                 calGrid.appendChild(div);
             }
 
@@ -1315,85 +1255,28 @@
                 const div = document.createElement('div');
                 div.className = 'cal-day';
                 div.textContent = i;
-                
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                if (selectedDates.has(dateStr)) {
-                    div.classList.add('selected');
-                }
-
+                if (selectedDates.has(dateStr)) div.classList.add('selected');
                 div.addEventListener('click', () => {
-                    if (selectedDates.has(dateStr)) {
-                        selectedDates.delete(dateStr);
-                        div.classList.remove('selected');
-                    } else {
-                        selectedDates.add(dateStr);
-                        div.classList.add('selected');
-                    }
+                    if (selectedDates.has(dateStr)) { selectedDates.delete(dateStr); div.classList.remove('selected'); }
+                    else { selectedDates.add(dateStr); div.classList.add('selected'); }
                 });
-
-                calGrid.appendChild(div);
-            }
-
-            const totalCells = calGrid.children.length;
-            const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-            for (let i = 1; i <= remainingCells; i++) {
-                const div = document.createElement('div');
-                div.className = 'cal-day other-month';
-                div.textContent = i;
                 calGrid.appendChild(div);
             }
         }
 
-        dateDisplayBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            calendarPopup.classList.toggle('show');
-            renderCalendar(currentMonth, currentYear);
-        });
-
-        calPrev.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            renderCalendar(currentMonth, currentYear);
-        });
-
-        calNext.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            renderCalendar(currentMonth, currentYear);
-        });
-
-        calClear.addEventListener('click', (e) => {
-            e.stopPropagation();
-            selectedDates.clear();
-            renderCalendar(currentMonth, currentYear);
-            dateDisplayBtn.textContent = "Selecionar...";
-        });
-
+        dateDisplayBtn.addEventListener('click', (e) => { e.stopPropagation(); calendarPopup.classList.toggle('show'); renderCalendar(currentMonth, currentYear); });
+        calPrev.addEventListener('click', (e) => { e.stopPropagation(); currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(currentMonth, currentYear); });
+        calNext.addEventListener('click', (e) => { e.stopPropagation(); currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(currentMonth, currentYear); });
+        calClear.addEventListener('click', (e) => { e.stopPropagation(); selectedDates.clear(); renderCalendar(currentMonth, currentYear); dateDisplayBtn.textContent = "Selecionar..."; });
         calApply.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (selectedDates.size === 0) {
-                dateDisplayBtn.textContent = "Selecionar...";
-            } else if (selectedDates.size === 1) {
-                dateDisplayBtn.textContent = Array.from(selectedDates)[0];
-            } else {
-                dateDisplayBtn.textContent = `${selectedDates.size} dias selecionados`;
-            }
+            if (selectedDates.size === 0) dateDisplayBtn.textContent = "Selecionar...";
+            else if (selectedDates.size === 1) dateDisplayBtn.textContent = Array.from(selectedDates)[0];
+            else dateDisplayBtn.textContent = `${selectedDates.size} dias selecionados`;
             calendarPopup.classList.remove('show');
         });
-
-        window.addEventListener('click', (e) => {
-            if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) {
-                calendarPopup.classList.remove('show');
-            }
-        });
+        window.addEventListener('click', (e) => { if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) calendarPopup.classList.remove('show'); });
 
         // =========================================
         // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs)
@@ -1411,55 +1294,32 @@
             "BRSP55"
         ];
 
-        const dropdownInputs = document.querySelectorAll('.custom-dropdown-input');
-
-        dropdownInputs.forEach(input => {
+        document.querySelectorAll('.custom-dropdown-input').forEach(input => {
             const listElement = input.nextElementSibling;
-
             const renderList = (filterText = '') => {
                 listElement.innerHTML = '';
                 const txt = filterText.toLowerCase();
                 const filtrados = listaCDs.filter(cd => cd.toLowerCase().includes(txt));
-
                 if (filtrados.length === 0) {
                     const li = document.createElement('li');
                     li.textContent = 'Não encontrado';
                     li.className = 'custom-dropdown-item';
-                    li.style.pointerEvents = 'none'; 
-                    li.style.color = '#999';
+                    li.style.pointerEvents = 'none'; li.style.color = '#999';
                     listElement.appendChild(li);
                 } else {
                     filtrados.forEach(cd => {
                         const li = document.createElement('li');
                         li.textContent = cd;
                         li.className = 'custom-dropdown-item';
-                        
-                        li.addEventListener('mousedown', () => {
-                            input.value = cd;
-                            listElement.classList.remove('show');
-                        });
+                        li.addEventListener('mousedown', () => { input.value = cd; listElement.classList.remove('show'); });
                         listElement.appendChild(li);
                     });
                 }
             };
-
-            input.addEventListener('focus', () => {
-                renderList(input.value);
-                listElement.classList.add('show');
-            });
-
-            input.addEventListener('input', (e) => {
-                renderList(e.target.value);
-                listElement.classList.add('show');
-            });
-
-            input.addEventListener('blur', () => {
-                setTimeout(() => {
-                    listElement.classList.remove('show');
-                }, 150);
-            });
+            input.addEventListener('focus', () => { renderList(input.value); listElement.classList.add('show'); });
+            input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); });
+            input.addEventListener('blur', () => { setTimeout(() => listElement.classList.remove('show'), 150); });
         });
-
     </script>
 </body>
 </html>
