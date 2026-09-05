@@ -556,7 +556,7 @@
         }
 
         .btn-salvar:hover { filter: brightness(1.2); }
-        .dark-theme .btn-salvar { background-color: #475569; color: #ffffff; } /* Ajustado para a cor idêntica ao botão Novo Registro no modo escuro */
+        .dark-theme .btn-salvar { background: linear-gradient(to bottom, #475569, #334155); border: 1px solid #1e293b; color: #f1f5f9; }
 
     </style>
 </head>
@@ -795,22 +795,22 @@
             <div class="modal-body">
                 <div class="input-pill">
                     <span class="input-prefix">HU:</span>
-                    <input type="text">
+                    <input type="text" id="input-hu">
                 </div>
                 
                 <div class="input-pill">
                     <span class="input-prefix">IS:</span>
-                    <input type="text">
+                    <input type="text" id="input-is">
                 </div>
                 
                 <div class="input-pill">
                     <span class="input-prefix">TS:</span>
-                    <input type="text">
+                    <input type="text" id="input-ts">
                 </div>
                 
                 <div class="input-pill">
                     <span class="input-prefix">Origem:</span>
-                    <input type="text" class="custom-dropdown-input" autocomplete="off">
+                    <input type="text" id="modal-origem" class="custom-dropdown-input" autocomplete="off">
                     <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
                 </div>
                 
@@ -822,7 +822,7 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn-salvar">Salvar</button>
+                <button class="btn-salvar" id="btn-salvar-registro">Salvar</button>
             </div>
         </div>
     </div>
@@ -894,6 +894,7 @@
         const modalOverlay = document.getElementById('modal-novo-registro');
         const btnFecharModal = document.getElementById('fechar-modal-btn');
         const modalDestinoInput = document.getElementById('modal-destino');
+        const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
 
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
@@ -911,6 +912,29 @@
             if (e.target === modalOverlay) {
                 modalOverlay.classList.remove('active');
             }
+        });
+
+        // Ação do Botão Salvar (TS não obrigatório)
+        btnSalvarRegistro.addEventListener('click', () => {
+            const hu = document.getElementById('input-hu').value;
+            const is = document.getElementById('input-is').value;
+            const ts = document.getElementById('input-ts').value; // Opcional
+            const origem = document.getElementById('modal-origem').value;
+            const destino = document.getElementById('modal-destino').value;
+
+            if (!hu || !is || !origem || !destino) {
+                alert('Por favor, preencha os campos obrigatórios (HU, IS, Origem e Destino).');
+                return;
+            }
+
+            console.log("Novo Registro Salvo:", { hu, is, ts, origem, destino });
+
+            // Fecha a modal e limpa os campos
+            modalOverlay.classList.remove('active');
+            document.getElementById('input-hu').value = '';
+            document.getElementById('input-is').value = '';
+            document.getElementById('input-ts').value = '';
+            document.getElementById('modal-origem').value = '';
         });
 
         // =========================================
