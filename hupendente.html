@@ -426,7 +426,7 @@
         .table-actions i:hover { transform: scale(1.1); }
 
         /* =========================================
-           MODAL - NOVO REGISTRO
+           MODAIS (NOVO REGISTRO & DETALHES)
            ========================================= */
         .modal-overlay {
             position: fixed;
@@ -451,7 +451,7 @@
             background-color: #d1d9e2; 
             border-radius: 20px;
             padding: 25px 30px;
-            width: 320px;
+            width: 340px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             border: 1px solid #aebac9;
             transform: translateY(-20px);
@@ -557,6 +557,35 @@
 
         .btn-salvar:hover { filter: brightness(1.2); }
         .dark-theme .btn-salvar { background: linear-gradient(to bottom, #475569, #334155); border: 1px solid #1e293b; color: #f1f5f9; }
+
+        /* Estilos específicos da Modal de Detalhes */
+        .detalhes-body {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #004b87;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .dark-theme .detalhes-body { color: #8ca4c0; }
+        .detalhes-body span { font-weight: 400; color: #333; }
+        .dark-theme .detalhes-body span { color: #f1f5f9; }
+        .historico-box {
+            margin-top: 10px;
+            border-top: 1px solid #aebac9;
+            padding-top: 8px;
+        }
+        .dark-theme .historico-box { border-color: #334155; }
+        .historico-lista {
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-top: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
 
     </style>
 </head>
@@ -734,21 +763,22 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-hu-corpo">
-                    <tr>
+                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-agendamento="" data-ts-origem="" data-ts-destino="" data-data-reg="27/10/2026 14:00" data-historico="Pendente - admin (27/10/2026 14:00)">
                         <td><input type="checkbox"></td>
                         <td>15878526144691</td>
                         <td>74564567</td>
                         <td>SC02</td>
                         <td>BA01</td>
                         <td><span class="status-badge status-pendente">Pendente</span></td>
-                        <td></td> <td>
+                        <td></td>
+                        <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-check-circle" style="color: #555;"></i>
-                                <i class="ph-fill ph-eye" style="color: #555;"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-ts-origem="123456" data-ts-destino="" data-data-reg="01/09/2026 00:00" data-historico="Pendente - jblucas (01/08/2026 12:00) | Agendado - epacheco (01/09/2026 00:00)">
                         <td><input type="checkbox"></td>
                         <td>77859526454822</td>
                         <td>65114795</td>
@@ -759,21 +789,22 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-check-circle" style="color: #555;"></i>
-                                <i class="ph-fill ph-eye" style="color: #555;"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr data-hu="92217863644863" data-is="21875314" data-origem="PR06" data-destino="RJ10" data-status="Finalizado" data-agendamento="" data-ts-origem="" data-ts-destino="78910" data-data-reg="30/10/2026 10:00" data-historico="Pendente - admin (29/10/2026 10:00) | Finalizado - admin (30/10/2026 10:00)">
                         <td><input type="checkbox"></td>
                         <td>92217863644863</td>
                         <td>21875314</td>
                         <td>PR06</td>
                         <td>RJ10</td>
                         <td><span class="status-badge status-finalizado">Finalizado</span></td>
-                        <td></td> <td>
+                        <td></td>
+                        <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-check-circle" style="color: #555;"></i>
-                                <i class="ph-fill ph-eye" style="color: #555;"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
                     </tr>
@@ -822,6 +853,18 @@
             <div class="modal-footer">
                 <button class="btn-salvar" id="btn-salvar-registro">Salvar</button>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-detalhes">
+        <div class="modal-content" style="width: 360px;">
+            <div class="modal-header" style="color: #004b87;">
+                <h2 style="font-size: 1rem;">Detalhes do Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-detalhes-btn"></i>
+            </div>
+            
+            <div class="modal-body detalhes-body" id="detalhes-conteudo">
+                </div>
         </div>
     </div>
 
@@ -886,7 +929,7 @@
         }
 
         // =========================================
-        // LÓGICA DO MODAL (NOVO REGISTRO) E INSERÇÃO NA TABELA
+        // LÓGICA DOS MODAIS (NOVO & DETALHES)
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
@@ -895,6 +938,7 @@
         const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
         const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
+        // Modal Novo Registro
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
             const savedCD = localStorage.getItem('userCD');
@@ -913,20 +957,112 @@
             }
         });
 
-        // Ação do Botão Salvar (Adiciona o item pendente sem data de agendamento no topo)
+        // Modal Detalhes (Ícone do olho)
+        const modalDetalhes = document.getElementById('modal-detalhes');
+        const btnFecharDetalhes = document.getElementById('fechar-detalhes-btn');
+        const detalhesConteudo = document.getElementById('detalhes-conteudo');
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-detalhes')) {
+                const tr = e.target.closest('tr');
+                const hu = tr.getAttribute('data-hu');
+                const is = tr.getAttribute('data-is');
+                const origem = tr.getAttribute('data-origem');
+                const destino = tr.getAttribute('data-destino');
+                const status = tr.getAttribute('data-status');
+                const tsOrigem = tr.getAttribute('data-ts-origem');
+                const tsDestino = tr.getAttribute('data-ts-destino');
+                const dataReg = tr.getAttribute('data-data-reg');
+                const historico = tr.getAttribute('data-historico');
+                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+
+                let htmlDetalhes = `
+                    <div>Data do Registo: <span style="font-weight:400;">${dataReg}</span></div>
+                    <div>Status: <span style="font-weight:400;">${status}</span></div>
+                    <div>HU: <span style="font-weight:400;">${hu}</span></div>
+                    <div>IS: <span style="font-weight:400;">${is}</span></div>
+                    <div>Origem: <span style="font-weight:400;">${origem}</span></div>
+                `;
+
+                if (tsOrigem) {
+                    htmlDetalhes += `<div>TS Origem: <span style="font-weight:400;">${tsOrigem}</span></div>`;
+                }
+
+                htmlDetalhes += `<div>Destino: <span style="font-weight:400;">${destino}</span></div>`;
+
+                if (tsDestino) {
+                    htmlDetalhes += `<div>TS Destino: <span style="font-weight:400;">${tsDestino}</span></div>`;
+                }
+
+                htmlDetalhes += `
+                    <div class="historico-box">
+                        Histórico:
+                        <div class="historico-lista">
+                `;
+
+                const historicoArray = historico.split(' | ');
+                historicoArray.forEach(item => {
+                    htmlDetalhes += `<div>• ${item}</div>`;
+                });
+
+                htmlDetalhes += `
+                        </div>
+                    </div>
+                `;
+
+                detalhesConteudo.innerHTML = htmlDetalhes;
+                modalDetalhes.classList.add('active');
+            }
+        });
+
+        btnFecharDetalhes.addEventListener('click', () => {
+            modalDetalhes.classList.remove('active');
+        });
+
+        modalDetalhes.addEventListener('click', (e) => {
+            if (e.target === modalDetalhes) {
+                modalDetalhes.classList.remove('active');
+            }
+        });
+
+        // Ação Salvar Novo Registro
         btnSalvarRegistro.addEventListener('click', () => {
             const hu = document.getElementById('input-hu').value.trim();
             const is = document.getElementById('input-is').value.trim();
+            const ts = document.getElementById('input-ts').value.trim();
             const origem = document.getElementById('modal-origem').value.trim();
             const destino = document.getElementById('modal-destino').value.trim();
+            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
 
             if (!hu || !is || !origem || !destino) {
                 alert('Por favor, preencha os campos obrigatórios (HU, IS, Origem e Destino).');
                 return;
             }
 
-            // Cria a nova linha (tr) com status Pendente e sem agendamento
+            const agora = new Date();
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const ano = agora.getFullYear();
+            const hora = String(agora.getHours()).padStart(2, '0');
+            const minuto = String(agora.getMinutes()).padStart(2, '0');
+            const dataFormatada = `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+
+            let tsOrigemVal = ts ? ts : "";
+            let tsDestinoVal = "";
+            let historicoInicial = `Pendente - ${usuarioLogado} (${dataFormatada})`;
+
             const novaLinha = document.createElement('tr');
+            novaLinha.setAttribute('data-hu', hu);
+            novaLinha.setAttribute('data-is', is);
+            novaLinha.setAttribute('data-origem', origem);
+            novaLinha.setAttribute('data-destino', destino);
+            novaLinha.setAttribute('data-status', 'Pendente');
+            novaLinha.setAttribute('data-agendamento', '');
+            novaLinha.setAttribute('data-ts-origem', tsOrigemVal);
+            novaLinha.setAttribute('data-ts-destino', tsDestinoVal);
+            novaLinha.setAttribute('data-data-reg', dataFormatada);
+            novaLinha.setAttribute('data-historico', historicoInicial);
+
             novaLinha.innerHTML = `
                 <td><input type="checkbox"></td>
                 <td>${hu}</td>
@@ -938,14 +1074,13 @@
                 <td>
                     <div class="table-actions">
                         <i class="ph-fill ph-check-circle" style="color: #555;"></i>
-                        <i class="ph-fill ph-eye" style="color: #555;"></i>
+                        <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                     </div>
                 </td>
             `;
 
             tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
 
-            // Fecha a modal e limpa os inputs
             modalOverlay.classList.remove('active');
             document.getElementById('input-hu').value = '';
             document.getElementById('input-is').value = '';
