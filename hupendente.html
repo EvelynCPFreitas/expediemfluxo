@@ -741,8 +741,7 @@
                         <td>SC02</td>
                         <td>BA01</td>
                         <td><span class="status-badge status-pendente">Pendente</span></td>
-                        <td>27/10/2026 14:00</td>
-                        <td>
+                        <td></td> <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-check-circle" style="color: #555;"></i>
                                 <i class="ph-fill ph-eye" style="color: #555;"></i>
@@ -771,8 +770,7 @@
                         <td>PR06</td>
                         <td>RJ10</td>
                         <td><span class="status-badge status-finalizado">Finalizado</span></td>
-                        <td>30/10/2026 10:00</td>
-                        <td>
+                        <td></td> <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-check-circle" style="color: #555;"></i>
                                 <i class="ph-fill ph-eye" style="color: #555;"></i>
@@ -785,7 +783,6 @@
 
     </main>
 
-    <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -916,7 +913,7 @@
             }
         });
 
-        // Ação do Botão Salvar (Adiciona o item pendente no topo da tabela)
+        // Ação do Botão Salvar (Adiciona o item pendente sem data de agendamento no topo)
         btnSalvarRegistro.addEventListener('click', () => {
             const hu = document.getElementById('input-hu').value.trim();
             const is = document.getElementById('input-is').value.trim();
@@ -928,16 +925,7 @@
                 return;
             }
 
-            // Pega a data e hora atual no formato DD/MM/AAAA HH:MM
-            const agora = new Date();
-            const dia = String(agora.getDate()).padStart(2, '0');
-            const mes = String(agora.getMonth() + 1).padStart(2, '0');
-            const ano = agora.getFullYear();
-            const hora = String(agora.getHours()).padStart(2, '0');
-            const minuto = String(agora.getMinutes()).padStart(2, '0');
-            const dataFormatada = `${dia}/${mes}/${ano} ${hora}:${minuto}`;
-
-            // Cria a nova linha (tr) e insere no topo da tabela
+            // Cria a nova linha (tr) com status Pendente e sem agendamento
             const novaLinha = document.createElement('tr');
             novaLinha.innerHTML = `
                 <td><input type="checkbox"></td>
@@ -946,7 +934,7 @@
                 <td>${origem}</td>
                 <td>${destino}</td>
                 <td><span class="status-badge status-pendente">Pendente</span></td>
-                <td>${dataFormatada}</td>
+                <td></td>
                 <td>
                     <div class="table-actions">
                         <i class="ph-fill ph-check-circle" style="color: #555;"></i>
@@ -957,7 +945,7 @@
 
             tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
 
-            // Fecha a modal e limpa os inputs principais
+            // Fecha a modal e limpa os inputs
             modalOverlay.classList.remove('active');
             document.getElementById('input-hu').value = '';
             document.getElementById('input-is').value = '';
