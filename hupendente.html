@@ -733,7 +733,7 @@
                         <th>Ações</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tabela-hu-corpo">
                     <tr>
                         <td><input type="checkbox"></td>
                         <td>15878526144691</td>
@@ -785,6 +785,7 @@
 
     </main>
 
+    <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -888,13 +889,14 @@
         }
 
         // =========================================
-        // LÓGICA DO MODAL (NOVO REGISTRO)
+        // LÓGICA DO MODAL (NOVO REGISTRO) E INSERÇÃO NA TABELA
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
         const btnFecharModal = document.getElementById('fechar-modal-btn');
         const modalDestinoInput = document.getElementById('modal-destino');
         const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
+        const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
@@ -914,22 +916,48 @@
             }
         });
 
-        // Ação do Botão Salvar (TS não obrigatório)
+        // Ação do Botão Salvar (Adiciona o item pendente no topo da tabela)
         btnSalvarRegistro.addEventListener('click', () => {
-            const hu = document.getElementById('input-hu').value;
-            const is = document.getElementById('input-is').value;
-            const ts = document.getElementById('input-ts').value; // Opcional
-            const origem = document.getElementById('modal-origem').value;
-            const destino = document.getElementById('modal-destino').value;
+            const hu = document.getElementById('input-hu').value.trim();
+            const is = document.getElementById('input-is').value.trim();
+            const origem = document.getElementById('modal-origem').value.trim();
+            const destino = document.getElementById('modal-destino').value.trim();
 
             if (!hu || !is || !origem || !destino) {
                 alert('Por favor, preencha os campos obrigatórios (HU, IS, Origem e Destino).');
                 return;
             }
 
-            console.log("Novo Registro Salvo:", { hu, is, ts, origem, destino });
+            // Pega a data e hora atual no formato DD/MM/AAAA HH:MM
+            const agora = new Date();
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const ano = agora.getFullYear();
+            const hora = String(agora.getHours()).padStart(2, '0');
+            const minuto = String(agora.getMinutes()).padStart(2, '0');
+            const dataFormatada = `${dia}/${mes}/${ano} ${hora}:${minuto}`;
 
-            // Fecha a modal e limpa os campos
+            // Cria a nova linha (tr) e insere no topo da tabela
+            const novaLinha = document.createElement('tr');
+            novaLinha.innerHTML = `
+                <td><input type="checkbox"></td>
+                <td>${hu}</td>
+                <td>${is}</td>
+                <td>${origem}</td>
+                <td>${destino}</td>
+                <td><span class="status-badge status-pendente">Pendente</span></td>
+                <td>${dataFormatada}</td>
+                <td>
+                    <div class="table-actions">
+                        <i class="ph-fill ph-check-circle" style="color: #555;"></i>
+                        <i class="ph-fill ph-eye" style="color: #555;"></i>
+                    </div>
+                </td>
+            `;
+
+            tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
+
+            // Fecha a modal e limpa os inputs principais
             modalOverlay.classList.remove('active');
             document.getElementById('input-hu').value = '';
             document.getElementById('input-is').value = '';
