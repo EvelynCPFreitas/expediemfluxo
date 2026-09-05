@@ -178,7 +178,7 @@
         .btn-novo-registro:hover { filter: brightness(1.1); }
         .dark-theme .btn-novo-registro { background: linear-gradient(to bottom, #475569, #334155); border-color: #1e293b; }
 
-        /* BARRA DE FILTROS AGORA COM MARGEM INFERIOR E BORDAS ARREDONDADAS */
+        /* BARRA DE FILTROS */
         .hu-filter-bar {
             background-color: #d1d9e2; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px;
             display: flex; align-items: center; gap: 12px; font-size: 0.85rem; font-weight: 700; color: #004b87;
@@ -200,7 +200,7 @@
         .hu-filter-finalizar { margin-left: auto; cursor: pointer; transition: opacity 0.2s; }
         .hu-filter-finalizar:hover { opacity: 0.7; }
 
-        /* CONTAINER DA TABELA COM BORDAS ARREDONDADAS EM CIMA E EMBAIXO */
+        /* CONTAINER DA TABELA */
         .hu-table-container {
             background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
             transition: background-color 0.3s;
@@ -208,15 +208,18 @@
         .dark-theme .hu-table-container { background-color: #0f172a; }
 
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
-        .hu-table thead { background-color: #004b87; color: white; transition: background-color 0.3s; }
+        
+        /* CABEÇALHO COM A MESMA COR DE FONTE DO FUNDO DA JANELA (#d1d9e2) */
+        .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         
         /* Arredonda as pontas do cabeçalho da tabela */
         .hu-table th:first-child { border-top-left-radius: 8px; }
         .hu-table th:last-child { border-top-right-radius: 8px; }
         
-        .hu-table th, .hu-table td { padding: 12px 10px; color: #444; border-bottom: 1px solid transparent; transition: border-color 0.3s; }
-        .dark-theme .hu-table th, .dark-theme .hu-table td { color: #cbd5e1; }
+        .hu-table th, .hu-table td { padding: 12px 10px; border-bottom: 1px solid transparent; transition: border-color 0.3s; }
+        .hu-table td { color: #444; }
+        .dark-theme .hu-table td { color: #cbd5e1; }
         .hu-table th { font-weight: 700; }
         
         .status-badge { padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
