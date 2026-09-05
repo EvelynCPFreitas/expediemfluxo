@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HU's Pendentes</title>
+    <style>
+        :root {
+            --primary-blue: #004a7c;
+            --bg-color: #f4f6f9;
+            --table-bg: #d0d7e1;
+            --text-dark: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+
+        .header-title {
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        /* Dashboard Cards */
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            flex: 1;
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+
+        .card-title { font-size: 18px; margin-bottom: 10px; }
+        .card-value { font-size: 32px; font-style: italic; }
+
+        .card-total { background: linear-gradient(135deg, #111 0%, #555 100%); }
+        .card-pendente { background: linear-gradient(135deg, #111 0%, #d32f2f 100%); }
+        .card-expedido { background: linear-gradient(135deg, #111 0%, #f57c00 100%); }
+        .card-finalizado { background: linear-gradient(135deg, #111 0%, #00bfa5 100%); }
+
+        /* Actions & Filters */
+        .actions-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .btn-novo {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filter-bar {
+            background-color: #c4d0d9;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .filter-bar input, .filter-bar select {
+            padding: 4px 8px;
+            border: 1px solid var(--primary-blue);
+            border-radius: 4px;
+            background: transparent;
+        }
+
+        .filter-bar .search-input { width: 150px; background: white; }
+        .filter-bar .small-input { width: 60px; }
+
+        /* Table */
+        .data-table-container {
+            background-color: var(--table-bg);
+            border-radius: 0 0 8px 8px;
+            padding-bottom: 20px;
+            min-height: 300px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        thead {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid transparent;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pendente { background-color: #ffcdd2; color: #c62828; }
+        .status-agendado { background-color: #f8bbd0; color: #ad1457; }
+        .status-finalizado { background-color: #b2dfdb; color: #00695c; }
+
+        /* Icons */
+        .action-icons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            font-size: 16px;
+            color: #555;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="header-title">HU's Pendentes</h1>
+
+    <div class="cards-container">
+        <div class="card card-total">
+            <div class="card-title">Total</div>
+            <div class="card-value">0</div>
+        </div>
+        <div class="card card-pendente">
+            <div class="card-title">Pendente</div>
+            <div class="card-value">0</div>
+        </div>
+        <div class="card card-expedido">
+            <div class="card-title">Expedido</div>
+            <div class="card-value">0</div>
+        </div>
+        <div class="card card-finalizado">
+            <div class="card-title">Finalizado</div>
+            <div class="card-value">0</div>
+        </div>
+    </div>
+
+    <div class="actions-container">
+        <button class="btn-novo">+ Novo Registro</button>
+    </div>
+
+    <div class="filter-bar">
+        <span>🔍 <input type="text" placeholder="Buscar" class="search-input"></span>
+        <span>Origem <input type="text" class="small-input"></span>
+        <span>Destino <input type="text" class="small-input"></span>
+        <span>Desvio <input type="text" class="small-input"></span>
+        <span>Status <input type="text" class="small-input"></span>
+        <span>Data</span>
+        <span style="margin-left: auto;">Finalizar</span>
+    </div>
+
+    <div class="data-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>HU</th>
+                    <th>IS</th>
+                    <th>Origem</th>
+                    <th>Destino</th>
+                    <th>Status</th>
+                    <th>Agendamento</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>15878526144691</td>
+                    <td>74564567</td>
+                    <td>SC02</td>
+                    <td>BA01</td>
+                    <td><span class="status-badge status-pendente">Pendente</span></td>
+                    <td>27/10/2026 14:00</td>
+                    <td>
+                        <div class="action-icons">
+                            <span>✔️</span>
+                            <span>👁️</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>77859526454822</td>
+                    <td>65114795</td>
+                    <td>SP15</td>
+                    <td>SC02</td>
+                    <td><span class="status-badge status-agendado">Agendado</span></td>
+                    <td>01/09/2026 00:00</td>
+                    <td>
+                        <div class="action-icons">
+                            <span>✔️</span>
+                            <span>👁️</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>92217863644863</td>
+                    <td>21875314</td>
+                    <td>PR06</td>
+                    <td>RJ10</td>
+                    <td><span class="status-badge status-finalizado">Finalizado</span></td>
+                    <td>30/10/2026 10:00</td>
+                    <td>
+                        <div class="action-icons">
+                            <span>✔️</span>
+                            <span>👁️</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
