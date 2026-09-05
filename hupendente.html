@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo - HU's Pendentes</title>
+    <title>Expedição em Fluxo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -233,7 +233,7 @@
             transition: background-color 0.1s, color 0.1s;
         }
         .custom-dropdown-item:hover {
-            background-color: #004b87; /* Azul idêntico à tela inicial */
+            background-color: #004b87; 
             color: #ffffff;
         }
 
@@ -250,19 +250,20 @@
             color: #fcd34d;
         }
 
-        .hu-filter-finalizar { margin-left: auto; cursor: pointer; transition: opacity 0.2s; }
-        .hu-filter-finalizar:hover { opacity: 0.7; }
-
         /* CONTAINER DA TABELA */
         .hu-table-container {
             background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
             transition: background-color 0.3s, border-color 0.3s;
             border: 1px solid transparent; 
         }
-        .dark-theme .hu-table-container { background-color: #0f172a; border: 1px solid #1e293b; }
+        .dark-theme .hu-table-container { 
+            background-color: #0f172a; 
+            border: 1px solid #1e293b; 
+        }
 
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
         
+        /* CABEÇALHO */
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         
@@ -421,10 +422,8 @@
                 </div>
             </div>
 
-            <div style="display: flex; gap: 5px; align-items: center;">Desvio <input type="text" class="small-input"></div>
             <div style="display: flex; gap: 5px; align-items: center;">Status <input type="text" class="small-input"></div>
             <div>Data</div>
-            <div class="hu-filter-finalizar">Finalizar</div>
         </div>
 
         <div class="hu-table-container">
