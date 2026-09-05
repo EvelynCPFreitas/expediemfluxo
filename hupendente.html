@@ -654,10 +654,11 @@
                     <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
                 </div>
                 
-                <!-- DESTINO: Preenchido automaticamente com o localStorage -->
+                <!-- DESTINO: Dropdown Inteligente no Modal (Preenchido com o localStorage) -->
                 <div class="input-pill">
                     <span class="input-prefix">Destino:</span>
-                    <input type="text" id="modal-destino">
+                    <input type="text" id="modal-destino" class="custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
                 </div>
             </div>
 
@@ -733,7 +734,7 @@
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
         const btnFecharModal = document.getElementById('fechar-modal-btn');
-        const modalDestinoInput = document.getElementById('modal-destino'); // Agora é o campo Destino
+        const modalDestinoInput = document.getElementById('modal-destino'); // Campo Destino
 
         // Abrir Modal e puxar CD para o Destino
         btnAbrirModal.addEventListener('click', () => {
