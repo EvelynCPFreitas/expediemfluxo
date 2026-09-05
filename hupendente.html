@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -195,20 +196,20 @@
         .search-input-wrapper i { position: absolute; left: 8px; color: #004b87; font-size: 0.9rem; }
         .dark-theme .search-input-wrapper i { color: #8ca4c0; }
         .search-input { width: 160px; padding-left: 25px !important; }
-        .small-input { width: 60px; }
+        .small-input { width: 80px; } /* Levemente aumentado para acomodar os códigos */
 
         .hu-filter-finalizar { margin-left: auto; cursor: pointer; transition: opacity 0.2s; }
         .hu-filter-finalizar:hover { opacity: 0.7; }
 
-        /* CONTAINER DA TABELA - COM CONTORNO NO MODO ESCURO */
+        /* CONTAINER DA TABELA */
         .hu-table-container {
             background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
             transition: background-color 0.3s, border-color 0.3s;
-            border: 1px solid transparent; /* Invisível no tema claro para manter o alinhamento */
+            border: 1px solid transparent; 
         }
         .dark-theme .hu-table-container { 
             background-color: #0f172a; 
-            border: 1px solid #1e293b; /* Contorno da mesma cor do cabeçalho */
+            border: 1px solid #1e293b; 
         }
 
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
@@ -217,7 +218,6 @@
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         
-        /* Arredonda as pontas do cabeçalho da tabela */
         .hu-table th:first-child { border-top-left-radius: 8px; }
         .hu-table th:last-child { border-top-right-radius: 8px; }
         
@@ -242,6 +242,64 @@
     </style>
 </head>
 <body>
+
+    <datalist id="cd-list">
+        <option value="BRBA01"></option>
+        <option value="BRBA02"></option>
+        <option value="BRCE01"></option>
+        <option value="BRDF01"></option>
+        <option value="BRDF02"></option>
+        <option value="BRES01"></option>
+        <option value="BRMG01"></option>
+        <option value="BRMG02"></option>
+        <option value="BRMG03"></option>
+        <option value="BRMG04"></option>
+        <option value="BRMS01"></option>
+        <option value="BRPE01"></option>
+        <option value="BRPR01"></option>
+        <option value="BRPR04"></option>
+        <option value="BRRC01"></option>
+        <option value="BRRC02"></option>
+        <option value="BRRC03"></option>
+        <option value="BRRC04"></option>
+        <option value="BRRC05"></option>
+        <option value="BRRJ01"></option>
+        <option value="BRRJ02"></option>
+        <option value="BRRS01"></option>
+        <option value="BRRS03"></option>
+        <option value="BRRS04"></option>
+        <option value="BRSC02"></option>
+        <option value="BRSP02"></option>
+        <option value="BRSP03"></option>
+        <option value="BRSP04"></option>
+        <option value="BRSP05"></option>
+        <option value="BRSP06"></option>
+        <option value="BRSP09"></option>
+        <option value="BRSP10"></option>
+        <option value="BRSP11"></option>
+        <option value="BRSP14"></option>
+        <option value="BRSP15"></option>
+        <option value="BRSP18"></option>
+        <option value="BRSP19"></option>
+        <option value="BRSP21"></option>
+        <option value="BRSP23"></option>
+        <option value="BRSP24"></option>
+        <option value="BRSP25"></option>
+        <option value="BRSP26"></option>
+        <option value="BRSP27"></option>
+        <option value="BRSP28"></option>
+        <option value="BRSP29"></option>
+        <option value="BRSP30"></option>
+        <option value="BRSP31"></option>
+        <option value="BRSP33"></option>
+        <option value="BRSP34"></option>
+        <option value="BRSP35"></option>
+        <option value="BRSP38"></option>
+        <option value="BRSP51"></option>
+        <option value="BRSP52"></option>
+        <option value="BRSP53"></option>
+        <option value="BRSP55"></option>
+    </datalist>
 
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
@@ -356,8 +414,8 @@
                 <i class="ph ph-magnifying-glass"></i>
                 <input type="text" placeholder="Buscar" class="search-input">
             </div>
-            <div style="display: flex; gap: 5px; align-items: center;">Origem <input type="text" class="small-input"></div>
-            <div style="display: flex; gap: 5px; align-items: center;">Destino <input type="text" class="small-input"></div>
+            <div style="display: flex; gap: 5px; align-items: center;">Origem <input type="text" class="small-input" list="cd-list"></div>
+            <div style="display: flex; gap: 5px; align-items: center;">Destino <input type="text" class="small-input" list="cd-list"></div>
             <div style="display: flex; gap: 5px; align-items: center;">Desvio <input type="text" class="small-input"></div>
             <div style="display: flex; gap: 5px; align-items: center;">Status <input type="text" class="small-input"></div>
             <div>Data</div>
