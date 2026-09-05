@@ -778,7 +778,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-ts-origem="123456" data-ts-destino="" data-data-reg="01/09/2026 00:00" data-historico="Pendente - Evelyn (01/08/2026 12:00) | Agendado - Evelyn (01/09/2026 00:00)">
+                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-ts-origem="123456" data-ts-destino="654321" data-data-reg="01/09/2026 00:00" data-historico="Pendente - Evelyn (01/08/2026 12:00) | Agendado - Evelyn (01/09/2026 00:00)">
                         <td><input type="checkbox"></td>
                         <td>77859526454822</td>
                         <td>65114795</td>
@@ -992,6 +992,7 @@
 
                 htmlDetalhes += `<div>Destino: <span style="font-weight:400;">${destino}</span></div>`;
 
+                // TS Destino logo abaixo de Destino
                 if (tsDestino) {
                     htmlDetalhes += `<div>TS Destino: <span style="font-weight:400;">${tsDestino}</span></div>`;
                 }
@@ -1027,7 +1028,7 @@
             }
         });
 
-        // Ação Salvar Novo Registro (Puxa o nome do usuário logado do localStorage)
+        // Ação Salvar Novo Registro
         btnSalvarRegistro.addEventListener('click', () => {
             const hu = document.getElementById('input-hu').value.trim();
             const is = document.getElementById('input-is').value.trim();
@@ -1035,7 +1036,6 @@
             const origem = document.getElementById('modal-origem').value.trim();
             const destino = document.getElementById('modal-destino').value.trim();
             
-            // Puxa o nome atual do usuário logado (ex: Evelyn)
             const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
 
             if (!hu || !is || !origem || !destino) {
