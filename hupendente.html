@@ -556,7 +556,7 @@
         }
 
         .btn-salvar:hover { filter: brightness(1.2); }
-        .dark-theme .btn-salvar { background-color: #334155; color: #fcd34d; }
+        .dark-theme .btn-salvar { background-color: #475569; color: #ffffff; } /* Ajustado para a cor idêntica ao botão Novo Registro no modo escuro */
 
     </style>
 </head>
@@ -694,7 +694,6 @@
 
             <div style="display: flex; gap: 5px; align-items: center;">Status <input type="text" class="small-input"></div>
             
-            <!-- CAMPO DATA CUSTOMIZADO COM MULTI-SELEÇÃO E BOTÃO APLICAR -->
             <div style="display: flex; gap: 5px; align-items: center; margin-left: 5px;">
                 <span style="font-weight: 700;">Data:</span>
                 <div class="date-picker-wrapper">
@@ -786,7 +785,6 @@
 
     </main>
 
-    <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -927,9 +925,9 @@
         const calClear = document.getElementById('cal-clear');
         const calApply = document.getElementById('cal-apply');
 
-        let currentMonth = 8; // Setembro (0-indexed)
+        let currentMonth = 8; // Setembro
         let currentYear = 2026;
-        let selectedDates = new Set(); // Armazena as datas selecionadas
+        let selectedDates = new Set();
 
         const monthsNames = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
@@ -941,7 +939,6 @@
             const totalDays = new Date(year, month + 1, 0).getDate();
             const prevTotalDays = new Date(year, month, 0).getDate();
 
-            // Dias do mês anterior
             for (let i = firstDayIndex; i > 0; i--) {
                 const dayNum = prevTotalDays - i + 1;
                 const div = document.createElement('div');
@@ -950,7 +947,6 @@
                 calGrid.appendChild(div);
             }
 
-            // Dias do mês atual
             for (let i = 1; i <= totalDays; i++) {
                 const div = document.createElement('div');
                 div.className = 'cal-day';
@@ -974,7 +970,6 @@
                 calGrid.appendChild(div);
             }
 
-            // Dias do próximo mês para completar o grid
             const totalCells = calGrid.children.length;
             const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
             for (let i = 1; i <= remainingCells; i++) {
@@ -1028,16 +1023,13 @@
                 dateDisplayBtn.textContent = `${selectedDates.size} dias selecionados`;
             }
             calendarPopup.classList.remove('show');
-            // Aqui você pode disparar o filtro das HU's usando o array `Array.from(selectedDates)`
         });
 
-        // Fechar calendário ao clicar fora
         window.addEventListener('click', (e) => {
             if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) {
                 calendarPopup.classList.remove('show');
             }
         });
-
 
         // =========================================
         // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs)
