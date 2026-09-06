@@ -541,7 +541,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-hu-corpo">
-                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-desvio="MG02" data-status="Pendente" data-agendamento="27/10/2026 14:00" data-data-reg="27/10/2026 14:00" data-historico="Pendente - Sistema (27/10/2026 14:00)">
+                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-desvio="MG02" data-status="Pendente" data-agendamento="" data-data-reg="27/10/2026 14:00" data-historico="Pendente - Sistema (27/10/2026 14:00)">
                         <td><input type="checkbox"></td>
                         <td>15878526144691</td>
                         <td>74564567</td>
@@ -549,7 +549,7 @@
                         <td>BA01</td>
                         <td>MG02</td>
                         <td><span class="status-badge status-pendente">Pendente</span></td>
-                        <td>27/10/2026 14:00</td>
+                        <td></td>
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
@@ -697,6 +697,29 @@
         </div>
     </div>
 
+    <!-- MODAL DE PREENCHER AGENDAMENTO -->
+    <div class="modal-overlay" id="modal-input-agendamento">
+        <div class="modal-content" style="width: 320px;">
+            <div class="modal-header">
+                <h2>Agendar Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-modal-agendamento-btn"></i>
+            </div>
+            <div class="modal-body">
+                <div class="input-pill">
+                    <span class="input-prefix">Data:</span>
+                    <input type="date" id="input-data-agend" style="width: 100%;">
+                </div>
+                <div class="input-pill">
+                    <span class="input-prefix">Hora:</span>
+                    <input type="time" id="input-hora-agend" style="width: 100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-salvar" id="btn-confirmar-agendamento">Confirmar Agendamento</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // =========================================
         // LÓGICA DO TEMA E LOCALSTORAGE
@@ -811,6 +834,11 @@
         const btnConfirmarSim = document.getElementById('btn-confirmar-sim');
         const btnConfirmarNao = document.getElementById('btn-confirmar-nao');
 
+        // Modal de Agendamento
+        const modalAgendamento = document.getElementById('modal-input-agendamento');
+        const btnFecharAgendamento = document.getElementById('fechar-modal-agendamento-btn');
+        const btnConfirmarAgendamento = document.getElementById('btn-confirmar-agendamento');
+
         let linhaEmEdicao = null;
         let linhaParaAvancar = null;
         let statusParaAvancar = '';
@@ -892,8 +920,15 @@
                 if (novoStatus) {
                     linhaParaAvancar = tr;
                     statusParaAvancar = novoStatus;
-                    textoConfirmacao.textContent = `Deseja avançar o Status para ${novoStatus}?`;
-                    modalConfirmacao.classList.add('active');
+                    
+                    if (novoStatus === 'Agendado') {
+                        // Desvia para o modal de Agendamento
+                        modalAgendamento.classList.add('active');
+                    } else {
+                        // Abre a confirmação normal
+                        textoConfirmacao.textContent = `Deseja avançar o Status para ${novoStatus}?`;
+                        modalConfirmacao.classList.add('active');
+                    }
                 }
             }
         });
@@ -909,7 +944,46 @@
         btnConfirmarNao.addEventListener('click', () => modalConfirmacao.classList.remove('active'));
         modalConfirmacao.addEventListener('click', (e) => { if (e.target === modalConfirmacao) modalConfirmacao.classList.remove('active'); });
 
-        // APLICAR AVANÇO (Botão "Sim")
+        btnFecharAgendamento.addEventListener('click', () => modalAgendamento.classList.remove('active'));
+        modalAgendamento.addEventListener('click', (e) => { if (e.target === modalAgendamento) modalAgendamento.classList.remove('active'); });
+
+        // CONFIRMAR AGENDAMENTO
+        btnConfirmarAgendamento.addEventListener('click', () => {
+            if (linhaParaAvancar) {
+                const dataVal = document.getElementById('input-data-agend').value;
+                const horaVal = document.getElementById('input-hora-agend').value;
+                if (!dataVal || !horaVal) {
+                    alert('É obrigatório preencher a data e o horário para agendar.');
+                    return;
+                }
+                const dParts = dataVal.split('-');
+                const agendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaVal}`;
+                
+                linhaParaAvancar.setAttribute('data-agendamento', agendamentoFormatado);
+                linhaParaAvancar.cells[7].textContent = agendamentoFormatado; 
+
+                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+                const agora = new Date();
+                const dataFormatadaHist = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+                
+                linhaParaAvancar.setAttribute('data-status', 'Agendado');
+                
+                let historicoAtual = linhaParaAvancar.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
+                historicoAtual += ` | Agendado - ${usuarioLogado} (${dataFormatadaHist})`;
+                linhaParaAvancar.setAttribute('data-historico', historicoAtual);
+                
+                linhaParaAvancar.cells[6].innerHTML = `<span class="status-badge status-agendado">Agendado</span>`;
+                
+                atualizarKPIs();
+            }
+            modalAgendamento.classList.remove('active');
+            document.getElementById('input-data-agend').value = '';
+            document.getElementById('input-hora-agend').value = '';
+            linhaParaAvancar = null;
+            statusParaAvancar = '';
+        });
+
+        // APLICAR AVANÇO GERAL (Botão "Sim")
         btnConfirmarSim.addEventListener('click', () => {
             if (linhaParaAvancar && statusParaAvancar) {
                 const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
@@ -1004,7 +1078,7 @@
             novaLinha.setAttribute('data-destino', destino);
             novaLinha.setAttribute('data-desvio', desvio);
             novaLinha.setAttribute('data-status', 'Pendente');
-            novaLinha.setAttribute('data-agendamento', dataFormatada);
+            novaLinha.setAttribute('data-agendamento', ''); // Novo registro entra sem agendamento
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
             novaLinha.innerHTML = `
@@ -1015,7 +1089,7 @@
                 <td>${destino}</td>
                 <td>${desvio}</td>
                 <td><span class="status-badge status-pendente">Pendente</span></td>
-                <td>${dataFormatada}</td>
+                <td></td>
                 <td>
                     <div class="table-actions">
                         <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
@@ -1033,6 +1107,7 @@
             document.getElementById('input-is').value = '';
             document.getElementById('modal-origem').value = '';
             document.getElementById('modal-destino').value = '';
+            document.getElementById('modal-desvio').value = ''; // Adicionado para limpar também o desvio
 
             atualizarKPIs(); 
         });
