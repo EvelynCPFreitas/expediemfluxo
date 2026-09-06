@@ -911,6 +911,23 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONFIRMAÇÃO PARA FINALIZAR -->
+    <div class="modal-overlay" id="modal-confirmar-finalizar">
+        <div class="modal-content" style="width: 310px; text-align: center;">
+            <div class="modal-header">
+                <h2>Finalizar Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-modal-finalizar-btn"></i>
+            </div>
+            <div class="modal-body" style="gap: 15px;">
+                <p style="font-weight: 600; font-size: 0.95rem;">Deseja realmente finalizar este registro?</p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn-salvar" id="btn-sim-finalizar" style="padding: 8px 25px; background-color: #10b981;">Sim</button>
+                    <button class="btn-salvar" id="btn-nao-finalizar" style="padding: 8px 25px; background-color: #ef4444;">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE DETALHES DO REGISTRO -->
     <div class="modal-overlay" id="modal-detalhes">
         <div class="modal-content" style="width: 360px;">
@@ -922,7 +939,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DO REGISTRO (COM DATA E HORA DE AGENDAMENTO) -->
+    <!-- MODAL DE EDIÇÃO DO REGISTRO -->
     <div class="modal-overlay" id="modal-editar">
         <div class="modal-content">
             <div class="modal-header">
@@ -946,7 +963,6 @@
                     </select>
                 </div>
 
-                <!-- Campos de Data e Hora de Agendamento na Edição (aparecem só se Agendado) -->
                 <div id="container-edit-agendamento" style="display: none; flex-direction: column; gap: 12px;">
                     <div class="input-pill">
                         <span class="input-prefix">Data Agend.:</span>
@@ -1100,11 +1116,13 @@
         const modalEscolha = document.getElementById('modal-escolha-avancar');
         const modalAgendamento = document.getElementById('modal-input-agendamento');
         const modalTs = document.getElementById('modal-input-ts');
+        const modalFinalizar = document.getElementById('modal-confirmar-finalizar');
         let linhaEmProcesso = null;
 
         document.getElementById('fechar-escolha-btn').addEventListener('click', () => modalEscolha.classList.remove('active'));
         document.getElementById('fechar-modal-agendamento-btn').addEventListener('click', () => modalAgendamento.classList.remove('active'));
         document.getElementById('fechar-modal-ts-btn').addEventListener('click', () => modalTs.classList.remove('active'));
+        document.getElementById('fechar-modal-finalizar-btn').addEventListener('click', () => modalFinalizar.classList.remove('active'));
 
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-avancar')) {
@@ -1116,7 +1134,7 @@
                 } else if (statusAtual === 'Agendado') {
                     modalTs.classList.add('active');
                 } else if (statusAtual === 'Expedido') {
-                    atualizarStatusLinha(linhaEmProcesso, 'Finalizado');
+                    modalFinalizar.classList.add('active');
                 }
             }
 
@@ -1127,6 +1145,16 @@
             if (e.target.id === 'btn-escolha-expedir') {
                 modalEscolha.classList.remove('active');
                 modalTs.classList.add('active');
+            }
+
+            // Confirmação para Finalizar
+            if (e.target.id === 'btn-sim-finalizar') {
+                modalFinalizar.classList.remove('active');
+                atualizarStatusLinha(linhaEmProcesso, 'Finalizado');
+            }
+            if (e.target.id === 'btn-nao-finalizar') {
+                modalFinalizar.classList.remove('active');
+                linhaEmProcesso = null;
             }
         });
 
