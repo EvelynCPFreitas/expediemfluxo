@@ -583,7 +583,7 @@
                         <td>RJ10</td>
                         <td>SP02</td>
                         <td><span class="status-badge status-finalizado">Finalizado</span></td>
-                        <td>30/10/2026 10:00</td>
+                        <td></td>
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
@@ -875,6 +875,11 @@
                 
                 const historico = tr.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
 
+                let agendamentoHtml = '';
+                if (status === 'Agendado' && agendamento) {
+                    agendamentoHtml = `<div>Data/Agendamento: <span style="font-weight:400;">${agendamento}</span></div>`;
+                }
+
                 let htmlDetalhes = `
                     <div>Status: <span style="font-weight:400;">${status}</span></div>
                     <div>HU: <span style="font-weight:400;">${hu}</span></div>
@@ -882,7 +887,7 @@
                     <div>Origem: <span style="font-weight:400;">${origem}</span></div>
                     <div>Destino: <span style="font-weight:400;">${destino}</span></div>
                     <div>Desvio: <span style="font-weight:400;">${desvio}</span></div>
-                    <div>Data/Agendamento: <span style="font-weight:400;">${agendamento || 'N/A'}</span></div>
+                    ${agendamentoHtml}
                 `;
                 
                 htmlDetalhes += `<div class="historico-box">Histórico:<div class="historico-lista">`;
@@ -1003,6 +1008,12 @@
                 if (statusParaAvancar === 'Finalizado') badgeClass = 'status-finalizado';
                 
                 linhaParaAvancar.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${statusParaAvancar}</span>`;
+                
+                // Limpa a coluna de agendamento se o novo status não for agendado
+                if (statusParaAvancar !== 'Agendado') {
+                    linhaParaAvancar.cells[7].textContent = '';
+                }
+
                 atualizarKPIs();
             }
             modalConfirmacao.classList.remove('active');
@@ -1048,6 +1059,13 @@
             if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
             
             linhaEmEdicao.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
+
+            // Mostra a data na tabela apenas se for Agendado, senão deixa vazio
+            if (novoStatus === 'Agendado') {
+                linhaEmEdicao.cells[7].textContent = linhaEmEdicao.getAttribute('data-agendamento') || '';
+            } else {
+                linhaEmEdicao.cells[7].textContent = '';
+            }
 
             modalEditar.classList.remove('active');
             linhaEmEdicao = null;
