@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo</title>
+    <title>Expedição em Fluxo - Desvio de Rota</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -553,7 +553,8 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                                <svg class="btn-detalhes" viewBox="0 0 24 24" title="Detalhes"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
                             </div>
                         </td>
                     </tr>
@@ -569,7 +570,8 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                                <svg class="btn-detalhes" viewBox="0 0 24 24" title="Detalhes"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
                             </div>
                         </td>
                     </tr>
@@ -585,7 +587,8 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                                <svg class="btn-detalhes" viewBox="0 0 24 24" title="Detalhes"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
                             </div>
                         </td>
                     </tr>
@@ -767,7 +770,7 @@
         }
 
         // =========================================
-        // LÓGICA DOS MODAIS (Novo e Edição)
+        // LÓGICA DOS MODAIS (Novo, Edição e Avançar)
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
@@ -837,6 +840,39 @@
                 document.getElementById('edit-desvio').value = linhaEmEdicao.getAttribute('data-desvio');
                 editStatusSelect.value = linhaEmEdicao.getAttribute('data-status');
                 modalEditar.classList.add('active');
+            }
+
+            // AVANÇAR STATUS
+            if (e.target.classList.contains('btn-avancar')) {
+                const tr = e.target.closest('tr');
+                const statusAtual = tr.getAttribute('data-status');
+                let novoStatus = '';
+
+                // Lógica Linear de Avanço
+                if (statusAtual === 'Pendente') novoStatus = 'Agendado';
+                else if (statusAtual === 'Agendado') novoStatus = 'Aguardando Recusa';
+                else if (statusAtual === 'Aguardando Recusa') novoStatus = 'Recusado';
+                else if (statusAtual === 'Recusado') novoStatus = 'Finalizado';
+
+                if (novoStatus) {
+                    const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+                    const agora = new Date();
+                    const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+                    
+                    tr.setAttribute('data-status', novoStatus);
+                    let historicoAtual = tr.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
+                    historicoAtual += ` | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
+                    tr.setAttribute('data-historico', historicoAtual);
+                    
+                    let badgeClass = 'status-pendente';
+                    if (novoStatus === 'Agendado') badgeClass = 'status-agendado';
+                    if (novoStatus === 'Aguardando Recusa') badgeClass = 'status-aguardando';
+                    if (novoStatus === 'Recusado') badgeClass = 'status-recusado';
+                    if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
+                    
+                    tr.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
+                    atualizarKPIs();
+                }
             }
         });
 
@@ -928,7 +964,8 @@
                 <td>
                     <div class="table-actions">
                         <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                        <svg class="btn-detalhes" viewBox="0 0 24 24" title="Detalhes"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
+                        <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
                     </div>
                 </td>
             `;
