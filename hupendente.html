@@ -723,7 +723,7 @@
             <div style="display: flex; gap: 5px; align-items: center;">
                 Origem 
                 <div class="custom-dropdown-container">
-                    <input type="text" class="small-input custom-dropdown-input" autocomplete="off">
+                    <input type="text" id="filtro-origem" class="small-input custom-dropdown-input" autocomplete="off">
                     <ul class="custom-dropdown-list"></ul>
                 </div>
             </div>
@@ -731,7 +731,7 @@
             <div style="display: flex; gap: 5px; align-items: center;">
                 Destino 
                 <div class="custom-dropdown-container">
-                    <input type="text" class="small-input custom-dropdown-input" autocomplete="off">
+                    <input type="text" id="filtro-destino" class="small-input custom-dropdown-input" autocomplete="off">
                     <ul class="custom-dropdown-list"></ul>
                 </div>
             </div>
@@ -1028,26 +1028,6 @@
         }
 
         // =========================================
-        // LÓGICA DE FILTRAGEM DA TABELA
-        // =========================================
-        const filtroStatus = document.getElementById('filtro-status');
-        if (filtroStatus) {
-            filtroStatus.addEventListener('change', () => {
-                const valorFiltro = filtroStatus.value;
-                const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
-
-                linhas.forEach(tr => {
-                    const statusTr = tr.getAttribute('data-status');
-                    if (valorFiltro === '' || statusTr === valorFiltro) {
-                        tr.style.display = '';
-                    } else {
-                        tr.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // =========================================
         // LÓGICA DOS MODAIS E FLUXO DE AVANÇAR STATUS
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
@@ -1202,7 +1182,7 @@
                 document.getElementById('edit-ts-destino').value = linhaEmEdicao.getAttribute('data-ts-destino');
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
-                editStatusSelect.value = linhaEmEdicao.getAttribute('data-status');
+                document.getElementById('edit-status').value = linhaEmEdicao.getAttribute('data-status');
                 modalEditar.classList.add('active');
             }
         });
@@ -1221,7 +1201,7 @@
             linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value.trim());
             linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value.trim());
             
-            atualizarStatusLinha(linhaEmEdicao, editStatusSelect.value);
+            atualizarStatusLinha(linhaEmEdicao, document.getElementById('edit-status').value);
             modalEditar.classList.remove('active');
             linhaEmEdicao = null;
         });
@@ -1372,7 +1352,13 @@
                         const li = document.createElement('li');
                         li.textContent = cd;
                         li.className = 'custom-dropdown-item';
-                        li.addEventListener('mousedown', () => { input.value = cd; listElement.classList.remove('show'); });
+                        li.addEventListener('mousedown', () => { 
+                            input.value = cd; 
+                            listElement.classList.remove('show'); 
+                            
+                            // Dispara o evento de input para a tabela filtrar instantaneamente
+                            input.dispatchEvent(new Event('input'));
+                        });
                         listElement.appendChild(li);
                     });
                 }
@@ -1381,6 +1367,45 @@
             input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); });
             input.addEventListener('blur', () => { setTimeout(() => listElement.classList.remove('show'), 150); });
         });
+
+        // =========================================
+        // LÓGICA DE FILTRAGEM UNIFICADA DA TABELA
+        // =========================================
+        function aplicarFiltros() {
+            const valorBusca = document.querySelector('.search-input').value.toLowerCase();
+            const valorOrigem = document.getElementById('filtro-origem').value.toLowerCase();
+            const valorDestino = document.getElementById('filtro-destino').value.toLowerCase();
+            const valorStatus = document.getElementById('filtro-status').value;
+
+            const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
+
+            linhas.forEach(tr => {
+                const textContent = tr.textContent.toLowerCase();
+                const origemTr = tr.getAttribute('data-origem').toLowerCase();
+                const destinoTr = tr.getAttribute('data-destino').toLowerCase();
+                const statusTr = tr.getAttribute('data-status');
+
+                // Verifica se os valores batem. Usamos "includes" para que digitar "SP24" encontre "BRSP24"
+                const matchBusca = valorBusca === '' || textContent.includes(valorBusca);
+                const matchOrigem = valorOrigem === '' || origemTr.includes(valorOrigem);
+                const matchDestino = valorDestino === '' || destinoTr.includes(valorDestino);
+                const matchStatus = valorStatus === '' || statusTr === valorStatus;
+
+                // Só exibe a linha se ela passar em todos os filtros ativos
+                if (matchBusca && matchOrigem && matchDestino && matchStatus) {
+                    tr.style.display = '';
+                } else {
+                    tr.style.display = 'none';
+                }
+            });
+        }
+
+        // Adiciona os "escutadores" para rodar a função assim que o usuário interagir
+        document.querySelector('.search-input').addEventListener('input', aplicarFiltros);
+        document.getElementById('filtro-origem').addEventListener('input', aplicarFiltros);
+        document.getElementById('filtro-destino').addEventListener('input', aplicarFiltros);
+        document.getElementById('filtro-status').addEventListener('change', aplicarFiltros);
+
     </script>
 
     <!-- Código de Inicialização do Firebase -->
