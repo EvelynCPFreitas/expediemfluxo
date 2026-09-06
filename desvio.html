@@ -680,6 +680,23 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONFIRMAÇÃO DE AVANÇO -->
+    <div class="modal-overlay" id="modal-confirmacao-avancar">
+        <div class="modal-content" style="width: 320px; text-align: center;">
+            <div class="modal-header">
+                <h2>Confirmar Ação</h2>
+                <i class="ph ph-x modal-close" id="fechar-confirmacao-btn"></i>
+            </div>
+            <div class="modal-body" style="gap: 15px;">
+                <p style="font-weight: 600; font-size: 0.95rem; color: #333;" id="texto-confirmacao-avancar">Deseja avançar o Status para...</p>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
+                    <button class="btn-salvar" id="btn-confirmar-sim" style="background-color: #004b87; padding: 8px 20px;">Sim</button>
+                    <button class="btn-salvar" id="btn-confirmar-nao" style="background-color: #ef4444; padding: 8px 20px;">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // =========================================
         // LÓGICA DO TEMA E LOCALSTORAGE
@@ -699,9 +716,17 @@
             let theme = 'light-theme';
             if (body.classList.contains('dark-theme')) {
                 theme = 'dark-theme';
+                document.getElementById('texto-confirmacao-avancar').style.color = '#f1f5f9';
+            } else {
+                document.getElementById('texto-confirmacao-avancar').style.color = '#333';
             }
             localStorage.setItem('theme', theme); 
         });
+
+        // Correção de cor do texto no dark mode no carregamento
+        if (body.classList.contains('dark-theme')) {
+            document.getElementById('texto-confirmacao-avancar').style.color = '#f1f5f9';
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const cdDisplay = document.getElementById('display-cd');
@@ -779,6 +804,17 @@
         const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
         const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
+        // Modal de Confirmação de Avanço
+        const modalConfirmacao = document.getElementById('modal-confirmacao-avancar');
+        const btnFecharConfirmacao = document.getElementById('fechar-confirmacao-btn');
+        const textoConfirmacao = document.getElementById('texto-confirmacao-avancar');
+        const btnConfirmarSim = document.getElementById('btn-confirmar-sim');
+        const btnConfirmarNao = document.getElementById('btn-confirmar-nao');
+
+        let linhaEmEdicao = null;
+        let linhaParaAvancar = null;
+        let statusParaAvancar = '';
+
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
             const savedCD = localStorage.getItem('userCD');
@@ -796,11 +832,10 @@
         const btnFecharEditar = document.getElementById('fechar-editar-btn');
         const btnAtualizarRegistro = document.getElementById('btn-atualizar-registro');
         const editStatusSelect = document.getElementById('edit-status');
-        let linhaEmEdicao = null;
 
         document.addEventListener('click', (e) => {
             // ABRIR DETALHES
-            if (e.target.closest('.btn-detalhes')) {
+            if (e.target.closest('.btn-detalhes') || e.target.classList.contains('btn-detalhes')) {
                 const tr = e.target.closest('tr');
                 const hu = tr.getAttribute('data-hu');
                 const is = tr.getAttribute('data-is');
@@ -842,7 +877,7 @@
                 modalEditar.classList.add('active');
             }
 
-            // AVANÇAR STATUS
+            // ABRIR MODAL PARA AVANÇAR STATUS
             if (e.target.classList.contains('btn-avancar')) {
                 const tr = e.target.closest('tr');
                 const statusAtual = tr.getAttribute('data-status');
@@ -855,31 +890,51 @@
                 else if (statusAtual === 'Recusado') novoStatus = 'Finalizado';
 
                 if (novoStatus) {
-                    const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-                    const agora = new Date();
-                    const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-                    
-                    tr.setAttribute('data-status', novoStatus);
-                    let historicoAtual = tr.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
-                    historicoAtual += ` | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
-                    tr.setAttribute('data-historico', historicoAtual);
-                    
-                    let badgeClass = 'status-pendente';
-                    if (novoStatus === 'Agendado') badgeClass = 'status-agendado';
-                    if (novoStatus === 'Aguardando Recusa') badgeClass = 'status-aguardando';
-                    if (novoStatus === 'Recusado') badgeClass = 'status-recusado';
-                    if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
-                    
-                    tr.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
-                    atualizarKPIs();
+                    linhaParaAvancar = tr;
+                    statusParaAvancar = novoStatus;
+                    textoConfirmacao.textContent = `Deseja avançar o Status para ${novoStatus}?`;
+                    modalConfirmacao.classList.add('active');
                 }
             }
         });
 
+        // Fechar modais
         btnFecharDetalhes.addEventListener('click', () => modalDetalhes.classList.remove('active'));
         modalDetalhes.addEventListener('click', (e) => { if (e.target === modalDetalhes) modalDetalhes.classList.remove('active'); });
+        
         btnFecharEditar.addEventListener('click', () => modalEditar.classList.remove('active'));
         modalEditar.addEventListener('click', (e) => { if (e.target === modalEditar) modalEditar.classList.remove('active'); });
+
+        btnFecharConfirmacao.addEventListener('click', () => modalConfirmacao.classList.remove('active'));
+        btnConfirmarNao.addEventListener('click', () => modalConfirmacao.classList.remove('active'));
+        modalConfirmacao.addEventListener('click', (e) => { if (e.target === modalConfirmacao) modalConfirmacao.classList.remove('active'); });
+
+        // APLICAR AVANÇO (Botão "Sim")
+        btnConfirmarSim.addEventListener('click', () => {
+            if (linhaParaAvancar && statusParaAvancar) {
+                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+                const agora = new Date();
+                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+                
+                linhaParaAvancar.setAttribute('data-status', statusParaAvancar);
+                
+                let historicoAtual = linhaParaAvancar.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
+                historicoAtual += ` | ${statusParaAvancar} - ${usuarioLogado} (${dataFormatada})`;
+                linhaParaAvancar.setAttribute('data-historico', historicoAtual);
+                
+                let badgeClass = 'status-pendente';
+                if (statusParaAvancar === 'Agendado') badgeClass = 'status-agendado';
+                if (statusParaAvancar === 'Aguardando Recusa') badgeClass = 'status-aguardando';
+                if (statusParaAvancar === 'Recusado') badgeClass = 'status-recusado';
+                if (statusParaAvancar === 'Finalizado') badgeClass = 'status-finalizado';
+                
+                linhaParaAvancar.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${statusParaAvancar}</span>`;
+                atualizarKPIs();
+            }
+            modalConfirmacao.classList.remove('active');
+            linhaParaAvancar = null;
+            statusParaAvancar = '';
+        });
 
         // SALVAR EDIÇÃO
         btnAtualizarRegistro.addEventListener('click', () => {
