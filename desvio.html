@@ -184,10 +184,11 @@
         }
         .dark-theme .hu-filter-bar { background-color: #1e293b; color: #8ca4c0; }
 
-        .hu-filter-bar input {
+        .hu-filter-bar input, .hu-filter-bar select {
             padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px; font-size: 0.85rem; font-family: 'Inter', sans-serif;
         }
-        .dark-theme .hu-filter-bar input { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
+        .dark-theme .hu-filter-bar input, .dark-theme .hu-filter-bar select { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
+        .dark-theme .hu-filter-bar select option { background-color: #0f172a; color: #f1f5f9; }
         
         .search-input-wrapper { position: relative; display: flex; align-items: center; }
         .search-input-wrapper i { position: absolute; left: 8px; color: #004b87; font-size: 0.9rem; }
@@ -488,7 +489,17 @@
                 </div>
             </div>
 
-            <div style="display: flex; gap: 5px; align-items: center;">Status <input type="text" class="small-input"></div>
+            <div style="display: flex; gap: 5px; align-items: center;">
+                Status 
+                <select class="small-input" id="filtro-status" style="width: 140px;">
+                    <option value="">Todos</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Agendado">Agendado</option>
+                    <option value="Aguardando Recusa">Aguardando Recusa</option>
+                    <option value="Recusado">Recusado</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
+            </div>
             
             <div style="display: flex; gap: 5px; align-items: center;">
                 <span style="font-weight: 700;">Data:</span>
@@ -530,7 +541,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-hu-corpo">
-                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-desvio="MG02" data-status="Pendente" data-agendamento="27/10/2026 14:00" data-data-reg="27/10/2026 14:00">
+                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-desvio="MG02" data-status="Pendente" data-agendamento="27/10/2026 14:00" data-data-reg="27/10/2026 14:00" data-historico="Pendente - Sistema (27/10/2026 14:00)">
                         <td><input type="checkbox"></td>
                         <td>15878526144691</td>
                         <td>74564567</td>
@@ -546,7 +557,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-desvio="PE01" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-data-reg="01/09/2026 00:00">
+                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-desvio="PE01" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-data-reg="01/09/2026 00:00" data-historico="Pendente - Sistema (01/09/2026 00:00) | Agendado - Sistema (01/09/2026 00:00)">
                         <td><input type="checkbox"></td>
                         <td>77859526454822</td>
                         <td>65114795</td>
@@ -562,7 +573,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-hu="92217863644863" data-is="21875314" data-origem="PR06" data-destino="RJ10" data-desvio="SP02" data-status="Finalizado" data-agendamento="30/10/2026 10:00" data-data-reg="30/10/2026 10:00">
+                    <tr data-hu="92217863644863" data-is="21875314" data-origem="PR06" data-destino="RJ10" data-desvio="SP02" data-status="Finalizado" data-agendamento="30/10/2026 10:00" data-data-reg="30/10/2026 10:00" data-historico="Pendente - Sistema (29/10/2026 14:00) | Finalizado - Sistema (30/10/2026 10:00)">
                         <td><input type="checkbox"></td>
                         <td>92217863644863</td>
                         <td>21875314</td>
@@ -653,7 +664,7 @@
                 <div class="input-pill"><span class="input-prefix">Desvio:</span><input type="text" id="edit-desvio" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill">
                     <span class="input-prefix">Status:</span>
-                    <select id="edit-status">
+                    <select id="edit-status" style="width: 100%;">
                         <option value="Pendente">Pendente</option>
                         <option value="Agendado">Agendado</option>
                         <option value="Aguardando Recusa">Aguardando Recusa</option>
@@ -736,19 +747,38 @@
         }
 
         // =========================================
+        // LÓGICA DE FILTRAGEM DA TABELA (STATUS)
+        // =========================================
+        const filtroStatus = document.getElementById('filtro-status');
+        if (filtroStatus) {
+            filtroStatus.addEventListener('change', () => {
+                const valorFiltro = filtroStatus.value;
+                const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
+
+                linhas.forEach(tr => {
+                    const statusTr = tr.getAttribute('data-status');
+                    if (valorFiltro === '' || statusTr === valorFiltro) {
+                        tr.style.display = '';
+                    } else {
+                        tr.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // =========================================
         // LÓGICA DOS MODAIS (Novo e Edição)
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
         const btnFecharModal = document.getElementById('fechar-modal-btn');
-        const modalDesvioInput = document.getElementById('modal-desvio'); // PUXAR DESVIO
+        const modalDesvioInput = document.getElementById('modal-desvio'); 
         const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
         const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
             const savedCD = localStorage.getItem('userCD');
-            // AO INVÉS DE DESTINO, PUXA PARA O DESVIO CONFORME SOLICITADO
             if (savedCD) modalDesvioInput.value = savedCD;
         });
         
@@ -777,7 +807,6 @@
                 const status = tr.getAttribute('data-status');
                 const agendamento = tr.getAttribute('data-agendamento');
                 
-                // Puxa o histórico ou cria um padrão se for uma linha antiga fixa do HTML
                 const historico = tr.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
 
                 let htmlDetalhes = `
@@ -790,7 +819,6 @@
                     <div>Data/Agendamento: <span style="font-weight:400;">${agendamento || 'N/A'}</span></div>
                 `;
                 
-                // Adiciona a caixa de histórico ao HTML do Modal
                 htmlDetalhes += `<div class="historico-box">Histórico:<div class="historico-lista">`;
                 historico.split(' | ').forEach(item => { htmlDetalhes += `<div>• ${item}</div>`; });
                 htmlDetalhes += `</div></div>`;
