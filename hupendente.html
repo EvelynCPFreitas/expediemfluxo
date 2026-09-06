@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo - HU's Pendentes</title>
+    <title>Expedição em Fluxo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -188,10 +188,11 @@
         }
         .dark-theme .hu-filter-bar { background-color: #1e293b; color: #8ca4c0; }
 
-        .hu-filter-bar input {
+        .hu-filter-bar input, .hu-filter-bar select {
             padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px; font-size: 0.85rem; font-family: 'Inter', sans-serif;
         }
-        .dark-theme .hu-filter-bar input { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
+        .dark-theme .hu-filter-bar input, .dark-theme .hu-filter-bar select { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
+        .dark-theme .hu-filter-bar select option { background-color: #0f172a; color: #f1f5f9; }
         
         .search-input-wrapper { position: relative; display: flex; align-items: center; }
         .search-input-wrapper i { position: absolute; left: 8px; color: #004b87; font-size: 0.9rem; }
@@ -410,7 +411,6 @@
         
         .hu-table th, .hu-table td { padding: 12px 10px; }
         
-        /* ADICIONANDO LINHA DIVISÓRIA ENTRE AS LINHAS DA TABELA */
         .hu-table tbody tr {
             border-bottom: 1px solid var(--table-border);
         }
@@ -736,7 +736,17 @@
                 </div>
             </div>
 
-            <div style="display: flex; gap: 5px; align-items: center;">Status <input type="text" class="small-input"></div>
+            <!-- FILTRO DE STATUS ATUALIZADO COM AS OPÇÕES -->
+            <div style="display: flex; gap: 5px; align-items: center;">
+                Status 
+                <select class="small-input" id="filtro-status" style="width: 105px;">
+                    <option value="">Todos</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Agendado">Agendado</option>
+                    <option value="Expedido">Expedido</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
+            </div>
             
             <div style="display: flex; gap: 5px; align-items: center; margin-left: 5px;">
                 <span style="font-weight: 700;">Data:</span>
@@ -1018,6 +1028,26 @@
         }
 
         // =========================================
+        // LÓGICA DE FILTRAGEM DA TABELA
+        // =========================================
+        const filtroStatus = document.getElementById('filtro-status');
+        if (filtroStatus) {
+            filtroStatus.addEventListener('change', () => {
+                const valorFiltro = filtroStatus.value;
+                const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
+
+                linhas.forEach(tr => {
+                    const statusTr = tr.getAttribute('data-status');
+                    if (valorFiltro === '' || statusTr === valorFiltro) {
+                        tr.style.display = '';
+                    } else {
+                        tr.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // =========================================
         // LÓGICA DOS MODAIS E FLUXO DE AVANÇAR STATUS
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
@@ -1130,7 +1160,6 @@
         const modalEditar = document.getElementById('modal-editar');
         const btnFecharEditar = document.getElementById('fechar-editar-btn');
         const btnAtualizarRegistro = document.getElementById('btn-atualizar-registro');
-        const editStatusSelect = document.getElementById('edit-status');
         let linhaEmEdicao = null;
 
         document.addEventListener('click', (e) => {
@@ -1352,6 +1381,25 @@
             input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); });
             input.addEventListener('blur', () => { setTimeout(() => listElement.classList.remove('show'), 150); });
         });
+    </script>
+
+    <!-- Código de Inicialização do Firebase -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCUIIN9NLD3TcSJ78r22UbkMFVGs3D7ryE",
+        authDomain: "expediemfluxo.firebaseapp.com",
+        projectId: "expediemfluxo",
+        storageBucket: "expediemfluxo.firebasestorage.app",
+        messagingSenderId: "1075886554719",
+        appId: "1:1075886554719:web:6dff17a3b6874f1cc925ea",
+        measurementId: "G-18WKK75YLX"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
     </script>
 </body>
 </html>
