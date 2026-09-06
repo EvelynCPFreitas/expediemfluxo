@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo</title>
+    <title>Expedição em Fluxo - HU's Pendentes</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -717,13 +717,13 @@
         <div class="hu-filter-bar">
             <div class="search-input-wrapper">
                 <i class="ph ph-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar" class="search-input">
+                <input type="text" placeholder="Buscar" class="search-input" id="filtro-busca">
             </div>
             
             <div style="display: flex; gap: 5px; align-items: center;">
                 Origem 
                 <div class="custom-dropdown-container">
-                    <input type="text" id="filtro-origem" class="small-input custom-dropdown-input" autocomplete="off">
+                    <input type="text" class="small-input custom-dropdown-input" id="filtro-origem" autocomplete="off">
                     <ul class="custom-dropdown-list"></ul>
                 </div>
             </div>
@@ -731,12 +731,11 @@
             <div style="display: flex; gap: 5px; align-items: center;">
                 Destino 
                 <div class="custom-dropdown-container">
-                    <input type="text" id="filtro-destino" class="small-input custom-dropdown-input" autocomplete="off">
+                    <input type="text" class="small-input custom-dropdown-input" id="filtro-destino" autocomplete="off">
                     <ul class="custom-dropdown-list"></ul>
                 </div>
             </div>
 
-            <!-- FILTRO DE STATUS ATUALIZADO COM AS OPÇÕES -->
             <div style="display: flex; gap: 5px; align-items: center;">
                 Status 
                 <select class="small-input" id="filtro-status" style="width: 105px;">
@@ -923,7 +922,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DO REGISTRO -->
+    <!-- MODAL DE EDIÇÃO DO REGISTRO (COM DATA E HORA DE AGENDAMENTO) -->
     <div class="modal-overlay" id="modal-editar">
         <div class="modal-content">
             <div class="modal-header">
@@ -945,6 +944,18 @@
                         <option value="Expedido">Expedido</option>
                         <option value="Finalizado">Finalizado</option>
                     </select>
+                </div>
+
+                <!-- Campos de Data e Hora de Agendamento na Edição (aparecem só se Agendado) -->
+                <div id="container-edit-agendamento" style="display: none; flex-direction: column; gap: 12px;">
+                    <div class="input-pill">
+                        <span class="input-prefix">Data Agend.:</span>
+                        <input type="date" id="edit-data-agend" style="width: 100%;">
+                    </div>
+                    <div class="input-pill">
+                        <span class="input-prefix">Hora Agend.:</span>
+                        <input type="time" id="edit-hora-agend" style="width: 100%;">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer"><button class="btn-salvar" id="btn-atualizar-registro">Atualizar</button></div>
@@ -1026,6 +1037,47 @@
             document.getElementById('kpi-expedido').textContent = expedido;
             document.getElementById('kpi-finalizado').textContent = finalizado;
         }
+
+        // =========================================
+        // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS)
+        // =========================================
+        const filtroBusca = document.getElementById('filtro-busca');
+        const filtroOrigem = document.getElementById('filtro-origem');
+        const filtroDestino = document.getElementById('filtro-destino');
+        const filtroStatus = document.getElementById('filtro-status');
+
+        function aplicarFiltros() {
+            const textoBusca = filtroBusca.value.toLowerCase();
+            const origemBusca = filtroOrigem.value.toLowerCase();
+            const destinoBusca = filtroDestino.value.toLowerCase();
+            const statusBusca = filtroStatus.value;
+
+            const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
+
+            linhas.forEach(tr => {
+                const hu = tr.getAttribute('data-hu').toLowerCase();
+                const is = tr.getAttribute('data-is').toLowerCase();
+                const origem = tr.getAttribute('data-origem').toLowerCase();
+                const destino = tr.getAttribute('data-destino').toLowerCase();
+                const status = tr.getAttribute('data-status');
+
+                const matchBusca = !textoBusca || hu.includes(textoBusca) || is.includes(textoBusca);
+                const matchOrigem = !origemBusca || origem.includes(origemBusca);
+                const matchDestino = !destinoBusca || destino.includes(destinoBusca);
+                const matchStatus = !statusBusca || status === statusBusca;
+
+                if (matchBusca && matchOrigem && matchDestino && matchStatus) {
+                    tr.style.display = '';
+                } else {
+                    tr.style.display = 'none';
+                }
+            });
+        }
+
+        filtroBusca.addEventListener('input', aplicarFiltros);
+        filtroOrigem.addEventListener('input', aplicarFiltros);
+        filtroDestino.addEventListener('input', aplicarFiltros);
+        filtroStatus.addEventListener('change', aplicarFiltros);
 
         // =========================================
         // LÓGICA DOS MODAIS E FLUXO DE AVANÇAR STATUS
@@ -1132,15 +1184,29 @@
             }
 
             atualizarKPIs();
+            aplicarFiltros();
         }
 
+        // =========================================
+        // LÓGICA DE DETALHES E EDIÇÃO
+        // =========================================
         const modalDetalhes = document.getElementById('modal-detalhes');
         const btnFecharDetalhes = document.getElementById('fechar-detalhes-btn');
         const detalhesConteudo = document.getElementById('detalhes-conteudo');
         const modalEditar = document.getElementById('modal-editar');
         const btnFecharEditar = document.getElementById('fechar-editar-btn');
         const btnAtualizarRegistro = document.getElementById('btn-atualizar-registro');
+        const editStatusSelect = document.getElementById('edit-status');
+        const containerEditAgendamento = document.getElementById('container-edit-agendamento');
         let linhaEmEdicao = null;
+
+        editStatusSelect.addEventListener('change', () => {
+            if (editStatusSelect.value === 'Agendado') {
+                containerEditAgendamento.style.display = 'flex';
+            } else {
+                containerEditAgendamento.style.display = 'none';
+            }
+        });
 
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-detalhes')) {
@@ -1182,7 +1248,27 @@
                 document.getElementById('edit-ts-destino').value = linhaEmEdicao.getAttribute('data-ts-destino');
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
-                document.getElementById('edit-status').value = linhaEmEdicao.getAttribute('data-status');
+                
+                const statusAtual = linhaEmEdicao.getAttribute('data-status');
+                editStatusSelect.value = statusAtual;
+
+                if (statusAtual === 'Agendado') {
+                    containerEditAgendamento.style.display = 'flex';
+                    const agendamentoStr = linhaEmEdicao.getAttribute('data-agendamento');
+                    if (agendamentoStr && agendamentoStr.includes(' ')) {
+                        const partes = agendamentoStr.split(' ');
+                        const dataPartes = partes[0].split('/');
+                        if (dataPartes.length === 3) {
+                            document.getElementById('edit-data-agend').value = `${dataPartes[2]}-${dataPartes[1]}-${dataPartes[0]}`;
+                        }
+                        document.getElementById('edit-hora-agend').value = partes[1];
+                    }
+                } else {
+                    containerEditAgendamento.style.display = 'none';
+                    document.getElementById('edit-data-agend').value = '';
+                    document.getElementById('edit-hora-agend').value = '';
+                }
+
                 modalEditar.classList.add('active');
             }
         });
@@ -1194,14 +1280,32 @@
 
         btnAtualizarRegistro.addEventListener('click', () => {
             if (!linhaEmEdicao) return;
+
+            const novoStatus = editStatusSelect.value;
+            let agendamentoFormatado = linhaEmEdicao.getAttribute('data-agendamento');
+
+            if (novoStatus === 'Agendado') {
+                const dataVal = document.getElementById('edit-data-agend').value;
+                const horaVal = document.getElementById('edit-hora-agend').value;
+                if (!dataVal || !horaVal) {
+                    alert('É obrigatório preencher a data e o horário para o status Agendado.');
+                    return;
+                }
+                const dParts = dataVal.split('-');
+                agendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaVal}`;
+            } else {
+                agendamentoFormatado = '';
+            }
+
             linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value.trim());
             linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value.trim());
             linhaEmEdicao.setAttribute('data-ts-origem', document.getElementById('edit-ts-origem').value.trim());
             linhaEmEdicao.setAttribute('data-ts-destino', document.getElementById('edit-ts-destino').value.trim());
             linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value.trim());
             linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value.trim());
+            linhaEmEdicao.setAttribute('data-agendamento', agendamentoFormatado);
             
-            atualizarStatusLinha(linhaEmEdicao, document.getElementById('edit-status').value);
+            atualizarStatusLinha(linhaEmEdicao, novoStatus);
             modalEditar.classList.remove('active');
             linhaEmEdicao = null;
         });
@@ -1259,6 +1363,7 @@
             document.getElementById('modal-origem').value = '';
 
             atualizarKPIs();
+            aplicarFiltros();
         });
 
         // =========================================
@@ -1352,13 +1457,7 @@
                         const li = document.createElement('li');
                         li.textContent = cd;
                         li.className = 'custom-dropdown-item';
-                        li.addEventListener('mousedown', () => { 
-                            input.value = cd; 
-                            listElement.classList.remove('show'); 
-                            
-                            // Dispara o evento de input para a tabela filtrar instantaneamente
-                            input.dispatchEvent(new Event('input'));
-                        });
+                        li.addEventListener('mousedown', () => { input.value = cd; listElement.classList.remove('show'); });
                         listElement.appendChild(li);
                     });
                 }
@@ -1367,64 +1466,6 @@
             input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); });
             input.addEventListener('blur', () => { setTimeout(() => listElement.classList.remove('show'), 150); });
         });
-
-        // =========================================
-        // LÓGICA DE FILTRAGEM UNIFICADA DA TABELA
-        // =========================================
-        function aplicarFiltros() {
-            const valorBusca = document.querySelector('.search-input').value.toLowerCase();
-            const valorOrigem = document.getElementById('filtro-origem').value.toLowerCase();
-            const valorDestino = document.getElementById('filtro-destino').value.toLowerCase();
-            const valorStatus = document.getElementById('filtro-status').value;
-
-            const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
-
-            linhas.forEach(tr => {
-                const textContent = tr.textContent.toLowerCase();
-                const origemTr = tr.getAttribute('data-origem').toLowerCase();
-                const destinoTr = tr.getAttribute('data-destino').toLowerCase();
-                const statusTr = tr.getAttribute('data-status');
-
-                // Verifica se os valores batem. Usamos "includes" para que digitar "SP24" encontre "BRSP24"
-                const matchBusca = valorBusca === '' || textContent.includes(valorBusca);
-                const matchOrigem = valorOrigem === '' || origemTr.includes(valorOrigem);
-                const matchDestino = valorDestino === '' || destinoTr.includes(valorDestino);
-                const matchStatus = valorStatus === '' || statusTr === valorStatus;
-
-                // Só exibe a linha se ela passar em todos os filtros ativos
-                if (matchBusca && matchOrigem && matchDestino && matchStatus) {
-                    tr.style.display = '';
-                } else {
-                    tr.style.display = 'none';
-                }
-            });
-        }
-
-        // Adiciona os "escutadores" para rodar a função assim que o usuário interagir
-        document.querySelector('.search-input').addEventListener('input', aplicarFiltros);
-        document.getElementById('filtro-origem').addEventListener('input', aplicarFiltros);
-        document.getElementById('filtro-destino').addEventListener('input', aplicarFiltros);
-        document.getElementById('filtro-status').addEventListener('change', aplicarFiltros);
-
-    </script>
-
-    <!-- Código de Inicialização do Firebase -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyCUIIN9NLD3TcSJ78r22UbkMFVGs3D7ryE",
-        authDomain: "expediemfluxo.firebaseapp.com",
-        projectId: "expediemfluxo",
-        storageBucket: "expediemfluxo.firebasestorage.app",
-        messagingSenderId: "1075886554719",
-        appId: "1:1075886554719:web:6dff17a3b6874f1cc925ea",
-        measurementId: "G-18WKK75YLX"
-      };
-
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
     </script>
 </body>
 </html>
