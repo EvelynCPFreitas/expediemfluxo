@@ -162,7 +162,9 @@
         .hu-card {
             flex: 1; border-radius: 8px; padding: 15px 20px; color: white; text-align: center;
             box-shadow: 4px 4px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; min-height: 100px;
+            cursor: pointer; transition: transform 0.2s, filter 0.2s;
         }
+        .hu-card:hover { transform: translateY(-3px); filter: brightness(1.08); }
         .hu-card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; text-transform: none;}
         .hu-card-value { font-size: 2.2rem; font-style: italic; font-weight: 900; font-family: serif; }
 
@@ -741,19 +743,19 @@
         <h1 class="page-title">HU's Pendentes</h1>
         
         <div class="hu-cards-container">
-            <div class="hu-card hu-card-total">
+            <div class="hu-card hu-card-total" data-filtro-card="Total">
                 <div class="hu-card-title">Total</div>
                 <div class="hu-card-value" id="kpi-total">0</div>
             </div>
-            <div class="hu-card hu-card-pendente">
+            <div class="hu-card hu-card-pendente" data-filtro-card="Pendente">
                 <div class="hu-card-title">Pendente</div>
                 <div class="hu-card-value" id="kpi-pendente">0</div>
             </div>
-            <div class="hu-card hu-card-expedido">
+            <div class="hu-card hu-card-expedido" data-filtro-card="Expedido">
                 <div class="hu-card-title">Expedido</div>
                 <div class="hu-card-value" id="kpi-expedido">0</div>
             </div>
-            <div class="hu-card hu-card-finalizado">
+            <div class="hu-card hu-card-finalizado" data-filtro-card="Finalizado">
                 <div class="hu-card-title">Finalizado</div>
                 <div class="hu-card-value" id="kpi-finalizado">0</div>
             </div>
@@ -1102,7 +1104,6 @@
 
             linhas.forEach(tr => {
                 const status = tr.getAttribute('data-status');
-                // Conta Pendente e Agendado juntos no card "Pendente"
                 if (status === 'Pendente' || status === 'Agendado') pendente++;
                 if (status === 'Expedido') expedido++;
                 if (status === 'Finalizado') finalizado++;
@@ -1169,6 +1170,35 @@
             if (!statusPopup.contains(e.target) && e.target !== statusDisplayBtn) {
                 statusPopup.classList.remove('show');
             }
+        });
+
+        // Clique nos Cards de KPI para filtrar automaticamente
+        document.querySelectorAll('.hu-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const tipoCard = card.getAttribute('data-filtro-card');
+                
+                statusCheckboxes.forEach(cb => {
+                    if (tipoCard === 'Total') {
+                        cb.checked = true;
+                    } else if (tipoCard === 'Pendente') {
+                        cb.checked = (cb.value === 'Pendente' || cb.value === 'Agendado');
+                    } else {
+                        cb.checked = (cb.value === tipoCard);
+                    }
+                });
+
+                statusTodosCheckbox.checked = Array.from(statusCheckboxes).every(item => item.checked);
+
+                if (tipoCard === 'Total') {
+                    statusDisplayBtn.textContent = "Todos";
+                } else if (tipoCard === 'Pendente') {
+                    statusDisplayBtn.textContent = "2 selecionados";
+                } else {
+                    statusDisplayBtn.textContent = tipoCard;
+                }
+
+                aplicarFiltros();
+            });
         });
 
         function aplicarFiltros() {
