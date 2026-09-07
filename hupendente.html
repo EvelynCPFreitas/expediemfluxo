@@ -188,11 +188,10 @@
         }
         .dark-theme .hu-filter-bar { background-color: #1e293b; color: #8ca4c0; }
 
-        .hu-filter-bar input, .hu-filter-bar select {
+        .hu-filter-bar input {
             padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px; font-size: 0.85rem; font-family: 'Inter', sans-serif;
         }
-        .dark-theme .hu-filter-bar input, .dark-theme .hu-filter-bar select { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
-        .dark-theme .hu-filter-bar select option { background-color: #0f172a; color: #f1f5f9; }
+        .dark-theme .hu-filter-bar input { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
         
         .search-input-wrapper { position: relative; display: flex; align-items: center; }
         .search-input-wrapper i { position: absolute; left: 8px; color: #004b87; font-size: 0.9rem; }
@@ -200,7 +199,7 @@
         .search-input { width: 160px; padding-left: 25px !important; }
         .small-input { width: 85px; }
 
-        /* ESTILOS DO DROPDOWN CUSTOMIZADO */
+        /* ESTILOS DOS DROPDOWNS CUSTOMIZADOS (ORIGEM, DESTINO E STATUS) */
         .custom-dropdown-container {
             position: relative;
             display: inline-block;
@@ -250,6 +249,56 @@
             background-color: #1e293b;
             color: #fcd34d;
         }
+
+        /* Popups Multi-Seleção (Status e Data) */
+        .multi-select-popup {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 160px;
+            padding: 10px;
+            display: none;
+            z-index: 2000;
+            margin-top: 5px;
+        }
+        .multi-select-popup.show { display: block; }
+        .dark-theme .multi-select-popup {
+            background: #1e293b;
+            border-color: #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+        }
+        .multi-select-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #333;
+            border-radius: 4px;
+        }
+        .dark-theme .multi-select-item { color: #f1f5f9; }
+        .multi-select-item:hover { background: rgba(0,75,135,0.1); }
+        
+        .multi-select-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 6px;
+        }
+        .dark-theme .multi-select-footer { border-color: #334155; }
+        .btn-apply-small {
+            background: none; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; color: #004b87; padding: 2px 6px; border-radius: 4px;
+        }
+        .dark-theme .btn-apply-small { color: #60a5fa; }
+        .btn-apply-small:hover { background: rgba(0,75,135,0.15); }
+
 
         /* =========================================
            CALENDÁRIO CUSTOMIZADO MULTI-SELEÇÃO
@@ -736,15 +785,22 @@
                 </div>
             </div>
 
+            <!-- FILTRO DE STATUS MULTI-SELEÇÃO COM POPUP -->
             <div style="display: flex; gap: 5px; align-items: center;">
-                Status 
-                <select class="small-input" id="filtro-status" style="width: 105px;">
-                    <option value="">Todos</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Agendado">Agendado</option>
-                    <option value="Expedido">Expedido</option>
-                    <option value="Finalizado">Finalizado</option>
-                </select>
+                Status
+                <div class="date-picker-wrapper">
+                    <div class="date-input-display" id="status-display-btn" style="width: 105px;">Todos</div>
+                    
+                    <div class="multi-select-popup" id="status-popup">
+                        <div class="multi-select-item"><input type="checkbox" value="Pendente" class="status-checkbox"> Pendente</div>
+                        <div class="multi-select-item"><input type="checkbox" value="Agendado" class="status-checkbox"> Agendado</div>
+                        <div class="multi-select-item"><input type="checkbox" value="Expedido" class="status-checkbox"> Expedido</div>
+                        <div class="multi-select-item"><input type="checkbox" value="Finalizado" class="status-checkbox"> Finalizado</div>
+                        <div class="multi-select-footer">
+                            <button class="btn-apply-small" id="status-apply-btn">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div style="display: flex; gap: 5px; align-items: center; margin-left: 5px;">
@@ -1055,18 +1111,56 @@
         }
 
         // =========================================
-        // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS)
+        // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS MULTI-SELEÇÃO)
         // =========================================
         const filtroBusca = document.getElementById('filtro-busca');
         const filtroOrigem = document.getElementById('filtro-origem');
         const filtroDestino = document.getElementById('filtro-destino');
-        const filtroStatus = document.getElementById('filtro-status');
+        const statusDisplayBtn = document.getElementById('status-display-btn');
+        const statusPopup = document.getElementById('status-popup');
+        const statusCheckboxes = document.querySelectorAll('.status-checkbox');
+        const statusApplyBtn = document.getElementById('status-apply-btn');
+
+        statusDisplayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            statusPopup.classList.toggle('show');
+        });
+
+        statusApplyBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            statusPopup.classList.remove('show');
+            
+            const selecionados = [];
+            statusCheckboxes.forEach(cb => {
+                if (cb.checked) selecionados.push(cb.value);
+            });
+
+            if (selecionados.length === 0) {
+                statusDisplayBtn.textContent = "Todos";
+            } else if (selecionados.length === 1) {
+                statusDisplayBtn.textContent = selecionados[0];
+            } else {
+                statusDisplayBtn.textContent = `${selecionados.length} selecionados`;
+            }
+
+            aplicarFiltros();
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!statusPopup.contains(e.target) && e.target !== statusDisplayBtn) {
+                statusPopup.classList.remove('show');
+            }
+        });
 
         function aplicarFiltros() {
             const textoBusca = filtroBusca.value.toLowerCase();
             const origemBusca = filtroOrigem.value.toLowerCase();
             const destinoBusca = filtroDestino.value.toLowerCase();
-            const statusBusca = filtroStatus.value;
+            
+            const statusSelecionados = [];
+            statusCheckboxes.forEach(cb => {
+                if (cb.checked) statusSelecionados.push(cb.value);
+            });
 
             const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
 
@@ -1080,7 +1174,7 @@
                 const matchBusca = !textoBusca || hu.includes(textoBusca) || is.includes(textoBusca);
                 const matchOrigem = !origemBusca || origemBusca === 'todos' || origem.includes(origemBusca);
                 const matchDestino = !destinoBusca || destinoBusca === 'todos' || destino.includes(destinoBusca);
-                const matchStatus = !statusBusca || status === statusBusca;
+                const matchStatus = statusSelecionados.length === 0 || statusSelecionados.includes(status);
 
                 if (matchBusca && matchOrigem && matchDestino && matchStatus) {
                     tr.style.display = '';
@@ -1095,7 +1189,6 @@
         filtroOrigem.addEventListener('change', aplicarFiltros);
         filtroDestino.addEventListener('input', aplicarFiltros);
         filtroDestino.addEventListener('change', aplicarFiltros);
-        filtroStatus.addEventListener('change', aplicarFiltros);
 
         // =========================================
         // LÓGICA DOS MODAIS E FLUXO DE AVANÇAR STATUS
@@ -1454,7 +1547,7 @@
         window.addEventListener('click', (e) => { if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) calendarPopup.classList.remove('show'); });
 
         // =========================================
-        // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs) COM "TODOS"
+        // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs)
         // =========================================
         const listaCDs = [
             "Todos",
