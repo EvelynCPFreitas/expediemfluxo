@@ -723,7 +723,7 @@
             <div style="display: flex; gap: 5px; align-items: center;">
                 Origem 
                 <div class="custom-dropdown-container">
-                    <input type="text" class="small-input custom-dropdown-input" id="filtro-origem" autocomplete="off">
+                    <input type="text" class="small-input custom-dropdown-input" id="filtro-origem" autocomplete="off" placeholder="Todos">
                     <ul class="custom-dropdown-list"></ul>
                 </div>
             </div>
@@ -731,7 +731,7 @@
             <div style="display: flex; gap: 5px; align-items: center;">
                 Destino 
                 <div class="custom-dropdown-container">
-                    <input type="text" class="small-input custom-dropdown-input" id="filtro-destino" autocomplete="off">
+                    <input type="text" class="small-input custom-dropdown-input" id="filtro-destino" autocomplete="off" placeholder="Todos">
                     <ul class="custom-dropdown-list"></ul>
                 </div>
             </div>
@@ -1078,8 +1078,8 @@
                 const status = tr.getAttribute('data-status');
 
                 const matchBusca = !textoBusca || hu.includes(textoBusca) || is.includes(textoBusca);
-                const matchOrigem = !origemBusca || origem.includes(origemBusca);
-                const matchDestino = !destinoBusca || destino.includes(destinoBusca);
+                const matchOrigem = !origemBusca || origemBusca === 'todos' || origem.includes(origemBusca);
+                const matchDestino = !destinoBusca || destinoBusca === 'todos' || destino.includes(destinoBusca);
                 const matchStatus = !statusBusca || status === statusBusca;
 
                 if (matchBusca && matchOrigem && matchDestino && matchStatus) {
@@ -1092,7 +1092,9 @@
 
         filtroBusca.addEventListener('input', aplicarFiltros);
         filtroOrigem.addEventListener('input', aplicarFiltros);
+        filtroOrigem.addEventListener('change', aplicarFiltros);
         filtroDestino.addEventListener('input', aplicarFiltros);
+        filtroDestino.addEventListener('change', aplicarFiltros);
         filtroStatus.addEventListener('change', aplicarFiltros);
 
         // =========================================
@@ -1147,7 +1149,6 @@
                 modalTs.classList.add('active');
             }
 
-            // Confirmação para Finalizar
             if (e.target.id === 'btn-sim-finalizar') {
                 modalFinalizar.classList.remove('active');
                 atualizarStatusLinha(linhaEmProcesso, 'Finalizado');
@@ -1453,9 +1454,10 @@
         window.addEventListener('click', (e) => { if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) calendarPopup.classList.remove('show'); });
 
         // =========================================
-        // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs)
+        // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs) COM "TODOS"
         // =========================================
         const listaCDs = [
+            "Todos",
             "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", 
             "BRMG01", "BRMG02", "BRMG03", "BRMG04", "BRMS01", "BRPE01", 
             "BRPR01", "BRPR04", "BRRC01", "BRRC02", "BRRC03", "BRRC04", 
@@ -1485,13 +1487,17 @@
                         const li = document.createElement('li');
                         li.textContent = cd;
                         li.className = 'custom-dropdown-item';
-                        li.addEventListener('mousedown', () => { input.value = cd; listElement.classList.remove('show'); });
+                        li.addEventListener('mousedown', () => { 
+                            input.value = cd === 'Todos' ? '' : cd; 
+                            listElement.classList.remove('show');
+                            aplicarFiltros();
+                        });
                         listElement.appendChild(li);
                     });
                 }
             };
             input.addEventListener('focus', () => { renderList(input.value); listElement.classList.add('show'); });
-            input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); });
+            input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); aplicarFiltros(); });
             input.addEventListener('blur', () => { setTimeout(() => listElement.classList.remove('show'), 150); });
         });
     </script>
