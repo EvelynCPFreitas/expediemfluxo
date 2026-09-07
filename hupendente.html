@@ -1102,7 +1102,8 @@
 
             linhas.forEach(tr => {
                 const status = tr.getAttribute('data-status');
-                if (status === 'Pendente') pendente++;
+                // Conta Pendente e Agendado juntos no card "Pendente"
+                if (status === 'Pendente' || status === 'Agendado') pendente++;
                 if (status === 'Expedido') expedido++;
                 if (status === 'Finalizado') finalizado++;
             });
@@ -1114,7 +1115,7 @@
         }
 
         // =========================================
-        // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS MULTI-SELEÇÃO COM "TODOS")
+        // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS)
         // =========================================
         const filtroBusca = document.getElementById('filtro-busca');
         const filtroOrigem = document.getElementById('filtro-origem');
@@ -1130,7 +1131,6 @@
             statusPopup.classList.toggle('show');
         });
 
-        // Lógica do checkbox "Todos"
         statusTodosCheckbox.addEventListener('change', () => {
             statusCheckboxes.forEach(cb => {
                 cb.checked = statusTodosCheckbox.checked;
