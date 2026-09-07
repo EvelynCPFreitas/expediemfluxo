@@ -199,7 +199,7 @@
         .search-input { width: 160px; padding-left: 25px !important; }
         .small-input { width: 85px; }
 
-        /* ESTILOS DOS DROPDOWNS CUSTOMIZADOS (ORIGEM, DESTINO E STATUS) */
+        /* ESTILOS DOS DROPDOWNS CUSTOMIZADOS (ORIGEM E DESTINO) */
         .custom-dropdown-container {
             position: relative;
             display: inline-block;
@@ -785,13 +785,16 @@
                 </div>
             </div>
 
-            <!-- FILTRO DE STATUS MULTI-SELEÇÃO COM POPUP -->
+            <!-- FILTRO DE STATUS MULTI-SELEÇÃO COM OPÇÃO "TODOS" -->
             <div style="display: flex; gap: 5px; align-items: center;">
                 Status
                 <div class="date-picker-wrapper">
                     <div class="date-input-display" id="status-display-btn" style="width: 105px;">Todos</div>
                     
                     <div class="multi-select-popup" id="status-popup">
+                        <div class="multi-select-item" style="font-weight: 700; border-bottom: 1px solid var(--border-sidebar); margin-bottom: 4px; padding-bottom: 6px;">
+                            <input type="checkbox" id="status-todos-checkbox"> Todos
+                        </div>
                         <div class="multi-select-item"><input type="checkbox" value="Pendente" class="status-checkbox"> Pendente</div>
                         <div class="multi-select-item"><input type="checkbox" value="Agendado" class="status-checkbox"> Agendado</div>
                         <div class="multi-select-item"><input type="checkbox" value="Expedido" class="status-checkbox"> Expedido</div>
@@ -1111,7 +1114,7 @@
         }
 
         // =========================================
-        // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS MULTI-SELEÇÃO)
+        // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS MULTI-SELEÇÃO COM "TODOS")
         // =========================================
         const filtroBusca = document.getElementById('filtro-busca');
         const filtroOrigem = document.getElementById('filtro-origem');
@@ -1119,11 +1122,26 @@
         const statusDisplayBtn = document.getElementById('status-display-btn');
         const statusPopup = document.getElementById('status-popup');
         const statusCheckboxes = document.querySelectorAll('.status-checkbox');
+        const statusTodosCheckbox = document.getElementById('status-todos-checkbox');
         const statusApplyBtn = document.getElementById('status-apply-btn');
 
         statusDisplayBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             statusPopup.classList.toggle('show');
+        });
+
+        // Lógica do checkbox "Todos"
+        statusTodosCheckbox.addEventListener('change', () => {
+            statusCheckboxes.forEach(cb => {
+                cb.checked = statusTodosCheckbox.checked;
+            });
+        });
+
+        statusCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const allChecked = Array.from(statusCheckboxes).every(item => item.checked);
+                statusTodosCheckbox.checked = allChecked;
+            });
         });
 
         statusApplyBtn.addEventListener('click', (e) => {
@@ -1135,8 +1153,9 @@
                 if (cb.checked) selecionados.push(cb.value);
             });
 
-            if (selecionados.length === 0) {
+            if (selecionados.length === 0 || selecionados.length === statusCheckboxes.length) {
                 statusDisplayBtn.textContent = "Todos";
+                statusTodosCheckbox.checked = selecionados.length === statusCheckboxes.length;
             } else if (selecionados.length === 1) {
                 statusDisplayBtn.textContent = selecionados[0];
             } else {
@@ -1174,7 +1193,7 @@
                 const matchBusca = !textoBusca || hu.includes(textoBusca) || is.includes(textoBusca);
                 const matchOrigem = !origemBusca || origemBusca === 'todos' || origem.includes(origemBusca);
                 const matchDestino = !destinoBusca || destinoBusca === 'todos' || destino.includes(destinoBusca);
-                const matchStatus = statusSelecionados.length === 0 || statusSelecionados.includes(status);
+                const matchStatus = statusSelecionados.length === 0 || statusSelecionados.length === statusCheckboxes.length || statusSelecionados.includes(status);
 
                 if (matchBusca && matchOrigem && matchDestino && matchStatus) {
                     tr.style.display = '';
