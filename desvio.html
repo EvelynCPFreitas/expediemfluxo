@@ -842,7 +842,8 @@
 
             linhas.forEach(tr => {
                 const status = tr.getAttribute('data-status');
-                if (status === 'Pendente') pendente++;
+                // "Agendado" agora é contado junto com "Pendente"
+                if (status === 'Pendente' || status === 'Agendado') pendente++;
                 if (status === 'Aguardando Recusa') aguardando++;
                 if (status === 'Recusado') recusado++;
                 if (status === 'Finalizado') finalizado++;
@@ -864,7 +865,6 @@
             const filtroDestinoVal = document.getElementById('filtro-destino').value.trim().toLowerCase();
             const filtroDesvioVal = document.getElementById('filtro-desvio').value.trim().toLowerCase();
             
-            // Coleta status selecionados
             const chkTodos = document.getElementById('chk-status-todos');
             let statusSelecionados = [];
             if (!chkTodos.checked) {
@@ -938,28 +938,12 @@
             if (chkStatusTodos.checked) {
                 chksStatus.forEach(chk => chk.checked = false);
             } else {
-                chkStatusTodos.checked = true; // Se des marcar "Todos" e nenhum outro estiver, mantém ou obriga
+                chkStatusTodos.checked = true;
             }
             atualizarTextoStatus();
             filtrarTabela();
         });
 
-        chksStatus.forEach(chk => {
-            chk.addEventListener('change', () => {
-                const algumMarcado = Array.from(chksStatus.some(c => c.checked)); // ou loop simples
-                let totalMarcados = document.querySelectorAll('.chk-status:checked').length;
-                
-                if (totalMarcados > 0) {
-                    chkStatusTodos.checked = false;
-                } else {
-                    chkStatusTodos.checked = true;
-                }
-                atualizarTextoStatus();
-                filtrarTabela();
-            });
-        });
-
-        // Ajuste auxiliar para o evento change das checkboxes individuais de status
         chksStatus.forEach(chk => {
             chk.addEventListener('change', () => {
                 const totalMarcados = document.querySelectorAll('.chk-status:checked').length;
