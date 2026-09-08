@@ -173,7 +173,7 @@
         .hu-card-expedido { background: linear-gradient(90deg, #111 0%, #3d2000 40%, #e88d00 100%); }
         .hu-card-finalizado { background: linear-gradient(90deg, #111 0%, #003b30 40%, #10e0a5 100%); }
 
-        .hu-actions-container { display: flex; justify-content: flex-end; margin-bottom: 5px; padding-right: 5px; }
+        .hu-actions-container { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 5px; padding-right: 5px; }
         .btn-novo-registro {
             background: linear-gradient(to bottom, #f0f0f0, #d0d0d0); border: 1px solid #ccc;
             padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #ffffff;
@@ -181,6 +181,14 @@
         }
         .btn-novo-registro:hover { filter: brightness(1.1); }
         .dark-theme .btn-novo-registro { background: linear-gradient(to bottom, #475569, #334155); border-color: #1e293b; }
+
+        .btn-tratar-grupo {
+            background: linear-gradient(to bottom, #004b87, #003366); border: 1px solid #003366;
+            padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: filter 0.2s; display: none;
+        }
+        .btn-tratar-grupo:hover { filter: brightness(1.15); }
+        .dark-theme .btn-tratar-grupo { background: linear-gradient(to bottom, #3b82f6, #1d4ed8); border-color: #1e293b; }
 
         /* BARRA DE FILTROS */
         .hu-filter-bar {
@@ -762,6 +770,7 @@
         </div>
 
         <div class="hu-actions-container">
+            <button class="btn-tratar-grupo" id="btn-tratar-grupo">Tratar em Grupo</button>
             <button class="btn-novo-registro">+ Novo Registro</button>
         </div>
 
@@ -837,7 +846,7 @@
             <table class="hu-table">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select-all-checkbox"></th>
                         <th>HU</th>
                         <th>IS</th>
                         <th>Origem</th>
@@ -849,7 +858,7 @@
                 </thead>
                 <tbody id="tabela-hu-corpo">
                     <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-agendamento="" data-ts-origem="" data-ts-destino="" data-data-reg="27/10/2026 14:00" data-historico="Pendente - Evelyn (27/10/2026 14:00)">
-                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox" class="row-checkbox"></td>
                         <td>15878526144691</td>
                         <td>74564567</td>
                         <td>SC02</td>
@@ -1074,6 +1083,7 @@
             else { usernameDisplay.textContent = 'Usuário'; }
 
             atualizarKPIs();
+            verificarSelecaoLinhas();
         });
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
@@ -1114,6 +1124,43 @@
             document.getElementById('kpi-expedido').textContent = expedido;
             document.getElementById('kpi-finalizado').textContent = finalizado;
         }
+
+        // =========================================
+        // CONTROLE DE SELEÇÃO DE LINHAS (TRATAR EM GRUPO)
+        // =========================================
+        const selectAllCheckbox = document.getElementById('select-all-checkbox');
+        const btnTratarGrupo = document.getElementById('btn-tratar-grupo');
+
+        function verificarSelecaoLinhas() {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            let selecionados = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) selecionados++;
+            });
+
+            if (selecionados >= 2) {
+                btnTratarGrupo.style.display = 'block';
+            } else {
+                btnTratarGrupo.style.display = 'none';
+            }
+        }
+
+        selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => {
+                // Apenas marca as linhas visíveis
+                if (cb.closest('tr').style.display !== 'none') {
+                    cb.checked = selectAllCheckbox.checked;
+                }
+            });
+            verificarSelecaoLinhas();
+        });
+
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('row-checkbox')) {
+                verificarSelecaoLinhas();
+            }
+        });
 
         // =========================================
         // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS)
@@ -1172,7 +1219,6 @@
             }
         });
 
-        // Clique nos Cards de KPI para filtrar automaticamente
         document.querySelectorAll('.hu-card').forEach(card => {
             card.addEventListener('click', () => {
                 const tipoCard = card.getAttribute('data-filtro-card');
@@ -1231,6 +1277,7 @@
                     tr.style.display = 'none';
                 }
             });
+            verificarSelecaoLinhas();
         }
 
         filtroBusca.addEventListener('input', aplicarFiltros);
@@ -1510,7 +1557,7 @@
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
             novaLinha.innerHTML = `
-                <td><input type="checkbox"></td>
+                <td><input type="checkbox" class="row-checkbox"></td>
                 <td>${hu}</td>
                 <td>${is}</td>
                 <td>${origem}</td>
