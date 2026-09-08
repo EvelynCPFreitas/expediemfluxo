@@ -899,11 +899,6 @@
                 </div>
                 
                 <div class="input-pill">
-                    <span class="input-prefix">TS:</span>
-                    <input type="text" id="input-ts">
-                </div>
-                
-                <div class="input-pill">
                     <span class="input-prefix">Origem:</span>
                     <input type="text" id="modal-origem" class="custom-dropdown-input" autocomplete="off">
                     <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
@@ -1531,7 +1526,6 @@
         btnSalvarRegistro.addEventListener('click', () => {
             const hu = document.getElementById('input-hu').value.trim();
             const is = document.getElementById('input-is').value.trim();
-            const ts = document.getElementById('input-ts').value.trim();
             const origem = document.getElementById('modal-origem').value.trim();
             const destino = document.getElementById('modal-destino').value.trim();
             const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
@@ -1552,7 +1546,7 @@
             novaLinha.setAttribute('data-status', 'Pendente');
             novaLinha.setAttribute('data-agendamento', '');
             novaLinha.setAttribute('data-ts-origem', '');
-            novaLinha.setAttribute('data-ts-destino', ts); 
+            novaLinha.setAttribute('data-ts-destino', ''); 
             novaLinha.setAttribute('data-data-reg', dataFormatada);
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
@@ -1577,7 +1571,6 @@
             modalOverlay.classList.remove('active');
             document.getElementById('input-hu').value = '';
             document.getElementById('input-is').value = '';
-            document.getElementById('input-ts').value = '';
             document.getElementById('modal-origem').value = '';
 
             atualizarKPIs();
