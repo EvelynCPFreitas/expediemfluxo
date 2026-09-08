@@ -1639,7 +1639,6 @@
         // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs)
         // =========================================
         const listaCDs = [
-            "Todos",
             "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", 
             "BRMG01", "BRMG02", "BRMG03", "BRMG04", "BRMS01", "BRPE01", 
             "BRPR01", "BRPR04", "BRRC01", "BRRC02", "BRRC03", "BRRC04", 
@@ -1670,7 +1669,7 @@
                         li.textContent = cd;
                         li.className = 'custom-dropdown-item';
                         li.addEventListener('mousedown', () => { 
-                            input.value = cd === 'Todos' ? '' : cd; 
+                            input.value = cd; 
                             listElement.classList.remove('show');
                             aplicarFiltros();
                         });
