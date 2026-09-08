@@ -218,6 +218,32 @@
         .dark-theme .custom-dropdown-item { color: #cbd5e1; }
         .dark-theme .custom-dropdown-item:hover { background-color: #1e293b; color: #fcd34d; }
 
+        /* MULTI-SELECT STATUS DROPDOWN */
+        .multi-select-container { position: relative; display: inline-block; }
+        .multi-select-display {
+            background: white; border: 1px solid #004b87; border-radius: 4px; padding: 4px 8px;
+            font-size: 0.85rem; color: #333; cursor: pointer; height: 24px; display: flex;
+            align-items: center; justify-content: space-between; width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .dark-theme .multi-select-display { background: #0f172a; border-color: #334155; color: #f1f5f9; }
+        
+        .multi-select-dropdown {
+            position: absolute; top: 100%; left: 0; min-width: 170px; background: #ffffff;
+            border: 1px solid #cbd5e1; border-radius: 8px; max-height: 220px; overflow-y: auto;
+            margin-top: 5px; padding: 6px 0; list-style: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: none; z-index: 1000;
+        }
+        .multi-select-dropdown.show { display: block; }
+        .dark-theme .multi-select-dropdown { background: #0f172a; border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        
+        .multi-select-item {
+            padding: 6px 12px; cursor: pointer; color: #555; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;
+        }
+        .multi-select-item:hover { background-color: rgba(0, 75, 135, 0.1); }
+        .dark-theme .multi-select-item { color: #cbd5e1; }
+        .dark-theme .multi-select-item:hover { background-color: rgba(140, 164, 192, 0.15); }
+        .multi-select-item input[type="checkbox"] { cursor: pointer; }
+
         /* CALENDÁRIO CUSTOMIZADO MULTI-SELEÇÃO */
         .date-picker-wrapper { position: relative; display: inline-block; }
         .date-input-display {
@@ -489,16 +515,38 @@
                 </div>
             </div>
 
+            <!-- FILTRO DE STATUS MULTI-SELEÇÃO -->
             <div style="display: flex; gap: 5px; align-items: center;">
                 Status 
-                <select class="small-input" id="filtro-status" style="width: 140px;">
-                    <option value="">Todos</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Agendado">Agendado</option>
-                    <option value="Aguardando Recusa">Aguardando Recusa</option>
-                    <option value="Recusado">Recusado</option>
-                    <option value="Finalizado">Finalizado</option>
-                </select>
+                <div class="multi-select-container" id="status-multi-container">
+                    <div class="multi-select-display" id="status-display-btn">Todos</div>
+                    <ul class="multi-select-dropdown" id="status-dropdown-list">
+                        <li class="multi-select-item">
+                            <input type="checkbox" id="chk-status-todos" value="Todos" checked>
+                            <label for="chk-status-todos">Todos</label>
+                        </li>
+                        <li class="multi-select-item">
+                            <input type="checkbox" class="chk-status" value="Pendente" checked>
+                            <label>Pendente</label>
+                        </li>
+                        <li class="multi-select-item">
+                            <input type="checkbox" class="chk-status" value="Agendado" checked>
+                            <label>Agendado</label>
+                        </li>
+                        <li class="multi-select-item">
+                            <input type="checkbox" class="chk-status" value="Aguardando Recusa" checked>
+                            <label>Aguardando Recusa</label>
+                        </li>
+                        <li class="multi-select-item">
+                            <input type="checkbox" class="chk-status" value="Recusado" checked>
+                            <label>Recusado</label>
+                        </li>
+                        <li class="multi-select-item">
+                            <input type="checkbox" class="chk-status" value="Finalizado" checked>
+                            <label>Finalizado</label>
+                        </li>
+                    </ul>
+                </div>
             </div>
             
             <div style="display: flex; gap: 5px; align-items: center;">
@@ -808,14 +856,22 @@
         }
 
         // =========================================
-        // LÓGICA DE FILTRAGEM UNIFICADA (BUSCA, ORIGEM, DESTINO, DESVIO, STATUS)
+        // LÓGICA DE FILTRAGEM UNIFICADA (BUSCA, ORIGEM, DESTINO, DESVIO, STATUS MULTI)
         // =========================================
         function filtrarTabela() {
             const termoBusca = document.getElementById('filtro-busca').value.toLowerCase();
             const filtroOrigemVal = document.getElementById('filtro-origem').value.trim().toLowerCase();
             const filtroDestinoVal = document.getElementById('filtro-destino').value.trim().toLowerCase();
             const filtroDesvioVal = document.getElementById('filtro-desvio').value.trim().toLowerCase();
-            const statusVal = document.getElementById('filtro-status').value;
+            
+            // Coleta status selecionados
+            const chkTodos = document.getElementById('chk-status-todos');
+            let statusSelecionados = [];
+            if (!chkTodos.checked) {
+                document.querySelectorAll('.chk-status:checked').forEach(chk => {
+                    statusSelecionados.push(chk.value);
+                });
+            }
 
             const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
 
@@ -827,20 +883,12 @@
                 const desvio = tr.getAttribute('data-desvio').toLowerCase();
                 const status = tr.getAttribute('data-status');
 
-                // Verifica barra de busca geral
                 const atendeBusca = !termoBusca || hu.includes(termoBusca) || is.includes(termoBusca) || origem.includes(termoBusca) || destino.includes(termoBusca) || desvio.includes(termoBusca);
-
-                // Verifica Origem (se vazio ou "todos", passa)
                 const atendeOrigem = !filtroOrigemVal || filtroOrigemVal === 'todos' || origem === filtroOrigemVal;
-
-                // Verifica Destino
                 const atendeDestino = !filtroDestinoVal || filtroDestinoVal === 'todos' || destino === filtroDestinoVal;
-
-                // Verifica Desvio
                 const atendeDesvio = !filtroDesvioVal || filtroDesvioVal === 'todos' || desvio === filtroDesvioVal;
-
-                // Verifica Status
-                const atendeStatus = !statusVal || status === statusVal;
+                
+                const atendeStatus = chkTodos.checked || statusSelecionados.includes(status);
 
                 if (atendeBusca && atendeOrigem && atendeDestino && atendeDesvio && atendeStatus) {
                     tr.style.display = '';
@@ -851,7 +899,79 @@
         }
 
         document.getElementById('filtro-busca').addEventListener('input', filtrarTabela);
-        document.getElementById('filtro-status').addEventListener('change', filtrarTabela);
+
+        // =========================================
+        // LÓGICA DO DROPDOWN MULTI-SELECT DE STATUS
+        // =========================================
+        const statusDisplayBtn = document.getElementById('status-display-btn');
+        const statusDropdownList = document.getElementById('status-dropdown-list');
+        const chkStatusTodos = document.getElementById('chk-status-todos');
+        const chksStatus = document.querySelectorAll('.chk-status');
+
+        statusDisplayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            statusDropdownList.classList.toggle('show');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!document.getElementById('status-multi-container').contains(e.target)) {
+                statusDropdownList.classList.remove('show');
+            }
+        });
+
+        function atualizarTextoStatus() {
+            if (chkStatusTodos.checked) {
+                statusDisplayBtn.textContent = 'Todos';
+                return;
+            }
+            const marcados = document.querySelectorAll('.chk-status:checked');
+            if (marcados.length === 0) {
+                statusDisplayBtn.textContent = 'Nenhum';
+            } else if (marcados.length === 1) {
+                statusDisplayBtn.textContent = marcados[0].value;
+            } else {
+                statusDisplayBtn.textContent = `${marcados.length} selecionados`;
+            }
+        }
+
+        chkStatusTodos.addEventListener('change', () => {
+            if (chkStatusTodos.checked) {
+                chksStatus.forEach(chk => chk.checked = false);
+            } else {
+                chkStatusTodos.checked = true; // Se des marcar "Todos" e nenhum outro estiver, mantém ou obriga
+            }
+            atualizarTextoStatus();
+            filtrarTabela();
+        });
+
+        chksStatus.forEach(chk => {
+            chk.addEventListener('change', () => {
+                const algumMarcado = Array.from(chksStatus.some(c => c.checked)); // ou loop simples
+                let totalMarcados = document.querySelectorAll('.chk-status:checked').length;
+                
+                if (totalMarcados > 0) {
+                    chkStatusTodos.checked = false;
+                } else {
+                    chkStatusTodos.checked = true;
+                }
+                atualizarTextoStatus();
+                filtrarTabela();
+            });
+        });
+
+        // Ajuste auxiliar para o evento change das checkboxes individuais de status
+        chksStatus.forEach(chk => {
+            chk.addEventListener('change', () => {
+                const totalMarcados = document.querySelectorAll('.chk-status:checked').length;
+                if (totalMarcados > 0) {
+                    chkStatusTodos.checked = false;
+                } else {
+                    chkStatusTodos.checked = true;
+                }
+                atualizarTextoStatus();
+                filtrarTabela();
+            });
+        });
 
         // =========================================
         // LÓGICA DOS MODAIS
@@ -1284,7 +1404,6 @@
                         li.textContent = cd;
                         li.className = 'custom-dropdown-item';
                         li.addEventListener('mousedown', () => { 
-                            // Se for "Todos", limpa o campo ou define como vazio para trazer tudo
                             input.value = cd === 'Todos' ? '' : cd; 
                             listElement.classList.remove('show'); 
                             filtrarTabela();
