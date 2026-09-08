@@ -230,21 +230,31 @@
         .dark-theme .multi-select-display { background: #0f172a; border-color: #334155; color: #f1f5f9; }
         
         .multi-select-dropdown {
-            position: absolute; top: 100%; left: 0; min-width: 170px; background: #ffffff;
-            border: 1px solid #cbd5e1; border-radius: 8px; max-height: 220px; overflow-y: auto;
-            margin-top: 5px; padding: 6px 0; list-style: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            display: none; z-index: 1000;
+            position: absolute; top: 100%; left: 0; min-width: 180px; background: #ffffff;
+            border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 10px; display: none; z-index: 2000; margin-top: 5px; list-style: none;
         }
         .multi-select-dropdown.show { display: block; }
-        .dark-theme .multi-select-dropdown { background: #0f172a; border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        .dark-theme .multi-select-dropdown { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
         
+        .multi-select-items-box { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+        .multi-select-items-box::-webkit-scrollbar { width: 6px; }
+        .multi-select-items-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .dark-theme .multi-select-items-box::-webkit-scrollbar-thumb { background: #334155; }
+
         .multi-select-item {
-            padding: 6px 12px; cursor: pointer; color: #555; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;
+            padding: 6px 8px; cursor: pointer; color: #555; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; border-radius: 4px;
         }
         .multi-select-item:hover { background-color: rgba(0, 75, 135, 0.1); }
         .dark-theme .multi-select-item { color: #cbd5e1; }
         .dark-theme .multi-select-item:hover { background-color: rgba(140, 164, 192, 0.15); }
         .multi-select-item input[type="checkbox"] { cursor: pointer; }
+
+        .multi-select-footer { display: flex; justify-content: flex-end; align-items: center; margin-top: 10px; border-top: 1px solid #cbd5e1; padding-top: 8px; }
+        .dark-theme .multi-select-footer { border-color: #334155; }
+        .multi-select-footer button { background: none; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; padding: 4px 10px; border-radius: 4px; color: #004b87; }
+        .dark-theme .multi-select-footer button { color: #60a5fa; }
+        .multi-select-footer button:hover { background: rgba(0,75,135,0.15); }
 
         /* CALENDÁRIO CUSTOMIZADO MULTI-SELEÇÃO */
         .date-picker-wrapper { position: relative; display: inline-block; }
@@ -517,37 +527,42 @@
                 </div>
             </div>
 
-            <!-- FILTRO DE STATUS MULTI-SELEÇÃO -->
+            <!-- FILTRO DE STATUS MULTI-SELEÇÃO COM BOTÃO APLICAR -->
             <div style="display: flex; gap: 5px; align-items: center;">
                 Status 
                 <div class="multi-select-container" id="status-multi-container">
                     <div class="multi-select-display" id="status-display-btn">Todos</div>
-                    <ul class="multi-select-dropdown" id="status-dropdown-list">
-                        <li class="multi-select-item">
-                            <input type="checkbox" id="chk-status-todos" value="Todos" checked>
-                            <label for="chk-status-todos">Todos</label>
-                        </li>
-                        <li class="multi-select-item">
-                            <input type="checkbox" class="chk-status" value="Pendente" checked>
-                            <label>Pendente</label>
-                        </li>
-                        <li class="multi-select-item">
-                            <input type="checkbox" class="chk-status" value="Agendado" checked>
-                            <label>Agendado</label>
-                        </li>
-                        <li class="multi-select-item">
-                            <input type="checkbox" class="chk-status" value="Aguardando Recusa" checked>
-                            <label>Aguardando Recusa</label>
-                        </li>
-                        <li class="multi-select-item">
-                            <input type="checkbox" class="chk-status" value="Recusado" checked>
-                            <label>Recusado</label>
-                        </li>
-                        <li class="multi-select-item">
-                            <input type="checkbox" class="chk-status" value="Finalizado" checked>
-                            <label>Finalizado</label>
-                        </li>
-                    </ul>
+                    <div class="multi-select-dropdown" id="status-dropdown-list">
+                        <div class="multi-select-items-box">
+                            <label class="multi-select-item">
+                                <input type="checkbox" id="chk-status-todos" value="Todos" checked>
+                                Todos
+                            </label>
+                            <label class="multi-select-item">
+                                <input type="checkbox" class="chk-status" value="Pendente" checked>
+                                Pendente
+                            </label>
+                            <label class="multi-select-item">
+                                <input type="checkbox" class="chk-status" value="Agendado" checked>
+                                Agendado
+                            </label>
+                            <label class="multi-select-item">
+                                <input type="checkbox" class="chk-status" value="Aguardando Recusa" checked>
+                                Aguardando Recusa
+                            </label>
+                            <label class="multi-select-item">
+                                <input type="checkbox" class="chk-status" value="Recusado" checked>
+                                Recusado
+                            </label>
+                            <label class="multi-select-item">
+                                <input type="checkbox" class="chk-status" value="Finalizado" checked>
+                                Finalizado
+                            </label>
+                        </div>
+                        <div class="multi-select-footer">
+                            <button id="status-btn-aplicar">Aplicar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -889,7 +904,6 @@
                 const atendeDestino = !filtroDestinoVal || filtroDestinoVal === 'todos' || destino === filtroDestinoVal;
                 const atendeDesvio = !filtroDesvioVal || filtroDesvioVal === 'todos' || desvio === filtroDesvioVal;
                 
-                // Se o status for Agendado, ele atende ao filtro do card/status Pendente também
                 let atendeStatus = false;
                 if (chkTodos.checked) {
                     atendeStatus = true;
@@ -897,7 +911,7 @@
                     if (statusSelecionados.includes(status)) {
                         atendeStatus = true;
                     } else if (statusSelecionados.includes('Pendente') && status === 'Agendado') {
-                        atendeStatus = true; // Agendado fica visível quando "Pendente" é selecionado
+                        atendeStatus = true;
                     }
                 }
 
@@ -912,14 +926,13 @@
         document.getElementById('filtro-busca').addEventListener('input', filtrarTabela);
 
         // =========================================
-        // LÓGICA DE CLIQUE NOS CARDS KPI (FILTRAGEM)
+        // LÓGICA DE CLIQUE NOS CARDS KPI (FILTRAGEM DIRETA)
         // =========================================
         function selecionarStatusUnico(statusAlvo) {
             const chkTodos = document.getElementById('chk-status-todos');
             const chksStatus = document.querySelectorAll('.chk-status');
 
             if (!statusAlvo) {
-                // Selecionar "Todos"
                 chkTodos.checked = true;
                 chksStatus.forEach(chk => chk.checked = false);
             } else {
@@ -943,12 +956,13 @@
         document.getElementById('card-kpi-finalizado').addEventListener('click', () => selecionarStatusUnico('Finalizado'));
 
         // =========================================
-        // LÓGICA DO DROPDOWN MULTI-SELECT DE STATUS
+        // LÓGICA DO DROPDOWN MULTI-SELECT DE STATUS COM BOTÃO APLICAR
         // =========================================
         const statusDisplayBtn = document.getElementById('status-display-btn');
         const statusDropdownList = document.getElementById('status-dropdown-list');
         const chkStatusTodos = document.getElementById('chk-status-todos');
         const chksStatus = document.querySelectorAll('.chk-status');
+        const statusBtnAplicar = document.getElementById('status-btn-aplicar');
 
         statusDisplayBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -979,11 +993,7 @@
         chkStatusTodos.addEventListener('change', () => {
             if (chkStatusTodos.checked) {
                 chksStatus.forEach(chk => chk.checked = false);
-            } else {
-                chkStatusTodos.checked = true;
             }
-            atualizarTextoStatus();
-            filtrarTabela();
         });
 
         chksStatus.forEach(chk => {
@@ -994,9 +1004,15 @@
                 } else {
                     chkStatusTodos.checked = true;
                 }
-                atualizarTextoStatus();
-                filtrarTabela();
             });
+        });
+
+        // O filtro só é aplicado na tabela e o dropdown fecha quando clica no botão "Aplicar"
+        statusBtnAplicar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            atualizarTextoStatus();
+            filtrarTabela();
+            statusDropdownList.classList.remove('show');
         });
 
         // =========================================
