@@ -796,7 +796,6 @@
                 </div>
             </div>
 
-            <!-- FILTRO DE STATUS MULTI-SELEÇÃO COM OPÇÃO "TODOS" -->
             <div style="display: flex; gap: 5px; align-items: center;">
                 Status
                 <div class="date-picker-wrapper">
@@ -981,6 +980,23 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONFIRMAÇÃO PARA TRATAR EM GRUPO -->
+    <div class="modal-overlay" id="modal-confirmar-grupo">
+        <div class="modal-content" style="width: 320px; text-align: center;">
+            <div class="modal-header">
+                <h2>Tratar em Grupo</h2>
+                <i class="ph ph-x modal-close" id="fechar-modal-grupo-btn"></i>
+            </div>
+            <div class="modal-body" style="gap: 15px;">
+                <p style="font-weight: 600; font-size: 0.95rem;">Deseja avançar os registros selecionados para o status "Expedido"?</p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn-salvar" id="btn-sim-grupo" style="padding: 8px 25px; background-color: #10b981;">Sim</button>
+                    <button class="btn-salvar" id="btn-nao-grupo" style="padding: 8px 25px; background-color: #ef4444;">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE CONFIRMAÇÃO PARA FINALIZAR -->
     <div class="modal-overlay" id="modal-confirmar-finalizar">
         <div class="modal-content" style="width: 310px; text-align: center;">
@@ -1083,7 +1099,6 @@
             else { usernameDisplay.textContent = 'Usuário'; }
 
             atualizarKPIs();
-            verificarSelecaoLinhas();
         });
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
@@ -1130,6 +1145,7 @@
         // =========================================
         const selectAllCheckbox = document.getElementById('select-all-checkbox');
         const btnTratarGrupo = document.getElementById('btn-tratar-grupo');
+        const modalGrupo = document.getElementById('modal-confirmar-grupo');
 
         function verificarSelecaoLinhas() {
             const checkboxes = document.querySelectorAll('.row-checkbox');
@@ -1148,7 +1164,6 @@
         selectAllCheckbox.addEventListener('change', () => {
             const checkboxes = document.querySelectorAll('.row-checkbox');
             checkboxes.forEach(cb => {
-                // Apenas marca as linhas visíveis
                 if (cb.closest('tr').style.display !== 'none') {
                     cb.checked = selectAllCheckbox.checked;
                 }
@@ -1160,6 +1175,56 @@
             if (e.target.classList.contains('row-checkbox')) {
                 verificarSelecaoLinhas();
             }
+        });
+
+        btnTratarGrupo.addEventListener('click', () => {
+            const selecionados = document.querySelectorAll('.row-checkbox:checked');
+            if (selecionados.length < 2) return;
+
+            let primeiraOrigem = null;
+            let primeiroDestino = null;
+            let valido = true;
+
+            selecionados.forEach(cb => {
+                const tr = cb.closest('tr');
+                const status = tr.getAttribute('data-status');
+                const origem = tr.getAttribute('data-origem');
+                const destino = tr.getAttribute('data-destino');
+
+                if (status !== 'Pendente' && status !== 'Agendado') {
+                    valido = false;
+                }
+
+                if (primeiraOrigem === null) {
+                    primeiraOrigem = origem;
+                    primeiroDestino = destino;
+                } else if (primeiraOrigem !== origem || primeiroDestino !== destino) {
+                    valido = false;
+                }
+            });
+
+            if (!valido) {
+                alert('Para tratar em grupo, todos os registros selecionados devem ter status "Pendente" ou "Agendado", além de possuírem a mesma Origem e o mesmo Destino.');
+                return;
+            }
+
+            modalGrupo.classList.add('active');
+        });
+
+        document.getElementById('fechar-modal-grupo-btn').addEventListener('click', () => modalGrupo.classList.remove('active'));
+        document.getElementById('nao-grupo').addEventListener('click', () => modalGrupo.classList.remove('active'));
+        document.getElementById('sim-grupo').addEventListener('click', () => {
+            modalGrupo.classList.remove('active');
+            
+            // Avança todos os selecionados para "Expedido"
+            const selecionados = document.querySelectorAll('.row-checkbox:checked');
+            selecionados.forEach(cb => {
+                const tr = cb.closest('tr');
+                atualizarStatusLinha(tr, 'Expedido');
+                cb.checked = false;
+            });
+            selectAllCheckbox.checked = false;
+            verificarSelecaoLinhas();
         });
 
         // =========================================
@@ -1275,6 +1340,8 @@
                     tr.style.display = '';
                 } else {
                     tr.style.display = 'none';
+                    const cb = tr.querySelector('.row-checkbox');
+                    if (cb) cb.checked = false;
                 }
             });
             verificarSelecaoLinhas();
@@ -1296,11 +1363,14 @@
         const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
         const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
-        btnAbrirModal.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
-            const savedCD = localStorage.getItem('userCD');
-            if (savedCD) modalDestinoInput.value = savedCD;
-        });
+        if (btnAbrirModal) {
+            btnAbrirModal.addEventListener('click', () => {
+                modalOverlay.classList.add('active');
+                const savedCD = localStorage.getItem('userCD');
+                if (savedCD) modalDestinoInput.value = savedCD;
+            });
+        }
+
         btnFecharModal.addEventListener('click', () => modalOverlay.classList.remove('active'));
         modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
 
