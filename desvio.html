@@ -9,8 +9,8 @@
     
     <style>
         /* =========================================
-           VARIÁVEIS DE TEMA (CLARO/ESCURO)
-           ========================================= */
+            VARIÁVEIS DE TEMA (CLARO/ESCURO)
+            ========================================= */
         :root {
             --bg-body: #ffffff;
             --bg-sidebar: #e2e8f0;
@@ -53,8 +53,8 @@
         }
 
         /* =========================================
-           BOTÃO DE TROCA DE TEMA
-           ========================================= */
+            BOTÃO DE TROCA DE TEMA
+            ========================================= */
         .theme-toggle-btn {
             position: fixed;
             top: 30px;
@@ -79,8 +79,8 @@
         .dark-theme #theme-icon-dark { display: block; fill: var(--btn-theme-color); }
 
         /* =========================================
-           BARRA LATERAL (SIDEBAR)
-           ========================================= */
+            BARRA LATERAL (SIDEBAR)
+            ========================================= */
         .sidebar {
             width: 80px; 
             background-color: var(--bg-sidebar);
@@ -141,8 +141,8 @@
         .dropdown-logout:hover { background-color: rgba(239, 68, 68, 0.1); }
 
         /* =========================================
-           CONTEÚDO PRINCIPAL (DESVIO DE ROTA)
-           ========================================= */
+            CONTEÚDO PRINCIPAL (DESVIO DE ROTA)
+            ========================================= */
         .main-content {
             flex: 1; padding: 30px 50px; overflow-y: auto; position: relative;
         }
@@ -299,8 +299,8 @@
         .table-actions i:hover, .table-actions svg:hover { transform: scale(1.1); }
 
         /* =========================================
-           MODAIS
-           ========================================= */
+            MODAIS
+            ========================================= */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px); display: flex;
@@ -319,7 +319,7 @@
 
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #004b87; }
         .dark-theme .modal-header { color: #8ca4c0; }
-        .modal-header h2 { font-size: 1.1rem; font-weight: 900; margin-left: auto; margin-right: auto; padding-left: 24px;  }
+        .modal-header h2 { font-size: 1.1rem; font-weight: 900; margin-left: auto; margin-right: auto; padding-left: 24px; }
         .modal-close { cursor: pointer; font-size: 1.2rem; font-weight: bold; transition: opacity 0.2s; }
         .modal-close:hover { opacity: 0.6; }
 
@@ -675,6 +675,18 @@
                         <option value="Finalizado">Finalizado</option>
                     </select>
                 </div>
+                
+                <!-- Campos dinâmicos de agendamento na edição -->
+                <div id="edit-agendamento-container" style="display: none; flex-direction: column; gap: 12px;">
+                    <div class="input-pill">
+                        <span class="input-prefix">Data Agend.:</span>
+                        <input type="date" id="edit-data-agend" style="width: 100%;">
+                    </div>
+                    <div class="input-pill">
+                        <span class="input-prefix">Hora Agend.:</span>
+                        <input type="time" id="edit-hora-agend" style="width: 100%;">
+                    </div>
+                </div>
             </div>
             <div class="modal-footer"><button class="btn-salvar" id="btn-atualizar-registro">Atualizar</button></div>
         </div>
@@ -746,7 +758,6 @@
             localStorage.setItem('theme', theme); 
         });
 
-        // Correção de cor do texto no dark mode no carregamento
         if (body.classList.contains('dark-theme')) {
             document.getElementById('texto-confirmacao-avancar').style.color = '#f1f5f9';
         }
@@ -762,7 +773,7 @@
             if (savedUsername) { usernameDisplay.textContent = savedUsername; } 
             else { usernameDisplay.textContent = 'Usuário'; }
 
-            atualizarKPIs(); // Atualiza contadores de Status
+            atualizarKPIs(); 
         });
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
@@ -818,7 +829,7 @@
         }
 
         // =========================================
-        // LÓGICA DOS MODAIS (Novo, Edição e Avançar)
+        // LÓGICA DOS MODAIS
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
@@ -827,14 +838,12 @@
         const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
         const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
-        // Modal de Confirmação de Avanço
         const modalConfirmacao = document.getElementById('modal-confirmacao-avancar');
         const btnFecharConfirmacao = document.getElementById('fechar-confirmacao-btn');
         const textoConfirmacao = document.getElementById('texto-confirmacao-avancar');
         const btnConfirmarSim = document.getElementById('btn-confirmar-sim');
         const btnConfirmarNao = document.getElementById('btn-confirmar-nao');
 
-        // Modal de Agendamento
         const modalAgendamento = document.getElementById('modal-input-agendamento');
         const btnFecharAgendamento = document.getElementById('fechar-modal-agendamento-btn');
         const btnConfirmarAgendamento = document.getElementById('btn-confirmar-agendamento');
@@ -860,6 +869,16 @@
         const btnFecharEditar = document.getElementById('fechar-editar-btn');
         const btnAtualizarRegistro = document.getElementById('btn-atualizar-registro');
         const editStatusSelect = document.getElementById('edit-status');
+        const editAgendamentoContainer = document.getElementById('edit-agendamento-container');
+
+        // Mostrar ou esconder campos de agendamento na edição dependendo do select de status
+        editStatusSelect.addEventListener('change', () => {
+            if (editStatusSelect.value === 'Agendado') {
+                editAgendamentoContainer.style.display = 'flex';
+            } else {
+                editAgendamentoContainer.style.display = 'none';
+            }
+        });
 
         document.addEventListener('click', (e) => {
             // ABRIR DETALHES
@@ -906,7 +925,29 @@
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
                 document.getElementById('edit-desvio').value = linhaEmEdicao.getAttribute('data-desvio');
-                editStatusSelect.value = linhaEmEdicao.getAttribute('data-status');
+                
+                const statusAtual = linhaEmEdicao.getAttribute('data-status');
+                editStatusSelect.value = statusAtual;
+
+                // Preencher data e hora se estiver agendado
+                if (statusAtual === 'Agendado') {
+                    editAgendamentoContainer.style.display = 'flex';
+                    const agendamentoStr = linhaEmEdicao.getAttribute('data-agendamento'); // formato: DD/MM/YYYY HH:MM
+                    if (agendamentoStr && agendamentoStr.includes(' ')) {
+                        const [dataPt, horaPt] = agendamentoStr.split(' ');
+                        const [dia, mes, ano] = dataPt.split('/');
+                        document.getElementById('edit-data-agend').value = `${ano}-${mes}-${dia}`;
+                        document.getElementById('edit-hora-agend').value = horaPt;
+                    } else {
+                        document.getElementById('edit-data-agend').value = '';
+                        document.getElementById('edit-hora-agend').value = '';
+                    }
+                } else {
+                    editAgendamentoContainer.style.display = 'none';
+                    document.getElementById('edit-data-agend').value = '';
+                    document.getElementById('edit-hora-agend').value = '';
+                }
+
                 modalEditar.classList.add('active');
             }
 
@@ -916,7 +957,6 @@
                 const statusAtual = tr.getAttribute('data-status');
                 let novoStatus = '';
 
-                // Lógica Linear de Avanço
                 if (statusAtual === 'Pendente') novoStatus = 'Agendado';
                 else if (statusAtual === 'Agendado') novoStatus = 'Aguardando Recusa';
                 else if (statusAtual === 'Aguardando Recusa') novoStatus = 'Recusado';
@@ -927,10 +967,8 @@
                     statusParaAvancar = novoStatus;
                     
                     if (novoStatus === 'Agendado') {
-                        // Desvia para o modal de Agendamento
                         modalAgendamento.classList.add('active');
                     } else {
-                        // Abre a confirmação normal
                         textoConfirmacao.textContent = `Deseja avançar o Status para ${novoStatus}?`;
                         modalConfirmacao.classList.add('active');
                     }
@@ -938,7 +976,6 @@
             }
         });
 
-        // Fechar modais
         btnFecharDetalhes.addEventListener('click', () => modalDetalhes.classList.remove('active'));
         modalDetalhes.addEventListener('click', (e) => { if (e.target === modalDetalhes) modalDetalhes.classList.remove('active'); });
         
@@ -1009,8 +1046,8 @@
                 
                 linhaParaAvancar.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${statusParaAvancar}</span>`;
                 
-                // Limpa a coluna de agendamento se o novo status não for agendado
                 if (statusParaAvancar !== 'Agendado') {
+                    linhaParaAvancar.setAttribute('data-agendamento', '');
                     linhaParaAvancar.cells[7].textContent = '';
                 }
 
@@ -1024,17 +1061,34 @@
         // SALVAR EDIÇÃO
         btnAtualizarRegistro.addEventListener('click', () => {
             if (!linhaEmEdicao) return;
+            
+            const novoStatus = editStatusSelect.value;
+            let agendamentoFormatado = linhaEmEdicao.getAttribute('data-agendamento') || '';
+
+            if (novoStatus === 'Agendado') {
+                const dataVal = document.getElementById('edit-data-agend').value;
+                const horaVal = document.getElementById('edit-hora-agend').value;
+                if (!dataVal || !horaVal) {
+                    alert('É obrigatório preencher a data e a hora do agendamento.');
+                    return;
+                }
+                const dParts = dataVal.split('-');
+                agendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaVal}`;
+            } else {
+                agendamentoFormatado = '';
+            }
+
             linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value.trim());
             linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value.trim());
             linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value.trim());
             linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value.trim());
             linhaEmEdicao.setAttribute('data-desvio', document.getElementById('edit-desvio').value.trim());
+            linhaEmEdicao.setAttribute('data-agendamento', agendamentoFormatado);
             
-            const novoStatus = editStatusSelect.value;
             const statusAntigo = linhaEmEdicao.getAttribute('data-status');
             linhaEmEdicao.setAttribute('data-status', novoStatus);
             
-            // --- INÍCIO DA LÓGICA DE HISTÓRICO ---
+            // Lógica de Histórico
             if (novoStatus !== statusAntigo) {
                 const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
                 const agora = new Date();
@@ -1044,7 +1098,6 @@
                 historicoAtual += ` | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
                 linhaEmEdicao.setAttribute('data-historico', historicoAtual);
             }
-            // --- FIM DA LÓGICA DE HISTÓRICO ---
             
             linhaEmEdicao.cells[1].textContent = document.getElementById('edit-hu').value;
             linhaEmEdicao.cells[2].textContent = document.getElementById('edit-is').value;
@@ -1059,13 +1112,7 @@
             if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
             
             linhaEmEdicao.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
-
-            // Mostra a data na tabela apenas se for Agendado, senão deixa vazio
-            if (novoStatus === 'Agendado') {
-                linhaEmEdicao.cells[7].textContent = linhaEmEdicao.getAttribute('data-agendamento') || '';
-            } else {
-                linhaEmEdicao.cells[7].textContent = '';
-            }
+            linhaEmEdicao.cells[7].textContent = agendamentoFormatado;
 
             modalEditar.classList.remove('active');
             linhaEmEdicao = null;
@@ -1096,7 +1143,7 @@
             novaLinha.setAttribute('data-destino', destino);
             novaLinha.setAttribute('data-desvio', desvio);
             novaLinha.setAttribute('data-status', 'Pendente');
-            novaLinha.setAttribute('data-agendamento', ''); // Novo registro entra sem agendamento
+            novaLinha.setAttribute('data-agendamento', ''); 
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
             novaLinha.innerHTML = `
@@ -1120,12 +1167,11 @@
             tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
             modalOverlay.classList.remove('active');
             
-            // Limpa Modal
             document.getElementById('input-hu').value = '';
             document.getElementById('input-is').value = '';
             document.getElementById('modal-origem').value = '';
             document.getElementById('modal-destino').value = '';
-            document.getElementById('modal-desvio').value = ''; // Adicionado para limpar também o desvio
+            document.getElementById('modal-desvio').value = '';
 
             atualizarKPIs(); 
         });
