@@ -957,7 +957,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE PREENCHER TS DE ORIGEM -->
+    <!-- MODAL DE PREENCHER TS -->
     <div class="modal-overlay" id="modal-input-ts">
         <div class="modal-content" style="width: 320px;">
             <div class="modal-header">
@@ -966,8 +966,8 @@
             </div>
             <div class="modal-body">
                 <div class="input-pill">
-                    <span class="input-prefix">TS Origem:</span>
-                    <input type="text" id="input-ts-origem-val" placeholder="Digite a TS de Origem">
+                    <span class="input-prefix">TS:</span>
+                    <input type="text" id="input-ts-origem-val" placeholder="Digite a TS">
                 </div>
             </div>
             <div class="modal-footer">
@@ -1363,7 +1363,7 @@
         document.getElementById('btn-confirmar-ts').addEventListener('click', () => {
             const tsVal = document.getElementById('input-ts-origem-val').value.trim();
             if (!tsVal) {
-                alert('É obrigatório preencher a TS de Origem para expedir.');
+                alert('É obrigatório preencher a TS para expedir.');
                 return;
             }
 
