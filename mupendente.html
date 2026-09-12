@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo</title>
+    <title>Expedição em Fluxo - MU's Pendentes</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -285,6 +285,25 @@
         .dark-theme .cal-btn-apply { color: #60a5fa; }
         .cal-btn-apply:hover { background: rgba(0,75,135,0.15); }
 
+        /* =========================================
+           BADGES DE STATUS
+           ========================================= */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        /* Cores adaptadas para bater com as referências enviadas */
+        .status-pendente { background-color: #ffe6e6; color: #e62020; }
+        .dark-theme .status-pendente { background-color: rgba(230, 32, 32, 0.2); color: #ff6b6b; }
+
+        .status-hucriada { background-color: #e6e6ff; color: #1a1aff; }
+        .dark-theme .status-hucriada { background-color: rgba(26, 26, 255, 0.2); color: #8cb4ff; }
+
+
         /* CONTAINER DA TABELA */
         .hu-table-container {
             background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
@@ -548,7 +567,7 @@
                         <td>20</td>
                         <td>SC02</td>
                         <td>BA01</td>
-                        <td>Pendente</td>
+                        <td><span class="status-badge status-pendente">Pendente</span></td>
                         <td>-</td>
                         <td>-</td>
                         <td>
@@ -564,7 +583,7 @@
                         <td>5</td>
                         <td>SP15</td>
                         <td>SC02</td>
-                        <td>HU Criada</td>
+                        <td><span class="status-badge status-hucriada">HU Criada</span></td>
                         <td>0147931459742</td>
                         <td>32489842</td>
                         <td>
@@ -580,7 +599,7 @@
                         <td>20</td>
                         <td>PR06</td>
                         <td>RJ10</td>
-                        <td>HU Criada</td>
+                        <td><span class="status-badge status-hucriada">HU Criada</span></td>
                         <td>12678624443333</td>
                         <td>89317456</td>
                         <td>
@@ -892,7 +911,9 @@
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
             novaLinha.innerHTML = `
-                <td>${processo}</td><td>${quantidade}</td><td>${origem}</td><td>${destino}</td><td>Pendente</td><td>-</td><td>-</td>
+                <td>${processo}</td><td>${quantidade}</td><td>${origem}</td><td>${destino}</td>
+                <td><span class="status-badge status-pendente">Pendente</span></td>
+                <td>-</td><td>-</td>
                 <td>
                     <div class="table-actions">
                         <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
@@ -916,7 +937,10 @@
             tr.setAttribute('data-status', novoStatus);
             let hist = tr.getAttribute('data-historico');
             tr.setAttribute('data-historico', `${hist} | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`);
-            tr.cells[4].textContent = novoStatus;
+            
+            // Adicionando dinamicamente a badge de cor atualizada
+            let badgeClass = novoStatus === 'Pendente' ? 'status-pendente' : 'status-hucriada';
+            tr.cells[4].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
             
             atualizarKPIs();
             aplicarFiltros();
