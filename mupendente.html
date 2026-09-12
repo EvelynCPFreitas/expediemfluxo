@@ -981,14 +981,24 @@
 
         document.getElementById('btn-atualizar-registro').addEventListener('click', () => {
             if (!linhaEmEdicao) return;
+            
+            const processo = document.getElementById('edit-processo').value.trim();
+            const origem = document.getElementById('edit-origem').value.trim();
+            const destino = document.getElementById('edit-destino').value.trim();
+
+            if (!processo || !origem || !destino) {
+                alert('Por favor, preencha o Processo, a Origem e o Destino antes de atualizar.');
+                return;
+            }
+
             const novoStatus = document.getElementById('edit-status').value;
             
             // A edição atualiza os campos básicos
-            linhaEmEdicao.setAttribute('data-processo', document.getElementById('edit-processo').value || '');
+            linhaEmEdicao.setAttribute('data-processo', processo);
             linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value || '');
             linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value || '');
-            linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value || '');
-            linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value || '');
+            linhaEmEdicao.setAttribute('data-origem', origem);
+            linhaEmEdicao.setAttribute('data-destino', destino);
             
             linhaEmEdicao.cells[0].textContent = linhaEmEdicao.getAttribute('data-processo');
             linhaEmEdicao.cells[2].textContent = linhaEmEdicao.getAttribute('data-origem');
@@ -1001,9 +1011,14 @@
         });
 
         document.getElementById('btn-salvar-registro').addEventListener('click', () => {
-            const processo = document.getElementById('input-processo').value || '';
-            const origem = document.getElementById('modal-origem').value || '';
-            const destino = document.getElementById('modal-destino').value || '';
+            const processo = document.getElementById('input-processo').value.trim();
+            const origem = document.getElementById('modal-origem').value.trim();
+            const destino = document.getElementById('modal-destino').value.trim();
+
+            if (!processo || !origem || !destino) {
+                alert('Por favor, preencha o Processo, a Origem e o Destino antes de salvar.');
+                return;
+            }
             
             // Contar as MU's preenchidas
             const muInputs = document.querySelectorAll('.input-mu-field');
