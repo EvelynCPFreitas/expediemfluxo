@@ -588,7 +588,7 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer; display: none;" title="Avançar Status"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
@@ -604,7 +604,7 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer; display: none;" title="Avançar Status"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
@@ -940,6 +940,12 @@
             // Adicionando dinamicamente a badge de cor atualizada
             let badgeClass = novoStatus === 'Pendente' ? 'status-pendente' : 'status-hucriada';
             tr.cells[4].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
+            
+            // Esconde o ícone de avançar caso o status seja "HU Criada", ou volta a mostrar caso seja "Pendente"
+            const btnAvancar = tr.querySelector('.btn-avancar');
+            if (btnAvancar) {
+                btnAvancar.style.display = novoStatus === 'HU Criada' ? 'none' : '';
+            }
             
             atualizarKPIs();
             aplicarFiltros();
