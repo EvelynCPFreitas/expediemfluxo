@@ -664,16 +664,24 @@
         </div>
     </div>
 
-    <!-- MODAL DE AVANÇAR STATUS -->
+    <!-- MODAL DE AVANÇAR STATUS COM HU E IS OBRIGATÓRIOS -->
     <div class="modal-overlay" id="modal-escolha-avancar">
         <div class="modal-content" style="width: 320px; text-align: center;">
             <div class="modal-header">
                 <h2>Avançar Status</h2>
                 <i class="ph ph-x modal-close" id="fechar-escolha-btn"></i>
             </div>
-            <div class="modal-body" style="gap: 15px;">
-                <p style="font-weight: 600; font-size: 0.95rem;">Avançar para HU Criada?</p>
-                <div style="display: flex; gap: 15px; justify-content: center;">
+            <div class="modal-body" style="gap: 15px; text-align: left;">
+                <p style="font-weight: 600; font-size: 0.95rem; text-align: center;">Avançar para HU Criada?</p>
+                <div class="input-pill">
+                    <span class="input-prefix">HU:</span>
+                    <input type="text" id="avancar-hu" placeholder="Obrigatório">
+                </div>
+                <div class="input-pill">
+                    <span class="input-prefix">IS:</span>
+                    <input type="text" id="avancar-is" placeholder="Obrigatório">
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
                     <button class="btn-salvar" id="btn-escolha-confirmar">Confirmar</button>
                 </div>
             </div>
@@ -897,7 +905,6 @@
             adicionarCampoMU(muContainer); // Adiciona ao menos 1 vazio por padrão
         }
 
-
         // =========================================
         // LÓGICA DE NAVEGAÇÃO COM ENTER (AMBOS OS MODAIS)
         // =========================================
@@ -958,7 +965,11 @@
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-avancar')) {
                 linhaEmProcesso = e.target.closest('tr');
-                if (linhaEmProcesso.getAttribute('data-status') === 'Pendente') modalEscolha.classList.add('active');
+                if (linhaEmProcesso.getAttribute('data-status') === 'Pendente') {
+                    document.getElementById('avancar-hu').value = '';
+                    document.getElementById('avancar-is').value = '';
+                    modalEscolha.classList.add('active');
+                }
             }
 
             if (e.target.classList.contains('btn-detalhes')) {
@@ -1010,11 +1021,28 @@
             }
         });
 
+        // BOTÃO CONFIRMAR AVANÇAR STATUS
         document.getElementById('btn-escolha-confirmar').addEventListener('click', () => {
-            if (linhaEmProcesso) atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
+            if (linhaEmProcesso) {
+                const inputHu = document.getElementById('avancar-hu').value.trim();
+                const inputIs = document.getElementById('avancar-is').value.trim();
+
+                if (!inputHu || !inputIs) {
+                    alert('Os campos HU e IS são obrigatórios para avançar o status.');
+                    return;
+                }
+
+                linhaEmProcesso.setAttribute('data-hu', inputHu);
+                linhaEmProcesso.setAttribute('data-is', inputIs);
+                linhaEmProcesso.cells[5].textContent = inputHu;
+                linhaEmProcesso.cells[6].textContent = inputIs;
+
+                atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
+            }
             modalEscolha.classList.remove('active');
         });
 
+        // BOTÃO ATUALIZAR REGISTRO (EDIÇÃO)
         document.getElementById('btn-atualizar-registro').addEventListener('click', () => {
             if (!linhaEmEdicao) return;
             
@@ -1060,6 +1088,7 @@
             modalEditar.classList.remove('active');
         });
 
+        // BOTÃO SALVAR NOVO REGISTRO
         document.getElementById('btn-salvar-registro').addEventListener('click', () => {
             const processo = document.getElementById('input-processo').value.trim();
             const origem = document.getElementById('modal-origem').value.trim();
