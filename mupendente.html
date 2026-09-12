@@ -337,19 +337,20 @@
             background-color: #d1d9e2; border-radius: 20px; padding: 25px 30px; width: 360px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #aebac9;
             transform: translateY(-20px); transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s;
+            max-height: 90vh; display: flex; flex-direction: column;
         }
         .modal-overlay.active .modal-content { transform: translateY(0); }
         .dark-theme .modal-content { background-color: #1e293b; border-color: #334155; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #004b87; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #004b87; flex-shrink: 0; }
         .dark-theme .modal-header { color: #8ca4c0; }
         .modal-header h2 { font-size: 1.1rem; font-weight: 900; margin-left: auto; margin-right: auto; padding-left: 24px; }
         .modal-close { cursor: pointer; font-size: 1.2rem; font-weight: bold; transition: opacity 0.2s; }
         .modal-close:hover { opacity: 0.6; }
-        .modal-body { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .modal-body { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; overflow-y: auto; flex: 1; padding-right: 5px; }
         
         .input-pill {
             display: flex; align-items: center; border: 1px solid #004b87; border-radius: 20px;
-            padding: 6px 15px; background-color: transparent; transition: border-color 0.3s; position: relative; overflow: visible;
+            padding: 6px 15px; background-color: transparent; transition: border-color 0.3s; position: relative; overflow: visible; flex-shrink: 0;
         }
         .dark-theme .input-pill { border-color: #8ca4c0; }
         .input-prefix { font-weight: 900; color: #004b87; margin-right: 5px; font-size: 0.95rem; white-space: nowrap; }
@@ -360,13 +361,25 @@
         }
         .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
         .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
-        .modal-footer { display: flex; justify-content: center; gap: 10px; }
+        .modal-footer { display: flex; justify-content: center; gap: 10px; flex-shrink: 0; }
         .btn-salvar {
             background-color: #004b87; color: white; border: none; border-radius: 20px; padding: 8px 30px;
             font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: filter 0.2s, background-color 0.3s;
         }
         .btn-salvar:hover { filter: brightness(1.2); }
         .dark-theme .btn-salvar { background: linear-gradient(to bottom, #475569, #334155); border: 1px solid #1e293b; color: #f1f5f9; }
+
+        .btn-remove-mu {
+            background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer;
+            margin-left: 5px; font-size: 0.8rem; flex-shrink: 0;
+        }
+        .btn-remove-mu:hover { color: #dc2626; text-decoration: underline; }
+
+        .btn-add-mu {
+            background: none; border: none; color: var(--btn-theme-color); font-weight: 700; 
+            cursor: pointer; text-align: left; padding-left: 5px; margin-top: -5px; font-size: 0.9rem;
+        }
+        .btn-add-mu:hover { text-decoration: underline; filter: brightness(1.2); }
 
         .detalhes-body { font-size: 0.9rem; font-weight: 700; color: #004b87; display: flex; flex-direction: column; gap: 8px; }
         .dark-theme .detalhes-body { color: #8ca4c0; }
@@ -561,9 +574,9 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-mu-corpo">
-                    <tr data-processo="Montagem de HU" data-quantidade="20" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-hu="" data-is="" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)">
+                    <tr data-processo="Montagem de HU" data-quantidade="2" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-hu="" data-is="" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)" data-mus="MU12345, MU67890">
                         <td>Montagem de HU</td>
-                        <td>20</td>
+                        <td>2</td>
                         <td>SC02</td>
                         <td>BA01</td>
                         <td><span class="status-badge status-pendente">Pendente</span></td>
@@ -577,9 +590,9 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-processo="Picking" data-quantidade="5" data-origem="SP15" data-destino="SC02" data-status="HU Criada" data-hu="0147931459742" data-is="32489842" data-data-reg="12/09/2026 17:46" data-historico="HU Criada - Evelyn (12/09/2026 17:46)">
+                    <tr data-processo="Picking" data-quantidade="1" data-origem="SP15" data-destino="SC02" data-status="HU Criada" data-hu="0147931459742" data-is="32489842" data-data-reg="12/09/2026 17:46" data-historico="HU Criada - Evelyn (12/09/2026 17:46)" data-mus="MU99999">
                         <td>Picking</td>
-                        <td>5</td>
+                        <td>1</td>
                         <td>SP15</td>
                         <td>SC02</td>
                         <td><span class="status-badge status-hucriada">HU Criada</span></td>
@@ -593,9 +606,9 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-processo="Montagem de HU" data-quantidade="20" data-origem="PR06" data-destino="RJ10" data-status="HU Criada" data-hu="12678624443333" data-is="89317456" data-data-reg="12/09/2026 17:46" data-historico="HU Criada - Evelyn (12/09/2026 17:46)">
+                    <tr data-processo="Montagem de HU" data-quantidade="1" data-origem="PR06" data-destino="RJ10" data-status="HU Criada" data-hu="12678624443333" data-is="89317456" data-data-reg="12/09/2026 17:46" data-historico="HU Criada - Evelyn (12/09/2026 17:46)" data-mus="MU11111">
                         <td>Montagem de HU</td>
-                        <td>20</td>
+                        <td>1</td>
                         <td>PR06</td>
                         <td>RJ10</td>
                         <td><span class="status-badge status-hucriada">HU Criada</span></td>
@@ -614,7 +627,7 @@
         </div>
     </main>
 
-    <!-- MODAIS ADAPTADOS PARA MU -->
+    <!-- MODAL DE NOVO REGISTRO ADAPTADO COM MU DINÂMICA -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -622,8 +635,14 @@
                 <i class="ph ph-x modal-close" id="fechar-modal-btn"></i>
             </div>
             <div class="modal-body">
-                <div class="input-pill"><span class="input-prefix">Processo:</span><input type="text" id="input-processo"></div>
-                <div class="input-pill"><span class="input-prefix">Quantidade:</span><input type="number" id="input-quantidade"></div>
+                <div class="input-pill">
+                    <span class="input-prefix">Processo:</span>
+                    <select id="input-processo">
+                        <option value="Montagem de HU">Montagem de HU</option>
+                        <option value="Picking">Picking</option>
+                        <option value="Pick To Movable">Pick To Movable</option>
+                    </select>
+                </div>
                 <div class="input-pill">
                     <span class="input-prefix">Origem:</span>
                     <input type="text" id="modal-origem" class="custom-dropdown-input" autocomplete="off">
@@ -634,6 +653,12 @@
                     <input type="text" id="modal-destino" class="custom-dropdown-input" autocomplete="off">
                     <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
                 </div>
+                
+                <div id="mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+                    <!-- Campos de MU serão injetados aqui -->
+                </div>
+                <button class="btn-add-mu" id="btn-add-mu">+ Adicionar MU</button>
+
             </div>
             <div class="modal-footer"><button class="btn-salvar" id="btn-salvar-registro">Salvar</button></div>
         </div>
@@ -655,6 +680,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE DETALHES -->
     <div class="modal-overlay" id="modal-detalhes">
         <div class="modal-content" style="width: 360px;">
             <div class="modal-header" style="color: #004b87;">
@@ -665,6 +691,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE EDIÇÃO -->
     <div class="modal-overlay" id="modal-editar">
         <div class="modal-content">
             <div class="modal-header">
@@ -672,8 +699,14 @@
                 <i class="ph ph-x modal-close" id="fechar-editar-btn"></i>
             </div>
             <div class="modal-body">
-                <div class="input-pill"><span class="input-prefix">Processo:</span><input type="text" id="edit-processo"></div>
-                <div class="input-pill"><span class="input-prefix">Qtd:</span><input type="number" id="edit-quantidade"></div>
+                <div class="input-pill">
+                    <span class="input-prefix">Processo:</span>
+                    <select id="edit-processo">
+                        <option value="Montagem de HU">Montagem de HU</option>
+                        <option value="Picking">Picking</option>
+                        <option value="Pick To Movable">Pick To Movable</option>
+                    </select>
+                </div>
                 <div class="input-pill"><span class="input-prefix">HU:</span><input type="text" id="edit-hu"></div>
                 <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="edit-is"></div>
                 <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
@@ -808,10 +841,47 @@
         filtroDestino.addEventListener('input', aplicarFiltros);
 
         // =========================================
+        // LÓGICA DE MU DINÂMICA
+        // =========================================
+        const muContainer = document.getElementById('mu-fields-container');
+        const btnAddMu = document.getElementById('btn-add-mu');
+
+        function adicionarCampoMU(valor = '') {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-pill';
+            wrapper.innerHTML = `
+                <span class="input-prefix">MU:</span>
+                <input type="text" class="input-mu-field" value="${valor}">
+                <button class="btn-remove-mu" tabindex="-1">- Excluir MU</button>
+            `;
+            muContainer.appendChild(wrapper);
+
+            wrapper.querySelector('.btn-remove-mu').addEventListener('click', () => {
+                wrapper.remove();
+            });
+        }
+
+        btnAddMu.addEventListener('click', () => {
+            adicionarCampoMU();
+        });
+
+        function resetarModalNovoRegistro() {
+            document.getElementById('input-processo').value = 'Montagem de HU';
+            document.getElementById('modal-origem').value = '';
+            document.getElementById('modal-destino').value = '';
+            muContainer.innerHTML = '';
+            adicionarCampoMU(); // Adiciona ao menos 1 vazio por padrão
+        }
+
+
+        // =========================================
         // LÓGICA DE AÇÕES DA TABELA (MODAIS)
         // =========================================
         const modalNovoRegistro = document.getElementById('modal-novo-registro');
-        document.getElementById('btn-novo-registro').addEventListener('click', () => modalNovoRegistro.classList.add('active'));
+        document.getElementById('btn-novo-registro').addEventListener('click', () => {
+            resetarModalNovoRegistro();
+            modalNovoRegistro.classList.add('active');
+        });
         document.getElementById('fechar-modal-btn').addEventListener('click', () => modalNovoRegistro.classList.remove('active'));
 
         const modalEscolha = document.getElementById('modal-escolha-avancar');
@@ -838,11 +908,19 @@
                 let html = `<div>Data Registo: <span style="font-weight:400;">${tr.getAttribute('data-data-reg')}</span></div>`;
                 html += `<div>Status: <span style="font-weight:400;">${tr.getAttribute('data-status')}</span></div>`;
                 html += `<div>Processo: <span style="font-weight:400;">${tr.getAttribute('data-processo')}</span></div>`;
-                html += `<div>Quantidade: <span style="font-weight:400;">${tr.getAttribute('data-quantidade')}</span></div>`;
+                html += `<div>Quantidade de MUs: <span style="font-weight:400;">${tr.getAttribute('data-quantidade')}</span></div>`;
+                
+                const musSalvas = tr.getAttribute('data-mus');
+                if(musSalvas && musSalvas.trim() !== '') {
+                    html += `<div>MUs:<div style="font-weight:400; padding-left: 10px;">${musSalvas.split(', ').join('<br>')}</div></div>`;
+                }
+
                 html += `<div>Origem: <span style="font-weight:400;">${tr.getAttribute('data-origem')}</span></div>`;
                 html += `<div>Destino: <span style="font-weight:400;">${tr.getAttribute('data-destino')}</span></div>`;
-                html += `<div>HU: <span style="font-weight:400;">${tr.getAttribute('data-hu')}</span></div>`;
-                html += `<div>IS: <span style="font-weight:400;">${tr.getAttribute('data-is')}</span></div>`;
+                
+                if (tr.getAttribute('data-hu')) html += `<div>HU: <span style="font-weight:400;">${tr.getAttribute('data-hu')}</span></div>`;
+                if (tr.getAttribute('data-is')) html += `<div>IS: <span style="font-weight:400;">${tr.getAttribute('data-is')}</span></div>`;
+                
                 html += `<div class="historico-box">Histórico:<div class="historico-lista">`;
                 tr.getAttribute('data-historico').split(' | ').forEach(item => { html += `<div>• ${item}</div>`; });
                 html += `</div></div>`;
@@ -853,7 +931,6 @@
             if (e.target.classList.contains('btn-editar')) {
                 linhaEmEdicao = e.target.closest('tr');
                 document.getElementById('edit-processo').value = linhaEmEdicao.getAttribute('data-processo');
-                document.getElementById('edit-quantidade').value = linhaEmEdicao.getAttribute('data-quantidade');
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
@@ -871,15 +948,15 @@
         document.getElementById('btn-atualizar-registro').addEventListener('click', () => {
             if (!linhaEmEdicao) return;
             const novoStatus = document.getElementById('edit-status').value;
+            
+            // A edição atualiza os campos básicos
             linhaEmEdicao.setAttribute('data-processo', document.getElementById('edit-processo').value || '');
-            linhaEmEdicao.setAttribute('data-quantidade', document.getElementById('edit-quantidade').value || '');
             linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value || '');
             linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value || '');
             linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value || '');
             linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value || '');
             
             linhaEmEdicao.cells[0].textContent = linhaEmEdicao.getAttribute('data-processo');
-            linhaEmEdicao.cells[1].textContent = linhaEmEdicao.getAttribute('data-quantidade');
             linhaEmEdicao.cells[2].textContent = linhaEmEdicao.getAttribute('data-origem');
             linhaEmEdicao.cells[3].textContent = linhaEmEdicao.getAttribute('data-destino');
             linhaEmEdicao.cells[5].textContent = linhaEmEdicao.getAttribute('data-hu');
@@ -891,9 +968,20 @@
 
         document.getElementById('btn-salvar-registro').addEventListener('click', () => {
             const processo = document.getElementById('input-processo').value || '';
-            const quantidade = document.getElementById('input-quantidade').value || '0';
             const origem = document.getElementById('modal-origem').value || '';
             const destino = document.getElementById('modal-destino').value || '';
+            
+            // Contar as MU's preenchidas
+            const muInputs = document.querySelectorAll('.input-mu-field');
+            const muValues = Array.from(muInputs).map(input => input.value.trim()).filter(val => val !== '');
+            const quantidade = muValues.length;
+
+            if (quantidade === 0) {
+                alert('É necessário adicionar e preencher ao menos uma MU para salvar o registro.');
+                return;
+            }
+
+            const musSalvas = muValues.join(', ');
             const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
             const agora = new Date();
             const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
@@ -906,6 +994,7 @@
             novaLinha.setAttribute('data-status', 'Pendente');
             novaLinha.setAttribute('data-hu', '');
             novaLinha.setAttribute('data-is', '');
+            novaLinha.setAttribute('data-mus', musSalvas);
             novaLinha.setAttribute('data-data-reg', dataFormatada);
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
