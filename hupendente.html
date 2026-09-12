@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição em Fluxo - HU's Pendentes</title>
+    <title>Expedição em Fluxo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -1015,7 +1015,6 @@
                 <div class="input-pill"><span class="input-prefix">HU:</span><input type="text" id="edit-hu"></div>
                 <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="edit-is"></div>
                 <div class="input-pill"><span class="input-prefix">TS:</span><input type="text" id="edit-ts-origem"></div>
-                <div class="input-pill"><span class="input-prefix">TS Destino:</span><input type="text" id="edit-ts-destino"></div>
                 <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill"><span class="input-prefix">Destino:</span><input type="text" id="edit-destino" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill">
@@ -1430,7 +1429,6 @@
                 const destino = tr.getAttribute('data-destino');
                 const status = tr.getAttribute('data-status');
                 const tsOrigem = tr.getAttribute('data-ts-origem');
-                const tsDestino = tr.getAttribute('data-ts-destino');
                 const dataReg = tr.getAttribute('data-data-reg');
                 const historico = tr.getAttribute('data-historico');
 
@@ -1443,7 +1441,6 @@
                 `;
                 if (tsOrigem) htmlDetalhes += `<div>TS: <span style="font-weight:400;">${tsOrigem}</span></div>`;
                 htmlDetalhes += `<div>Destino: <span style="font-weight:400;">${destino}</span></div>`;
-                if (tsDestino) htmlDetalhes += `<div>TS Destino: <span style="font-weight:400;">${tsDestino}</span></div>`;
 
                 htmlDetalhes += `<div class="historico-box">Histórico:<div class="historico-lista">`;
                 historico.split(' | ').forEach(item => { htmlDetalhes += `<div>• ${item}</div>`; });
@@ -1458,7 +1455,6 @@
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
                 document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
                 document.getElementById('edit-ts-origem').value = linhaEmEdicao.getAttribute('data-ts-origem');
-                document.getElementById('edit-ts-destino').value = linhaEmEdicao.getAttribute('data-ts-destino');
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
                 
@@ -1513,7 +1509,6 @@
             linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value.trim());
             linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value.trim());
             linhaEmEdicao.setAttribute('data-ts-origem', document.getElementById('edit-ts-origem').value.trim());
-            linhaEmEdicao.setAttribute('data-ts-destino', document.getElementById('edit-ts-destino').value.trim());
             linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value.trim());
             linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value.trim());
             linhaEmEdicao.setAttribute('data-agendamento', agendamentoFormatado);
