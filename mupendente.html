@@ -664,7 +664,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE AVANÇAR STATUS COM HU E IS OBRIGATÓRIOS -->
+    <!-- MODAL DE AVANÇAR STATUS -->
     <div class="modal-overlay" id="modal-escolha-avancar">
         <div class="modal-content" style="width: 320px; text-align: center;">
             <div class="modal-header">
@@ -675,11 +675,11 @@
                 <p style="font-weight: 600; font-size: 0.95rem; text-align: center;">Avançar para HU Criada?</p>
                 <div class="input-pill">
                     <span class="input-prefix">HU:</span>
-                    <input type="text" id="avancar-hu" placeholder="Obrigatório">
+                    <input type="text" id="avancar-hu" required>
                 </div>
                 <div class="input-pill">
                     <span class="input-prefix">IS:</span>
-                    <input type="text" id="avancar-is" placeholder="Obrigatório">
+                    <input type="text" id="avancar-is" required>
                 </div>
                 <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
                     <button class="btn-salvar" id="btn-escolha-confirmar">Confirmar</button>
@@ -699,7 +699,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO ATUALIZADO COM MU DINÂMICA -->
+    <!-- MODAL DE EDIÇÃO -->
     <div class="modal-overlay" id="modal-editar">
         <div class="modal-content">
             <div class="modal-header">
@@ -1024,13 +1024,26 @@
         // BOTÃO CONFIRMAR AVANÇAR STATUS
         document.getElementById('btn-escolha-confirmar').addEventListener('click', () => {
             if (linhaEmProcesso) {
-                const inputHu = document.getElementById('avancar-hu').value.trim();
-                const inputIs = document.getElementById('avancar-is').value.trim();
+                const huInput = document.getElementById('avancar-hu');
+                const isInput = document.getElementById('avancar-is');
 
-                if (!inputHu || !inputIs) {
-                    alert('Os campos HU e IS são obrigatórios para avançar o status.');
+                // Limpa espaços em branco para validação nativa funcionar
+                huInput.value = huInput.value.trim();
+                isInput.value = isInput.value.trim();
+
+                // Usa a validação nativa do HTML (required)
+                if (!huInput.checkValidity()) {
+                    huInput.reportValidity();
                     return;
                 }
+
+                if (!isInput.checkValidity()) {
+                    isInput.reportValidity();
+                    return;
+                }
+
+                const inputHu = huInput.value;
+                const inputIs = isInput.value;
 
                 linhaEmProcesso.setAttribute('data-hu', inputHu);
                 linhaEmProcesso.setAttribute('data-is', inputIs);
