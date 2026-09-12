@@ -627,7 +627,7 @@
         </div>
     </main>
 
-    <!-- MODAL DE NOVO REGISTRO ADAPTADO COM MU DINÂMICA -->
+    <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
             <div class="modal-header">
@@ -691,7 +691,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO -->
+    <!-- MODAL DE EDIÇÃO ATUALIZADO COM MU DINÂMICA -->
     <div class="modal-overlay" id="modal-editar">
         <div class="modal-content">
             <div class="modal-header">
@@ -718,6 +718,12 @@
                         <option value="HU Criada">HU Criada</option>
                     </select>
                 </div>
+                
+                <div id="edit-mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+                    <!-- Campos de MU serão injetados aqui na edição -->
+                </div>
+                <button class="btn-add-mu" id="btn-edit-add-mu">+ Adicionar MU</button>
+
             </div>
             <div class="modal-footer"><button class="btn-salvar" id="btn-atualizar-registro">Atualizar</button></div>
         </div>
@@ -845,9 +851,11 @@
         // =========================================
         const muContainer = document.getElementById('mu-fields-container');
         const btnAddMu = document.getElementById('btn-add-mu');
+        const editMuContainer = document.getElementById('edit-mu-fields-container');
+        const btnEditAddMu = document.getElementById('btn-edit-add-mu');
 
-        function adicionarCampoMU(valor = '') {
-            const currentMUs = muContainer.querySelectorAll('.input-pill').length;
+        function adicionarCampoMU(container, valor = '') {
+            const currentMUs = container.querySelectorAll('.input-pill').length;
             if (currentMUs >= 20) {
                 alert("Limite máximo de 20 MU's atingido.");
                 return null;
@@ -860,7 +868,7 @@
                 <input type="text" class="input-mu-field" value="${valor}">
                 <button class="btn-remove-mu" tabindex="-1">- Excluir MU</button>
             `;
-            muContainer.appendChild(wrapper);
+            container.appendChild(wrapper);
 
             const inputElement = wrapper.querySelector('.input-mu-field');
 
@@ -872,7 +880,12 @@
         }
 
         btnAddMu.addEventListener('click', () => {
-            const novoInput = adicionarCampoMU();
+            const novoInput = adicionarCampoMU(muContainer);
+            if (novoInput) novoInput.focus();
+        });
+
+        btnEditAddMu.addEventListener('click', () => {
+            const novoInput = adicionarCampoMU(editMuContainer);
             if (novoInput) novoInput.focus();
         });
 
@@ -881,16 +894,16 @@
             document.getElementById('modal-origem').value = '';
             document.getElementById('modal-destino').value = '';
             muContainer.innerHTML = '';
-            adicionarCampoMU(); // Adiciona ao menos 1 vazio por padrão
+            adicionarCampoMU(muContainer); // Adiciona ao menos 1 vazio por padrão
         }
 
 
         // =========================================
-        // LÓGICA DE NAVEGAÇÃO COM ENTER NO NOVO REGISTRO
+        // LÓGICA DE NAVEGAÇÃO COM ENTER (AMBOS OS MODAIS)
         // =========================================
         document.getElementById('modal-novo-registro').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                e.preventDefault(); // Evita a quebra padrão da tecla Enter
+                e.preventDefault(); 
                 const active = document.activeElement;
 
                 if (active.id === 'input-processo') {
@@ -898,11 +911,22 @@
                 } else if (active.id === 'modal-origem') {
                     document.getElementById('modal-destino').focus();
                 } else if (active.id === 'modal-destino') {
-                    const primeiroMu = document.querySelector('.input-mu-field');
+                    const primeiroMu = document.querySelector('#modal-novo-registro .input-mu-field');
                     if (primeiroMu) primeiroMu.focus();
                 } else if (active.classList.contains('input-mu-field')) {
-                    // Simula o clique no botão de adicionar nova MU e vai direto para ela
-                    const novoInput = adicionarCampoMU();
+                    const novoInput = adicionarCampoMU(muContainer);
+                    if (novoInput) novoInput.focus();
+                }
+            }
+        });
+
+        document.getElementById('modal-editar').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); 
+                const active = document.activeElement;
+
+                if (active.classList.contains('input-mu-field')) {
+                    const novoInput = adicionarCampoMU(editMuContainer);
                     if (novoInput) novoInput.focus();
                 }
             }
@@ -970,6 +994,18 @@
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
                 document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
                 document.getElementById('edit-status').value = linhaEmEdicao.getAttribute('data-status');
+                
+                // Popula os campos de MU salvos
+                editMuContainer.innerHTML = '';
+                const musSalvas = linhaEmEdicao.getAttribute('data-mus');
+                if (musSalvas && musSalvas.trim() !== '') {
+                    musSalvas.split(', ').forEach(mu => {
+                        adicionarCampoMU(editMuContainer, mu);
+                    });
+                } else {
+                    adicionarCampoMU(editMuContainer); // Adiciona pelo menos um caso esteja vazio
+                }
+
                 modalEditar.classList.add('active');
             }
         });
@@ -991,20 +1027,34 @@
                 return;
             }
 
+            // Conta e atualiza MU's no Edit
+            const muInputs = editMuContainer.querySelectorAll('.input-mu-field');
+            const muValues = Array.from(muInputs).map(input => input.value.trim()).filter(val => val !== '');
+            const quantidade = muValues.length;
+
+            if (quantidade === 0) {
+                alert('É necessário adicionar e preencher ao menos uma MU para atualizar o registro.');
+                return;
+            }
+
+            const musSalvas = muValues.join(', ');
             const novoStatus = document.getElementById('edit-status').value;
             
             // A edição atualiza os campos básicos
             linhaEmEdicao.setAttribute('data-processo', processo);
+            linhaEmEdicao.setAttribute('data-quantidade', quantidade);
             linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value || '');
             linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value || '');
             linhaEmEdicao.setAttribute('data-origem', origem);
             linhaEmEdicao.setAttribute('data-destino', destino);
+            linhaEmEdicao.setAttribute('data-mus', musSalvas);
             
-            linhaEmEdicao.cells[0].textContent = linhaEmEdicao.getAttribute('data-processo');
-            linhaEmEdicao.cells[2].textContent = linhaEmEdicao.getAttribute('data-origem');
-            linhaEmEdicao.cells[3].textContent = linhaEmEdicao.getAttribute('data-destino');
-            linhaEmEdicao.cells[5].textContent = linhaEmEdicao.getAttribute('data-hu');
-            linhaEmEdicao.cells[6].textContent = linhaEmEdicao.getAttribute('data-is');
+            linhaEmEdicao.cells[0].textContent = processo;
+            linhaEmEdicao.cells[1].textContent = quantidade;
+            linhaEmEdicao.cells[2].textContent = origem;
+            linhaEmEdicao.cells[3].textContent = destino;
+            linhaEmEdicao.cells[5].textContent = document.getElementById('edit-hu').value || '';
+            linhaEmEdicao.cells[6].textContent = document.getElementById('edit-is').value || '';
             
             atualizarStatusLinha(linhaEmEdicao, novoStatus);
             modalEditar.classList.remove('active');
@@ -1021,7 +1071,7 @@
             }
             
             // Contar as MU's preenchidas
-            const muInputs = document.querySelectorAll('.input-mu-field');
+            const muInputs = muContainer.querySelectorAll('.input-mu-field');
             const muValues = Array.from(muInputs).map(input => input.value.trim()).filter(val => val !== '');
             const quantidade = muValues.length;
 
