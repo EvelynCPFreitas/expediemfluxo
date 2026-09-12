@@ -296,7 +296,6 @@
             display: inline-block;
         }
 
-        /* Cores adaptadas para bater com as referências enviadas */
         .status-pendente { background-color: #ffe6e6; color: #e62020; }
         .dark-theme .status-pendente { background-color: rgba(230, 32, 32, 0.2); color: #ff6b6b; }
 
@@ -562,14 +561,14 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-mu-corpo">
-                    <tr data-processo="Montagem de HU" data-quantidade="20" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-hu="-" data-is="-" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)">
+                    <tr data-processo="Montagem de HU" data-quantidade="20" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-hu="" data-is="" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)">
                         <td>Montagem de HU</td>
                         <td>20</td>
                         <td>SC02</td>
                         <td>BA01</td>
                         <td><span class="status-badge status-pendente">Pendente</span></td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td></td>
+                        <td></td>
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
@@ -872,12 +871,12 @@
         document.getElementById('btn-atualizar-registro').addEventListener('click', () => {
             if (!linhaEmEdicao) return;
             const novoStatus = document.getElementById('edit-status').value;
-            linhaEmEdicao.setAttribute('data-processo', document.getElementById('edit-processo').value);
-            linhaEmEdicao.setAttribute('data-quantidade', document.getElementById('edit-quantidade').value);
-            linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value || '-');
-            linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value || '-');
-            linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value);
-            linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value);
+            linhaEmEdicao.setAttribute('data-processo', document.getElementById('edit-processo').value || '');
+            linhaEmEdicao.setAttribute('data-quantidade', document.getElementById('edit-quantidade').value || '');
+            linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value || '');
+            linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value || '');
+            linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value || '');
+            linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value || '');
             
             linhaEmEdicao.cells[0].textContent = linhaEmEdicao.getAttribute('data-processo');
             linhaEmEdicao.cells[1].textContent = linhaEmEdicao.getAttribute('data-quantidade');
@@ -891,10 +890,10 @@
         });
 
         document.getElementById('btn-salvar-registro').addEventListener('click', () => {
-            const processo = document.getElementById('input-processo').value || '-';
+            const processo = document.getElementById('input-processo').value || '';
             const quantidade = document.getElementById('input-quantidade').value || '0';
-            const origem = document.getElementById('modal-origem').value || '-';
-            const destino = document.getElementById('modal-destino').value || '-';
+            const origem = document.getElementById('modal-origem').value || '';
+            const destino = document.getElementById('modal-destino').value || '';
             const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
             const agora = new Date();
             const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
@@ -905,15 +904,15 @@
             novaLinha.setAttribute('data-origem', origem);
             novaLinha.setAttribute('data-destino', destino);
             novaLinha.setAttribute('data-status', 'Pendente');
-            novaLinha.setAttribute('data-hu', '-');
-            novaLinha.setAttribute('data-is', '-');
+            novaLinha.setAttribute('data-hu', '');
+            novaLinha.setAttribute('data-is', '');
             novaLinha.setAttribute('data-data-reg', dataFormatada);
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
             novaLinha.innerHTML = `
                 <td>${processo}</td><td>${quantidade}</td><td>${origem}</td><td>${destino}</td>
                 <td><span class="status-badge status-pendente">Pendente</span></td>
-                <td>-</td><td>-</td>
+                <td></td><td></td>
                 <td>
                     <div class="table-actions">
                         <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
