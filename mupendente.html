@@ -847,6 +847,12 @@
         const btnAddMu = document.getElementById('btn-add-mu');
 
         function adicionarCampoMU(valor = '') {
+            const currentMUs = muContainer.querySelectorAll('.input-pill').length;
+            if (currentMUs >= 20) {
+                alert("Limite máximo de 20 MU's atingido.");
+                return;
+            }
+
             const wrapper = document.createElement('div');
             wrapper.className = 'input-pill';
             wrapper.innerHTML = `
