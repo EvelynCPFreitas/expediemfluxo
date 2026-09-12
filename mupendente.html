@@ -850,7 +850,7 @@
             const currentMUs = muContainer.querySelectorAll('.input-pill').length;
             if (currentMUs >= 20) {
                 alert("Limite máximo de 20 MU's atingido.");
-                return;
+                return null;
             }
 
             const wrapper = document.createElement('div');
@@ -862,13 +862,18 @@
             `;
             muContainer.appendChild(wrapper);
 
+            const inputElement = wrapper.querySelector('.input-mu-field');
+
             wrapper.querySelector('.btn-remove-mu').addEventListener('click', () => {
                 wrapper.remove();
             });
+
+            return inputElement;
         }
 
         btnAddMu.addEventListener('click', () => {
-            adicionarCampoMU();
+            const novoInput = adicionarCampoMU();
+            if (novoInput) novoInput.focus();
         });
 
         function resetarModalNovoRegistro() {
@@ -879,6 +884,29 @@
             adicionarCampoMU(); // Adiciona ao menos 1 vazio por padrão
         }
 
+
+        // =========================================
+        // LÓGICA DE NAVEGAÇÃO COM ENTER NO NOVO REGISTRO
+        // =========================================
+        document.getElementById('modal-novo-registro').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Evita a quebra padrão da tecla Enter
+                const active = document.activeElement;
+
+                if (active.id === 'input-processo') {
+                    document.getElementById('modal-origem').focus();
+                } else if (active.id === 'modal-origem') {
+                    document.getElementById('modal-destino').focus();
+                } else if (active.id === 'modal-destino') {
+                    const primeiroMu = document.querySelector('.input-mu-field');
+                    if (primeiroMu) primeiroMu.focus();
+                } else if (active.classList.contains('input-mu-field')) {
+                    // Simula o clique no botão de adicionar nova MU e vai direto para ela
+                    const novoInput = adicionarCampoMU();
+                    if (novoInput) novoInput.focus();
+                }
+            }
+        });
 
         // =========================================
         // LÓGICA DE AÇÕES DA TABELA (MODAIS)
