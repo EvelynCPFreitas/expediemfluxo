@@ -1074,11 +1074,62 @@
             const usernameDisplay = document.getElementById('display-username');
             const savedUsername = localStorage.getItem('userName'); 
             if (savedUsername) { usernameDisplay.textContent = savedUsername; } 
-            else { usernameDisplay.textContent = 'Usuário'; }
+            else { usernameDisplay.textContent = 'Evelyn'; }
 
             atualizarKPIs();
             verificarSelecaoLinhas();
+            processarHUsTransferidas();
         });
+
+        // =========================================
+        // PROCESSAR HUS RECEBIDAS DA ABA DE MU
+        // =========================================
+        function processarHUsTransferidas() {
+            const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
+            if (filaHUs.length > 0) {
+                const tabelaCorpo = document.getElementById('tabela-hu-corpo');
+                const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
+                const agora = new Date();
+                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+
+                filaHUs.forEach(item => {
+                    const novaLinha = document.createElement('tr');
+                    novaLinha.setAttribute('data-hu', item.hu);
+                    novaLinha.setAttribute('data-is', item.is);
+                    novaLinha.setAttribute('data-origem', item.origem);
+                    novaLinha.setAttribute('data-destino', item.destino);
+                    novaLinha.setAttribute('data-status', 'Pendente');
+                    novaLinha.setAttribute('data-agendamento', '');
+                    novaLinha.setAttribute('data-ts-origem', '');
+                    novaLinha.setAttribute('data-ts-destino', ''); 
+                    novaLinha.setAttribute('data-data-reg', dataFormatada);
+                    novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
+
+                    novaLinha.innerHTML = `
+                        <td><input type="checkbox" class="row-checkbox"></td>
+                        <td>${item.hu}</td>
+                        <td>${item.is}</td>
+                        <td>${item.origem}</td>
+                        <td>${item.destino}</td>
+                        <td><span class="status-badge status-pendente">Pendente</span></td>
+                        <td></td>
+                        <td>
+                            <div class="table-actions">
+                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
+                            </div>
+                        </td>
+                    `;
+                    tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
+                });
+
+                // Limpa a fila após injetar
+                localStorage.removeItem('filaNovasHUs');
+                atualizarKPIs();
+                aplicarFiltros();
+            }
+        }
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
@@ -1373,7 +1424,7 @@
         });
 
         function atualizarStatusLinha(tr, novoStatus) {
-            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+            const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
             const agora = new Date();
             const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 
@@ -1429,6 +1480,7 @@
                 const destino = tr.getAttribute('data-destino');
                 const status = tr.getAttribute('data-status');
                 const tsOrigem = tr.getAttribute('data-ts-origem');
+                const tsDestino = tr.getAttribute('data-ts-destino');
                 const dataReg = tr.getAttribute('data-data-reg');
                 const historico = tr.getAttribute('data-historico');
 
@@ -1441,6 +1493,7 @@
                 `;
                 if (tsOrigem) htmlDetalhes += `<div>TS: <span style="font-weight:400;">${tsOrigem}</span></div>`;
                 htmlDetalhes += `<div>Destino: <span style="font-weight:400;">${destino}</span></div>`;
+                if (tsDestino) htmlDetalhes += `<div>TS Destino: <span style="font-weight:400;">${tsDestino}</span></div>`;
 
                 htmlDetalhes += `<div class="historico-box">Histórico:<div class="historico-lista">`;
                 historico.split(' | ').forEach(item => { htmlDetalhes += `<div>• ${item}</div>`; });
@@ -1455,6 +1508,7 @@
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
                 document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
                 document.getElementById('edit-ts-origem').value = linhaEmEdicao.getAttribute('data-ts-origem');
+                document.getElementById('edit-ts-destino').value = linhaEmEdicao.getAttribute('data-ts-destino');
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
                 
@@ -1509,6 +1563,7 @@
             linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value.trim());
             linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value.trim());
             linhaEmEdicao.setAttribute('data-ts-origem', document.getElementById('edit-ts-origem').value.trim());
+            linhaEmEdicao.setAttribute('data-ts-destino', document.getElementById('edit-ts-destino').value.trim());
             linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value.trim());
             linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value.trim());
             linhaEmEdicao.setAttribute('data-agendamento', agendamentoFormatado);
@@ -1523,7 +1578,7 @@
             const is = document.getElementById('input-is').value.trim();
             const origem = document.getElementById('modal-origem').value.trim();
             const destino = document.getElementById('modal-destino').value.trim();
-            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+            const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
 
             if (!hu || !is || !origem || !destino) {
                 alert('Preencha os campos obrigatórios.');
