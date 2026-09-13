@@ -1096,26 +1096,38 @@
             }
         });
 
-        // FORMULÁRIO CONFIRMAR AVANÇAR STATUS
-        document.getElementById('form-avancar-status').addEventListener('submit', (e) => {
-            e.preventDefault(); // Impede o recarregamento da página
+// FORMULÁRIO CONFIRMAR AVANÇAR STATUS
+document.getElementById('form-avancar-status').addEventListener('submit', (e) => {
+    e.preventDefault(); 
 
-            if (linhaEmProcesso) {
-                const huInput = document.getElementById('avancar-hu');
-                const isInput = document.getElementById('avancar-is');
+    if (linhaEmProcesso) {
+        const huInput = document.getElementById('avancar-hu');
+        const isInput = document.getElementById('avancar-is');
 
-                const inputHu = huInput.value.trim();
-                const inputIs = isInput.value.trim();
+        const inputHu = huInput.value.trim();
+        const inputIs = isInput.value.trim();
 
-                linhaEmProcesso.setAttribute('data-hu', inputHu);
-                linhaEmProcesso.setAttribute('data-is', inputIs);
-                linhaEmProcesso.cells[6].textContent = inputHu; // Coluna HU é 6
-                linhaEmProcesso.cells[7].textContent = inputIs; // Coluna IS é 7
+        linhaEmProcesso.setAttribute('data-hu', inputHu);
+        linhaEmProcesso.setAttribute('data-is', inputIs);
+        linhaEmProcesso.cells[6].textContent = inputHu; 
+        linhaEmProcesso.cells[7].textContent = inputIs; 
 
-                atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
-            }
-            modalEscolha.classList.remove('active');
-        });
+        // LÓGICA DE TRANSFERÊNCIA PARA HU PENDENTE
+        const desvio = linhaEmProcesso.getAttribute('data-desvio');
+        if (!desvio || desvio.trim() === '') {
+            const origem = linhaEmProcesso.getAttribute('data-origem');
+            const destino = linhaEmProcesso.getAttribute('data-destino');
+            
+            // Puxa a lista existente ou cria uma nova
+            const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
+            filaHUs.push({ hu: inputHu, is: inputIs, origem: origem, destino: destino });
+            localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
+        }
+
+        atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
+    }
+    modalEscolha.classList.remove('active');
+});
 
         // BOTÃO ATUALIZAR REGISTRO (EDIÇÃO)
         document.getElementById('btn-atualizar-registro').addEventListener('click', () => {
