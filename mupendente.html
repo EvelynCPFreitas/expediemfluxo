@@ -567,6 +567,7 @@
                         <th>Quantidade</th>
                         <th>Origem</th>
                         <th>Destino</th>
+                        <th>Desvio</th>
                         <th>Status</th>
                         <th>HU</th>
                         <th>IS</th>
@@ -574,11 +575,12 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-mu-corpo">
-                    <tr data-processo="Montagem de HU" data-quantidade="2" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-hu="" data-is="" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)" data-mus="MU12345, MU67890">
+                    <tr data-processo="Montagem de HU" data-quantidade="2" data-origem="SC02" data-destino="BA01" data-desvio="RJ10" data-status="Pendente" data-hu="" data-is="" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)" data-mus="MU12345, MU67890">
                         <td>Montagem de HU</td>
                         <td>2</td>
                         <td>SC02</td>
                         <td>BA01</td>
+                        <td>RJ10</td>
                         <td><span class="status-badge status-pendente">Pendente</span></td>
                         <td></td>
                         <td></td>
@@ -590,11 +592,12 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-processo="Picking" data-quantidade="1" data-origem="SP15" data-destino="SC02" data-status="HU Criada" data-hu="0147931459742" data-is="32489842" data-data-reg="12/09/2026 17:46" data-historico="HU Criada - Evelyn (12/09/2026 17:46)" data-mus="MU99999">
+                    <tr data-processo="Picking" data-quantidade="1" data-origem="SP15" data-destino="SC02" data-desvio="" data-status="HU Criada" data-hu="0147931459742" data-is="32489842" data-data-reg="12/09/2026 17:46" data-historico="HU Criada - Evelyn (12/09/2026 17:46)" data-mus="MU99999">
                         <td>Picking</td>
                         <td>1</td>
                         <td>SP15</td>
                         <td>SC02</td>
+                        <td></td>
                         <td><span class="status-badge status-hucriada">HU Criada</span></td>
                         <td>0147931459742</td>
                         <td>32489842</td>
@@ -606,11 +609,12 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-processo="Montagem de HU" data-quantidade="1" data-origem="PR06" data-destino="RJ10" data-status="HU Criada" data-hu="12678624443333" data-is="89317456" data-data-reg="12/09/2026 17:46" data-historico="HU Criada - Evelyn (12/09/2026 17:46)" data-mus="MU11111">
+                    <tr data-processo="Montagem de HU" data-quantidade="1" data-origem="PR06" data-destino="RJ10" data-desvio="" data-status="HU Criada" data-hu="12678624443333" data-is="89317456" data-data-reg="12/09/2026 17:46" data-historico="HU Criada - Evelyn (12/09/2026 17:46)" data-mus="MU11111">
                         <td>Montagem de HU</td>
                         <td>1</td>
                         <td>PR06</td>
                         <td>RJ10</td>
+                        <td></td>
                         <td><span class="status-badge status-hucriada">HU Criada</span></td>
                         <td>12678624443333</td>
                         <td>89317456</td>
@@ -626,6 +630,23 @@
             </table>
         </div>
     </main>
+
+    <!-- MODAL DE PERGUNTA: DESVIO -->
+    <div class="modal-overlay" id="modal-pergunta-desvio">
+        <div class="modal-content" style="width: 320px; text-align: center;">
+            <div class="modal-header">
+                <h2>Desvio de Rota</h2>
+                <i class="ph ph-x modal-close" id="fechar-pergunta-desvio-btn"></i>
+            </div>
+            <div class="modal-body" style="gap: 15px; text-align: center;">
+                <p style="font-weight: 600; font-size: 0.95rem;">Houve um desvio de rota?</p>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
+                    <button class="btn-salvar" id="btn-desvio-sim" style="background-color: #10b981; padding: 8px 25px;">Sim</button>
+                    <button class="btn-salvar" id="btn-desvio-nao" style="background-color: #ef4444; padding: 8px 25px;">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
@@ -654,6 +675,12 @@
                     <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
                 </div>
                 
+                <div class="input-pill" id="container-desvio" style="display: none;">
+                    <span class="input-prefix">Desvio:</span>
+                    <input type="text" id="modal-desvio" class="custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
+                </div>
+
                 <div id="mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
                     <!-- Campos de MU serão injetados aqui -->
                 </div>
@@ -667,24 +694,26 @@
     <!-- MODAL DE AVANÇAR STATUS -->
     <div class="modal-overlay" id="modal-escolha-avancar">
         <div class="modal-content" style="width: 320px; text-align: center;">
-            <div class="modal-header">
-                <h2>Avançar Status</h2>
-                <i class="ph ph-x modal-close" id="fechar-escolha-btn"></i>
-            </div>
-            <div class="modal-body" style="gap: 15px; text-align: left;">
-                <p style="font-weight: 600; font-size: 0.95rem; text-align: center;">Avançar para HU Criada?</p>
-                <div class="input-pill">
-                    <span class="input-prefix">HU:</span>
-                    <input type="text" id="avancar-hu" required>
+            <form id="form-avancar-status" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="modal-header">
+                    <h2>Avançar Status</h2>
+                    <i class="ph ph-x modal-close" id="fechar-escolha-btn"></i>
                 </div>
-                <div class="input-pill">
-                    <span class="input-prefix">IS:</span>
-                    <input type="text" id="avancar-is" required>
+                <div class="modal-body" style="gap: 15px; text-align: left;">
+                    <p style="font-weight: 600; font-size: 0.95rem; text-align: center;">Avançar para HU Criada?</p>
+                    <div class="input-pill">
+                        <span class="input-prefix">HU:</span>
+                        <input type="text" id="avancar-hu" required>
+                    </div>
+                    <div class="input-pill">
+                        <span class="input-prefix">IS:</span>
+                        <input type="text" id="avancar-is" required>
+                    </div>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
+                        <button type="submit" class="btn-salvar" id="btn-escolha-confirmar">Confirmar</button>
+                    </div>
                 </div>
-                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
-                    <button class="btn-salvar" id="btn-escolha-confirmar">Confirmar</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -719,6 +748,13 @@
                 <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="edit-is"></div>
                 <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill"><span class="input-prefix">Destino:</span><input type="text" id="edit-destino" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
+                
+                <div class="input-pill" id="container-edit-desvio">
+                    <span class="input-prefix">Desvio:</span>
+                    <input type="text" id="edit-desvio" class="custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
+                </div>
+
                 <div class="input-pill">
                     <span class="input-prefix">Status:</span>
                     <select id="edit-status">
@@ -901,6 +937,7 @@
             document.getElementById('input-processo').value = 'Montagem de HU';
             document.getElementById('modal-origem').value = '';
             document.getElementById('modal-destino').value = '';
+            document.getElementById('modal-desvio').value = '';
             muContainer.innerHTML = '';
             adicionarCampoMU(muContainer); // Adiciona ao menos 1 vazio por padrão
         }
@@ -918,6 +955,14 @@
                 } else if (active.id === 'modal-origem') {
                     document.getElementById('modal-destino').focus();
                 } else if (active.id === 'modal-destino') {
+                    const desvioContainer = document.getElementById('container-desvio');
+                    if (desvioContainer.style.display === 'flex') {
+                        document.getElementById('modal-desvio').focus();
+                    } else {
+                        const primeiroMu = document.querySelector('#modal-novo-registro .input-mu-field');
+                        if (primeiroMu) primeiroMu.focus();
+                    }
+                } else if (active.id === 'modal-desvio') {
                     const primeiroMu = document.querySelector('#modal-novo-registro .input-mu-field');
                     if (primeiroMu) primeiroMu.focus();
                 } else if (active.classList.contains('input-mu-field')) {
@@ -935,18 +980,42 @@
                 if (active.classList.contains('input-mu-field')) {
                     const novoInput = adicionarCampoMU(editMuContainer);
                     if (novoInput) novoInput.focus();
+                } else if (active.id === 'edit-desvio') {
+                    const primeiroMu = document.querySelector('#modal-editar .input-mu-field');
+                    if (primeiroMu) primeiroMu.focus();
                 }
             }
         });
 
         // =========================================
-        // LÓGICA DE AÇÕES DA TABELA (MODAIS)
+        // LÓGICA DE AÇÕES DA TABELA E MODAIS
         // =========================================
-        const modalNovoRegistro = document.getElementById('modal-novo-registro');
+        
+        // INTERCEPTA BOTÃO NOVO REGISTRO
         document.getElementById('btn-novo-registro').addEventListener('click', () => {
-            resetarModalNovoRegistro();
-            modalNovoRegistro.classList.add('active');
+            document.getElementById('modal-pergunta-desvio').classList.add('active');
         });
+
+        document.getElementById('fechar-pergunta-desvio-btn').addEventListener('click', () => {
+            document.getElementById('modal-pergunta-desvio').classList.remove('active');
+        });
+
+        document.getElementById('btn-desvio-sim').addEventListener('click', () => {
+            document.getElementById('modal-pergunta-desvio').classList.remove('active');
+            document.getElementById('container-desvio').style.display = 'flex';
+            resetarModalNovoRegistro();
+            document.getElementById('modal-novo-registro').classList.add('active');
+        });
+
+        document.getElementById('btn-desvio-nao').addEventListener('click', () => {
+            document.getElementById('modal-pergunta-desvio').classList.remove('active');
+            document.getElementById('container-desvio').style.display = 'none';
+            document.getElementById('modal-desvio').value = '';
+            resetarModalNovoRegistro();
+            document.getElementById('modal-novo-registro').classList.add('active');
+        });
+
+        const modalNovoRegistro = document.getElementById('modal-novo-registro');
         document.getElementById('fechar-modal-btn').addEventListener('click', () => modalNovoRegistro.classList.remove('active'));
 
         const modalEscolha = document.getElementById('modal-escolha-avancar');
@@ -987,6 +1056,11 @@
                 html += `<div>Origem: <span style="font-weight:400;">${tr.getAttribute('data-origem')}</span></div>`;
                 html += `<div>Destino: <span style="font-weight:400;">${tr.getAttribute('data-destino')}</span></div>`;
                 
+                const desvioVal = tr.getAttribute('data-desvio');
+                if (desvioVal && desvioVal.trim() !== '') {
+                    html += `<div>Desvio: <span style="font-weight:400;">${desvioVal}</span></div>`;
+                }
+                
                 if (tr.getAttribute('data-hu')) html += `<div>HU: <span style="font-weight:400;">${tr.getAttribute('data-hu')}</span></div>`;
                 if (tr.getAttribute('data-is')) html += `<div>IS: <span style="font-weight:400;">${tr.getAttribute('data-is')}</span></div>`;
                 
@@ -1002,6 +1076,7 @@
                 document.getElementById('edit-processo').value = linhaEmEdicao.getAttribute('data-processo');
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
+                document.getElementById('edit-desvio').value = linhaEmEdicao.getAttribute('data-desvio') || '';
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
                 document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
                 document.getElementById('edit-status').value = linhaEmEdicao.getAttribute('data-status');
@@ -1021,34 +1096,21 @@
             }
         });
 
-        // BOTÃO CONFIRMAR AVANÇAR STATUS
-        document.getElementById('btn-escolha-confirmar').addEventListener('click', () => {
+        // FORMULÁRIO CONFIRMAR AVANÇAR STATUS
+        document.getElementById('form-avancar-status').addEventListener('submit', (e) => {
+            e.preventDefault(); // Impede o recarregamento da página
+
             if (linhaEmProcesso) {
                 const huInput = document.getElementById('avancar-hu');
                 const isInput = document.getElementById('avancar-is');
 
-                // Limpa espaços em branco para validação nativa funcionar
-                huInput.value = huInput.value.trim();
-                isInput.value = isInput.value.trim();
-
-                // Usa a validação nativa do HTML (required)
-                if (!huInput.checkValidity()) {
-                    huInput.reportValidity();
-                    return;
-                }
-
-                if (!isInput.checkValidity()) {
-                    isInput.reportValidity();
-                    return;
-                }
-
-                const inputHu = huInput.value;
-                const inputIs = isInput.value;
+                const inputHu = huInput.value.trim();
+                const inputIs = isInput.value.trim();
 
                 linhaEmProcesso.setAttribute('data-hu', inputHu);
                 linhaEmProcesso.setAttribute('data-is', inputIs);
-                linhaEmProcesso.cells[5].textContent = inputHu;
-                linhaEmProcesso.cells[6].textContent = inputIs;
+                linhaEmProcesso.cells[6].textContent = inputHu; // Coluna HU é 6
+                linhaEmProcesso.cells[7].textContent = inputIs; // Coluna IS é 7
 
                 atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
             }
@@ -1062,6 +1124,7 @@
             const processo = document.getElementById('edit-processo').value.trim();
             const origem = document.getElementById('edit-origem').value.trim();
             const destino = document.getElementById('edit-destino').value.trim();
+            const desvio = document.getElementById('edit-desvio').value.trim();
 
             if (!processo || !origem || !destino) {
                 alert('Por favor, preencha o Processo, a Origem e o Destino antes de atualizar.');
@@ -1088,14 +1151,16 @@
             linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value || '');
             linhaEmEdicao.setAttribute('data-origem', origem);
             linhaEmEdicao.setAttribute('data-destino', destino);
+            linhaEmEdicao.setAttribute('data-desvio', desvio);
             linhaEmEdicao.setAttribute('data-mus', musSalvas);
             
             linhaEmEdicao.cells[0].textContent = processo;
             linhaEmEdicao.cells[1].textContent = quantidade;
             linhaEmEdicao.cells[2].textContent = origem;
             linhaEmEdicao.cells[3].textContent = destino;
-            linhaEmEdicao.cells[5].textContent = document.getElementById('edit-hu').value || '';
-            linhaEmEdicao.cells[6].textContent = document.getElementById('edit-is').value || '';
+            linhaEmEdicao.cells[4].textContent = desvio;
+            linhaEmEdicao.cells[6].textContent = document.getElementById('edit-hu').value || '';
+            linhaEmEdicao.cells[7].textContent = document.getElementById('edit-is').value || '';
             
             atualizarStatusLinha(linhaEmEdicao, novoStatus);
             modalEditar.classList.remove('active');
@@ -1106,6 +1171,11 @@
             const processo = document.getElementById('input-processo').value.trim();
             const origem = document.getElementById('modal-origem').value.trim();
             const destino = document.getElementById('modal-destino').value.trim();
+            
+            let desvio = '';
+            if (document.getElementById('container-desvio').style.display === 'flex') {
+                desvio = document.getElementById('modal-desvio').value.trim();
+            }
 
             if (!processo || !origem || !destino) {
                 alert('Por favor, preencha o Processo, a Origem e o Destino antes de salvar.');
@@ -1132,6 +1202,7 @@
             novaLinha.setAttribute('data-quantidade', quantidade);
             novaLinha.setAttribute('data-origem', origem);
             novaLinha.setAttribute('data-destino', destino);
+            novaLinha.setAttribute('data-desvio', desvio);
             novaLinha.setAttribute('data-status', 'Pendente');
             novaLinha.setAttribute('data-hu', '');
             novaLinha.setAttribute('data-is', '');
@@ -1140,7 +1211,7 @@
             novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
 
             novaLinha.innerHTML = `
-                <td>${processo}</td><td>${quantidade}</td><td>${origem}</td><td>${destino}</td>
+                <td>${processo}</td><td>${quantidade}</td><td>${origem}</td><td>${destino}</td><td>${desvio}</td>
                 <td><span class="status-badge status-pendente">Pendente</span></td>
                 <td></td><td></td>
                 <td>
@@ -1167,9 +1238,9 @@
             let hist = tr.getAttribute('data-historico');
             tr.setAttribute('data-historico', `${hist} | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`);
             
-            // Adicionando dinamicamente a badge de cor atualizada
+            // Adicionando dinamicamente a badge de cor atualizada (coluna é 5)
             let badgeClass = novoStatus === 'Pendente' ? 'status-pendente' : 'status-hucriada';
-            tr.cells[4].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
+            tr.cells[5].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
             
             // Esconde o ícone de avançar caso o status seja "HU Criada", ou volta a mostrar caso seja "Pendente"
             const btnAvancar = tr.querySelector('.btn-avancar');
