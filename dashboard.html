@@ -42,7 +42,7 @@
         body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-primary); transition: background-color 0.3s ease, color 0.3s ease; }
 
         /* =========================================
-           BOTÃO DE TEMA E SIDEBAR (Mantidos)
+           BOTÃO DE TEMA E SIDEBAR
            ========================================= */
         .theme-toggle-btn { position: fixed; top: 30px; right: 50px; background-color: var(--btn-theme-bg); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 100; transition: background-color 0.3s ease; }
         .theme-toggle-btn:hover { background-color: rgba(128, 128, 128, 0.2); }
@@ -101,16 +101,29 @@
         .card-cyan { background: linear-gradient(to right, #001924, #1eddf5); height: 145px; }
         .card-number { font-size: 3.5rem; font-weight: 900; font-style: italic; font-family: serif; margin-top: 0; z-index: 2; }
 
-        /* GRÁFICO LARANJA (OFENSORES) - Dashboard */
+        /* =========================================
+           NOVO GRÁFICO LARANJA (OFENSORES) - Dashboard
+           ========================================= */
         .card-orange { 
-            background: linear-gradient(to right, #2e0d00, #fa6f19); grid-column: 3; grid-row: 1 / 3; height: 100%; 
-            justify-content: space-between; cursor: pointer; transition: transform 0.2s, filter 0.2s;
+            background: linear-gradient(to right, #2e0d00, #fa6f19); grid-column: 3; grid-row: 1 / 3; 
+            display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s, filter 0.2s;
         }
         .card-orange:hover { transform: scale(1.02); filter: brightness(1.1); }
-        .bar-chart-orange { display: flex; align-items: flex-end; justify-content: space-around; height: 100%; margin-top: 20px; padding-bottom: 10px; width: 100%; gap: 10px; z-index: 2; }
-        .bar-white { background-color: white; flex: 1; max-width: 40px; border-radius: 4px 4px 0 0; box-shadow: 2px 0 5px rgba(0,0,0,0.1); position: relative; display: flex; justify-content: center; }
-        .bar-label-dash { position: absolute; bottom: -20px; color: white; font-size: 0.65rem; font-weight: 700; }
-        .bar-value-dash { position: absolute; top: -20px; color: white; font-size: 0.8rem; font-weight: 900; }
+        
+        .bar-chart-orange { 
+            flex: 1; display: flex; align-items: flex-end; justify-content: space-around; 
+            width: 100%; gap: 15px; margin-top: 20px; padding-bottom: 5px; z-index: 2; 
+        }
+        
+        .mini-bar-wrapper {
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            height: 100%; flex: 1; max-width: 45px;
+        }
+        
+        .mini-bar-white {
+            background-color: white; width: 100%; border-radius: 4px 4px 0 0; 
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1); transition: height 0.5s ease-out;
+        }
 
         /* Outros gráficos */
         .pie-chart-container { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; z-index: 2;}
@@ -139,7 +152,7 @@
            ========================================= */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); /* Desfoque fundo */
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px);
             display: flex; justify-content: center; align-items: center;
             z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
         }
@@ -165,12 +178,11 @@
         }
         .close-modal-btn:hover { opacity: 0.7; }
 
-        /* Área do gráfico dentro do modal */
         .ofensores-chart-area {
             flex: 1; display: flex; align-items: flex-end; position: relative;
             border-bottom: 2px solid rgba(255,255,255,0.3);
             padding-bottom: 0; margin-top: 10px; margin-left: 20px;
-            overflow-x: auto; /* Rolagem horizontal se tiver muitos */
+            overflow-x: auto; /* Adiciona a rolagem horizontal */
             gap: 15px; padding-top: 30px;
         }
         
@@ -179,15 +191,13 @@
         .ofensores-chart-area::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; margin-top: 20px;}
         .ofensores-chart-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
         
-        /* Eixo Y do modal */
         .y-axis-ofensores {
             position: absolute; left: -40px; top: 0; bottom: 0;
             display: flex; flex-direction: column; justify-content: space-between;
             color: white; font-weight: 700; font-size: 0.8rem; text-align: right;
-            border-right: 2px solid rgba(255,255,255,0.3); padding-right: 5px; padding-bottom: 8px; /* espaço pro scroll */
+            border-right: 2px solid rgba(255,255,255,0.3); padding-right: 5px; padding-bottom: 8px;
         }
         
-        /* Barras do Modal */
         .bar-wrapper {
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
             height: 100%; min-width: 45px; position: relative;
@@ -196,8 +206,8 @@
             background-color: white; width: 100%; border-radius: 6px 6px 0 0;
             box-shadow: 2px 0 10px rgba(0,0,0,0.2); transition: height 0.5s ease-out;
         }
-        .bar-label { color: white; font-size: 0.7rem; font-weight: 700; margin-top: 5px; white-space: nowrap; }
-        .bar-value { position: absolute; top: -25px; color: white; font-weight: 900; font-size: 1rem; }
+        .bar-label { color: white; font-size: 0.75rem; font-weight: 700; margin-top: 5px; white-space: nowrap; }
+        .bar-value { position: absolute; top: -20px; color: white; font-weight: 900; font-size: 0.95rem; }
 
     </style>
 </head>
@@ -326,8 +336,7 @@
             <h2>CAD'S Ofensores</h2>
             
             <div class="ofensores-chart-area" id="modal-grafico-ofensores">
-                <!-- Eixo Y dinâmico será injetado aqui -->
-                <!-- Barras dinâmicas serão injetadas aqui -->
+                <!-- Eixo Y dinâmico e Barras serão injetadas aqui -->
             </div>
         </div>
     </div>
@@ -382,7 +391,6 @@
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
         const db = getFirestore(app);
-        
         console.log("Firebase conectado ao Dashboard com sucesso!");
 
         async function atualizarDashboard() {
@@ -393,87 +401,92 @@
                 // Objeto para contar as ocorrências de cada origem
                 const ofensoresCount = {};
 
-                // Função auxiliar para contar as origens
+                // Função auxiliar para contar as origens de forma segura
                 const registrarOrigem = (origem) => {
-                    if (origem) {
+                    if (origem && typeof origem === 'string') {
                         const cad = origem.trim().toUpperCase();
-                        ofensoresCount[cad] = (ofensoresCount[cad] || 0) + 1;
+                        if(cad !== "") {
+                            ofensoresCount[cad] = (ofensoresCount[cad] || 0) + 1;
+                        }
                     }
                 };
 
-                // 1. Busca e Conta: HU's PENDENTES
-                const queryHUs = await getDocs(collection(db, "hus_pendentes"));
-                queryHUs.forEach((doc) => {
-                    const data = doc.data();
-                    const status = data.status;
-                    if (status === 'Pendente' || status === 'Agendado') pendentes++;
-                    else if (status === 'Finalizado') finalizados++;
-                    
-                    registrarOrigem(data.origem);
-                });
+                // 1. Busca e Conta: HU's PENDENTES (Protegido por try/catch para evitar travar se não existir)
+                try {
+                    const queryHUs = await getDocs(collection(db, "hus_pendentes"));
+                    queryHUs.forEach((doc) => {
+                        const data = doc.data();
+                        const status = data.status || '';
+                        if (status === 'Pendente' || status === 'Agendado') pendentes++;
+                        else if (status === 'Finalizado') finalizados++;
+                        registrarOrigem(data.origem);
+                    });
+                } catch(e) { console.warn("Coleção hus_pendentes ainda vazia ou não criada.", e); }
 
                 // 2. Busca e Conta: DESVIO DE ROTA
-                const queryDesvios = await getDocs(collection(db, "desvios_rota"));
-                queryDesvios.forEach((doc) => {
-                    const data = doc.data();
-                    const status = data.status;
-                    if (status === 'Pendente' || status === 'Agendado' || status === 'Aguardando Recusa') pendentes++;
-                    else if (status === 'Finalizado') finalizados++;
-                    
-                    registrarOrigem(data.origem);
-                });
+                try {
+                    const queryDesvios = await getDocs(collection(db, "desvios_rota"));
+                    queryDesvios.forEach((doc) => {
+                        const data = doc.data();
+                        const status = data.status || '';
+                        if (status === 'Pendente' || status === 'Agendado' || status === 'Aguardando Recusa') pendentes++;
+                        else if (status === 'Finalizado') finalizados++;
+                        registrarOrigem(data.origem);
+                    });
+                } catch(e) { console.warn("Coleção desvios_rota ainda vazia ou não criada.", e); }
 
                 // 3. Busca e Conta: MU's PENDENTES
-                const queryMUs = await getDocs(collection(db, "mus_pendentes"));
-                queryMUs.forEach((doc) => {
-                    const data = doc.data();
-                    const status = data.status;
-                    if (status === 'Pendente') pendentes++;
-                    
-                    registrarOrigem(data.origem);
-                });
+                try {
+                    const queryMUs = await getDocs(collection(db, "mus_pendentes"));
+                    queryMUs.forEach((doc) => {
+                        const data = doc.data();
+                        const status = data.status || '';
+                        if (status === 'Pendente') pendentes++;
+                        registrarOrigem(data.origem);
+                    });
+                } catch(e) { console.warn("Coleção mus_pendentes ainda vazia ou não criada.", e); }
 
-                // Atualiza o texto na tela
+                // Atualiza o texto de totais na tela
                 document.getElementById('dash-total-pendentes').textContent = pendentes;
                 document.getElementById('dash-total-finalizados').textContent = finalizados;
 
                 // ==============================================
                 // RENDERIZAR GRÁFICOS DE OFENSORES
                 // ==============================================
+                
                 // Transforma o objeto em array e ordena do maior para o menor
                 const ofensoresArray = Object.entries(ofensoresCount)
                     .map(([cad, count]) => ({ cad, count }))
-                    .sort((a, b) => b.count - a.count); // Maior para o menor
+                    .sort((a, b) => b.count - a.count); // Ordem decrescente (Maior para a Esquerda)
 
-                const maxCount = ofensoresArray.length > 0 ? ofensoresArray[0].count : 1; // Para calcular a % de altura
-
-                // 1. Renderiza o Card Menor (Top 5 no máximo)
                 const miniGrafico = document.getElementById('mini-grafico-ofensores');
-                miniGrafico.innerHTML = ''; // Limpa o que tinha
-
+                miniGrafico.innerHTML = '';
+                
+                const maxCount = ofensoresArray.length > 0 ? ofensoresArray[0].count : 1; 
+                
                 // Pega só os 5 primeiros
                 const top5 = ofensoresArray.slice(0, 5);
-                
-                // Se não houver dados
+
+                // Renderiza o Top 5 no card laranja da tela inicial
                 if (top5.length === 0) {
-                    miniGrafico.innerHTML = '<span style="color:white; font-size: 0.9rem;">Sem dados no momento.</span>';
+                    miniGrafico.innerHTML = '<span style="color:white; font-size: 0.9rem; align-self: center; width: 100%; text-align: center;">Sem ofensores no momento.</span>';
                 } else {
                     top5.forEach(item => {
-                        const alturaPerc = Math.max((item.count / maxCount) * 100, 10); // minimo 10% pra aparecer algo
+                        const alturaPerc = Math.max((item.count / maxCount) * 100, 10); // mínimo de 10% de altura para a barra não sumir
                         miniGrafico.innerHTML += `
-                            <div class="bar-wrapper" style="flex:1; max-width: 40px;">
-                                <div class="bar-value-dash" style="display:none;">${item.count}</div>
-                                <div class="bar-white" style="height: ${alturaPerc}%; max-width:100%;"></div>
+                            <div class="mini-bar-wrapper">
+                                <div class="mini-bar-white" style="height: ${alturaPerc}%;" title="${item.cad}: ${item.count}"></div>
+                                <div style="color: white; font-size: 0.65rem; font-weight: bold; margin-top: 5px;">${item.cad}</div>
                             </div>
                         `;
                     });
                 }
 
-                // 2. Renderiza o Modal Expandido (Todos)
+                // 2. Renderiza o Modal Expandido (Com todos os ofensores)
                 const modalGrafico = document.getElementById('modal-grafico-ofensores');
                 modalGrafico.innerHTML = '';
                 
-                // Adiciona o Eixo Y
+                // Desenha o Eixo Y dinâmico no modal
                 modalGrafico.innerHTML += `
                     <div class="y-axis-ofensores">
                         <span>${maxCount}</span>
@@ -500,7 +513,7 @@
                 }
 
             } catch (error) {
-                console.error("Erro ao carregar dados do Dashboard: ", error);
+                console.error("Erro geral ao processar o Dashboard: ", error);
             }
         }
 
