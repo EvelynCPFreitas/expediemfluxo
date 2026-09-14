@@ -857,22 +857,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-hu-corpo">
-                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-agendamento="" data-ts-origem="" data-ts-destino="" data-data-reg="27/10/2026 14:00" data-historico="Pendente - Evelyn (27/10/2026 14:00)">
-                        <td><input type="checkbox" class="row-checkbox"></td>
-                        <td>15878526144691</td>
-                        <td>74564567</td>
-                        <td>SC02</td>
-                        <td>BA01</td>
-                        <td><span class="status-badge status-pendente">Pendente</span></td>
-                        <td></td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    </tr>
+                    <!-- Registros serão carregados aqui via Firestore -->
                 </tbody>
             </table>
         </div>
@@ -967,7 +952,7 @@
             <div class="modal-body">
                 <div class="input-pill">
                     <span class="input-prefix">TS:</span>
-                    <input type="text" id="input-ts-origem-val" placeholder="Digite a TS">
+                    <input type="text" id="input-ts-val" placeholder="Digite a TS">
                 </div>
             </div>
             <div class="modal-footer">
@@ -1014,7 +999,7 @@
             <div class="modal-body">
                 <div class="input-pill"><span class="input-prefix">HU:</span><input type="text" id="edit-hu"></div>
                 <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="edit-is"></div>
-                <div class="input-pill"><span class="input-prefix">TS:</span><input type="text" id="edit-ts-origem"></div>
+                <div class="input-pill"><span class="input-prefix">TS:</span><input type="text" id="edit-ts"></div>
                 <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill"><span class="input-prefix">Destino:</span><input type="text" id="edit-destino" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill">
@@ -1042,7 +1027,13 @@
         </div>
     </div>
 
-    <script>
+    <!-- ADICIONE O CÓDIGO DO FIREBASE AQUI -->
+    <script type="module">
+        import { app } from './firebase-config.js';
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const db = getFirestore(app);
+
         // =========================================
         // LÓGICA DO TEMA E LOCALSTORAGE
         // =========================================
@@ -1074,70 +1065,48 @@
             const usernameDisplay = document.getElementById('display-username');
             const savedUsername = localStorage.getItem('userName'); 
             if (savedUsername) { usernameDisplay.textContent = savedUsername; } 
-            else { usernameDisplay.textContent = 'Evelyn'; }
+            else { usernameDisplay.textContent = 'Usuário'; }
 
-            atualizarKPIs();
-            verificarSelecaoLinhas();
+            carregarRegistros();
             processarHUsTransferidas();
         });
 
-       // =========================================
-// PROCESSAR HUS RECEBIDAS DA ABA DE MU
-// =========================================
-function processarHUsTransferidas() {
-    const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
-    if (filaHUs.length > 0) {
-        const tabelaCorpo = document.getElementById('tabela-hu-corpo');
-        const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
-        const agora = new Date();
-        const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+        // =========================================
+        // PROCESSAR HUS RECEBIDAS DA ABA DE MU
+        // =========================================
+        async function processarHUsTransferidas() {
+            const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
+            if (filaHUs.length > 0) {
+                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+                const agora = new Date();
+                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 
-        filaHUs.forEach(item => {
-            const statusFinal = item.statusHU || 'Pendente';
-            const tsOrigem = item.tsOrigem || '';
-            const agendamento = item.agendamento || '';
+                for (const item of filaHUs) {
+                    const statusFinal = item.statusHU || 'Pendente';
+                    const ts = item.tsOrigem || '';
+                    const agendamento = item.agendamento || '';
 
-            const novaLinha = document.createElement('tr');
-            novaLinha.setAttribute('data-hu', item.hu);
-            novaLinha.setAttribute('data-is', item.is);
-            novaLinha.setAttribute('data-origem', item.origem);
-            novaLinha.setAttribute('data-destino', item.destino);
-            novaLinha.setAttribute('data-status', statusFinal);
-            novaLinha.setAttribute('data-agendamento', agendamento);
-            novaLinha.setAttribute('data-ts-origem', tsOrigem);
-            novaLinha.setAttribute('data-ts-destino', ''); 
-            novaLinha.setAttribute('data-data-reg', dataFormatada);
-            novaLinha.setAttribute('data-historico', `${statusFinal} - ${usuarioLogado} (${dataFormatada})`);
+                    try {
+                        await addDoc(collection(db, "hus_pendentes"), {
+                            hu: item.hu,
+                            is: item.is,
+                            origem: item.origem,
+                            destino: item.destino,
+                            status: statusFinal,
+                            agendamento: agendamento,
+                            ts: ts,
+                            dataReg: dataFormatada,
+                            historico: `${statusFinal} - ${usuarioLogado} (${dataFormatada})`
+                        });
+                    } catch (error) {
+                        console.error("Erro ao transferir HU: ", error);
+                    }
+                }
 
-            let badgeClass = 'status-pendente';
-            if (statusFinal === 'Agendado') badgeClass = 'status-agendado';
-            if (statusFinal === 'Expedido') badgeClass = 'status-expedido';
-
-            novaLinha.innerHTML = `
-                <td><input type="checkbox" class="row-checkbox"></td>
-                <td>${item.hu}</td>
-                <td>${item.is}</td>
-                <td>${item.origem}</td>
-                <td>${item.destino}</td>
-                <td><span class="status-badge ${badgeClass}">${statusFinal}</span></td>
-                <td>${agendamento}</td>
-                <td>
-                    <div class="table-actions">
-                        <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                        <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
-                        <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
-                    </div>
-                </td>
-            `;
-            tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
-        });
-
-        // Limpa a fila após injetar
-        localStorage.removeItem('filaNovasHUs');
-        atualizarKPIs();
-        aplicarFiltros();
-    }
-}
+                localStorage.removeItem('filaNovasHUs');
+                carregarRegistros();
+            }
+        }
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
@@ -1153,6 +1122,66 @@ function processarHUsTransferidas() {
                 localStorage.removeItem('userName'); 
                 window.location.href = 'index.html'; 
             });
+        }
+
+        // =========================================
+        // CARREGAR REGISTROS DO FIRESTORE
+        // =========================================
+        const tabelaCorpo = document.getElementById('tabela-hu-corpo');
+
+        async function carregarRegistros() {
+            tabelaCorpo.innerHTML = ''; 
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "hus_pendentes"));
+                
+                querySnapshot.forEach((documento) => {
+                    const dados = documento.data();
+                    const idDoBanco = documento.id; 
+                    
+                    const novaLinha = document.createElement('tr');
+                    
+                    novaLinha.setAttribute('data-db-id', idDoBanco); 
+                    novaLinha.setAttribute('data-hu', dados.hu || '');
+                    novaLinha.setAttribute('data-is', dados.is || '');
+                    novaLinha.setAttribute('data-origem', dados.origem || '');
+                    novaLinha.setAttribute('data-destino', dados.destino || '');
+                    novaLinha.setAttribute('data-status', dados.status || 'Pendente');
+                    novaLinha.setAttribute('data-agendamento', dados.agendamento || '');
+                    novaLinha.setAttribute('data-ts', dados.ts || '');
+                    novaLinha.setAttribute('data-data-reg', dados.dataReg || '');
+                    novaLinha.setAttribute('data-historico', dados.historico || '');
+
+                    let badgeClass = 'status-pendente';
+                    if (dados.status === 'Agendado') badgeClass = 'status-agendado';
+                    if (dados.status === 'Expedido') badgeClass = 'status-expedido';
+                    if (dados.status === 'Finalizado') badgeClass = 'status-finalizado';
+
+                    novaLinha.innerHTML = `
+                        <td><input type="checkbox" class="row-checkbox"></td>
+                        <td>${dados.hu}</td>
+                        <td>${dados.is}</td>
+                        <td>${dados.origem}</td>
+                        <td>${dados.destino}</td>
+                        <td><span class="status-badge ${badgeClass}">${dados.status}</span></td>
+                        <td>${dados.agendamento}</td>
+                        <td>
+                            <div class="table-actions">
+                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
+                            </div>
+                        </td>
+                    `;
+                    tabelaCorpo.appendChild(novaLinha);
+                });
+                
+                atualizarKPIs();
+                aplicarFiltros();
+                verificarSelecaoLinhas();
+            } catch (error) {
+                console.error("Erro ao carregar registros: ", error);
+            }
         }
 
         // =========================================
@@ -1201,7 +1230,6 @@ function processarHUsTransferidas() {
         selectAllCheckbox.addEventListener('change', () => {
             const checkboxes = document.querySelectorAll('.row-checkbox');
             checkboxes.forEach(cb => {
-                // Apenas marca as linhas visíveis
                 if (cb.closest('tr').style.display !== 'none') {
                     cb.checked = selectAllCheckbox.checked;
                 }
@@ -1347,7 +1375,6 @@ function processarHUsTransferidas() {
         const btnFecharModal = document.getElementById('fechar-modal-btn');
         const modalDestinoInput = document.getElementById('modal-destino');
         const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
-        const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
         btnAbrirModal.addEventListener('click', () => {
             modalOverlay.classList.add('active');
@@ -1419,47 +1446,92 @@ function processarHUsTransferidas() {
         });
 
         document.getElementById('btn-confirmar-ts').addEventListener('click', () => {
-            const tsVal = document.getElementById('input-ts-origem-val').value.trim();
+            const tsVal = document.getElementById('input-ts-val').value.trim();
             if (!tsVal) {
                 alert('É obrigatório preencher a TS para expedir.');
                 return;
             }
 
-            linhaEmProcesso.setAttribute('data-ts-origem', tsVal);
+            linhaEmProcesso.setAttribute('data-ts', tsVal);
             atualizarStatusLinha(linhaEmProcesso, 'Expedido');
             modalTs.classList.remove('active');
-            document.getElementById('input-ts-origem-val').value = '';
+            document.getElementById('input-ts-val').value = '';
         });
 
-        function atualizarStatusLinha(tr, novoStatus) {
-            const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
+        async function atualizarStatusLinha(tr, novoStatus) {
+            const idDoBanco = tr.getAttribute('data-db-id');
+            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
             const agora = new Date();
             const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 
-            tr.setAttribute('data-status', novoStatus);
-            
             let historicoAtual = tr.getAttribute('data-historico');
             historicoAtual += ` | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
-            tr.setAttribute('data-historico', historicoAtual);
+            
+            const novoAgendamento = tr.getAttribute('data-agendamento');
+            const novaTs = tr.getAttribute('data-ts');
 
-            let badgeClass = 'status-pendente';
-            if (novoStatus === 'Agendado') badgeClass = 'status-agendado';
-            if (novoStatus === 'Expedido') badgeClass = 'status-expedido';
-            if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
+            try {
+                const docRef = doc(db, "hus_pendentes", idDoBanco);
+                await updateDoc(docRef, {
+                    status: novoStatus,
+                    historico: historicoAtual,
+                    agendamento: novoAgendamento,
+                    ts: novaTs
+                });
 
-            tr.cells[5].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
-            if (novoStatus === 'Agendado') {
-                tr.cells[6].textContent = tr.getAttribute('data-agendamento');
-            } else {
-                tr.cells[6].textContent = '';
+                carregarRegistros();
+            } catch (error) {
+                console.error("Erro ao atualizar o status no banco de dados:", error);
+                alert("Erro ao atualizar o status. Verifique a conexão.");
             }
-
-            atualizarKPIs();
-            aplicarFiltros();
         }
 
         // =========================================
-        // LÓGICA DE DETALHES E EDIÇÃO
+        // SALVAR NOVO REGISTRO (FIRESTORE)
+        // =========================================
+        btnSalvarRegistro.addEventListener('click', async () => {
+            const hu = document.getElementById('input-hu').value.trim();
+            const is = document.getElementById('input-is').value.trim();
+            const origem = document.getElementById('modal-origem').value.trim();
+            const destino = document.getElementById('modal-destino').value.trim();
+            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+
+            if (!hu || !is || !origem || !destino) {
+                alert('Preencha os campos obrigatórios.');
+                return;
+            }
+
+            const agora = new Date();
+            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+            
+            try {
+                await addDoc(collection(db, "hus_pendentes"), {
+                    hu: hu,
+                    is: is,
+                    origem: origem,
+                    destino: destino,
+                    status: 'Pendente',
+                    agendamento: '',
+                    ts: '', 
+                    dataReg: dataFormatada,
+                    historico: `Pendente - ${usuarioLogado} (${dataFormatada})`
+                });
+
+                modalOverlay.classList.remove('active');
+                document.getElementById('input-hu').value = '';
+                document.getElementById('input-is').value = '';
+                document.getElementById('modal-origem').value = '';
+                
+                carregarRegistros(); 
+
+            } catch (error) {
+                console.error("Erro ao salvar documento: ", error);
+                alert("Erro ao salvar o registro. Verifique a conexão.");
+            }
+        });
+
+        // =========================================
+        // LÓGICA DE DETALHES E EDIÇÃO (FIRESTORE)
         // =========================================
         const modalDetalhes = document.getElementById('modal-detalhes');
         const btnFecharDetalhes = document.getElementById('fechar-detalhes-btn');
@@ -1487,8 +1559,7 @@ function processarHUsTransferidas() {
                 const origem = tr.getAttribute('data-origem');
                 const destino = tr.getAttribute('data-destino');
                 const status = tr.getAttribute('data-status');
-                const tsOrigem = tr.getAttribute('data-ts-origem');
-                const tsDestino = tr.getAttribute('data-ts-destino');
+                const ts = tr.getAttribute('data-ts');
                 const dataReg = tr.getAttribute('data-data-reg');
                 const historico = tr.getAttribute('data-historico');
 
@@ -1498,10 +1569,9 @@ function processarHUsTransferidas() {
                     <div>HU: <span style="font-weight:400;">${hu}</span></div>
                     <div>IS: <span style="font-weight:400;">${is}</span></div>
                     <div>Origem: <span style="font-weight:400;">${origem}</span></div>
+                    <div>Destino: <span style="font-weight:400;">${destino}</span></div>
                 `;
-                if (tsOrigem) htmlDetalhes += `<div>TS: <span style="font-weight:400;">${tsOrigem}</span></div>`;
-                htmlDetalhes += `<div>Destino: <span style="font-weight:400;">${destino}</span></div>`;
-                if (tsDestino) htmlDetalhes += `<div>TS Destino: <span style="font-weight:400;">${tsDestino}</span></div>`;
+                if (ts) htmlDetalhes += `<div>TS: <span style="font-weight:400;">${ts}</span></div>`;
 
                 htmlDetalhes += `<div class="historico-box">Histórico:<div class="historico-lista">`;
                 historico.split(' | ').forEach(item => { htmlDetalhes += `<div>• ${item}</div>`; });
@@ -1515,8 +1585,7 @@ function processarHUsTransferidas() {
                 linhaEmEdicao = e.target.closest('tr');
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
                 document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
-                document.getElementById('edit-ts-origem').value = linhaEmEdicao.getAttribute('data-ts-origem');
-                document.getElementById('edit-ts-destino').value = linhaEmEdicao.getAttribute('data-ts-destino');
+                document.getElementById('edit-ts').value = linhaEmEdicao.getAttribute('data-ts');
                 document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
                 
@@ -1549,9 +1618,10 @@ function processarHUsTransferidas() {
         btnFecharEditar.addEventListener('click', () => modalEditar.classList.remove('active'));
         modalEditar.addEventListener('click', (e) => { if (e.target === modalEditar) modalEditar.classList.remove('active'); });
 
-        btnAtualizarRegistro.addEventListener('click', () => {
+        btnAtualizarRegistro.addEventListener('click', async () => {
             if (!linhaEmEdicao) return;
 
+            const idDoBanco = linhaEmEdicao.getAttribute('data-db-id');
             const novoStatus = editStatusSelect.value;
             let agendamentoFormatado = linhaEmEdicao.getAttribute('data-agendamento');
 
@@ -1568,71 +1638,38 @@ function processarHUsTransferidas() {
                 agendamentoFormatado = '';
             }
 
-            linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value.trim());
-            linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value.trim());
-            linhaEmEdicao.setAttribute('data-ts-origem', document.getElementById('edit-ts-origem').value.trim());
-            linhaEmEdicao.setAttribute('data-ts-destino', document.getElementById('edit-ts-destino').value.trim());
-            linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value.trim());
-            linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value.trim());
-            linhaEmEdicao.setAttribute('data-agendamento', agendamentoFormatado);
-            
-            atualizarStatusLinha(linhaEmEdicao, novoStatus);
-            modalEditar.classList.remove('active');
-            linhaEmEdicao = null;
-        });
+            const dadosAtualizados = {
+                hu: document.getElementById('edit-hu').value.trim(),
+                is: document.getElementById('edit-is').value.trim(),
+                ts: document.getElementById('edit-ts').value.trim(),
+                origem: document.getElementById('edit-origem').value.trim(),
+                destino: document.getElementById('edit-destino').value.trim(),
+                status: novoStatus,
+                agendamento: agendamentoFormatado
+            };
 
-        btnSalvarRegistro.addEventListener('click', () => {
-            const hu = document.getElementById('input-hu').value.trim();
-            const is = document.getElementById('input-is').value.trim();
-            const origem = document.getElementById('modal-origem').value.trim();
-            const destino = document.getElementById('modal-destino').value.trim();
-            const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
-
-            if (!hu || !is || !origem || !destino) {
-                alert('Preencha os campos obrigatórios.');
-                return;
+            // Se o status mudou na edição, atualizamos o histórico também
+            const statusAntigo = linhaEmEdicao.getAttribute('data-status');
+            if (novoStatus !== statusAntigo) {
+                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+                const agora = new Date();
+                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+                let historicoAtual = linhaEmEdicao.getAttribute('data-historico');
+                dadosAtualizados.historico = historicoAtual + ` | Editado para ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
             }
 
-            const agora = new Date();
-            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-
-            const novaLinha = document.createElement('tr');
-            novaLinha.setAttribute('data-hu', hu);
-            novaLinha.setAttribute('data-is', is);
-            novaLinha.setAttribute('data-origem', origem);
-            novaLinha.setAttribute('data-destino', destino);
-            novaLinha.setAttribute('data-status', 'Pendente');
-            novaLinha.setAttribute('data-agendamento', '');
-            novaLinha.setAttribute('data-ts-origem', '');
-            novaLinha.setAttribute('data-ts-destino', ''); 
-            novaLinha.setAttribute('data-data-reg', dataFormatada);
-            novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
-
-            novaLinha.innerHTML = `
-                <td><input type="checkbox" class="row-checkbox"></td>
-                <td>${hu}</td>
-                <td>${is}</td>
-                <td>${origem}</td>
-                <td>${destino}</td>
-                <td><span class="status-badge status-pendente">Pendente</span></td>
-                <td></td>
-                <td>
-                    <div class="table-actions">
-                        <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                        <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
-                        <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
-                    </div>
-                </td>
-            `;
-
-            tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
-            modalOverlay.classList.remove('active');
-            document.getElementById('input-hu').value = '';
-            document.getElementById('input-is').value = '';
-            document.getElementById('modal-origem').value = '';
-
-            atualizarKPIs();
-            aplicarFiltros();
+            try {
+                const docRef = doc(db, "hus_pendentes", idDoBanco);
+                await updateDoc(docRef, dadosAtualizados);
+                
+                modalEditar.classList.remove('active');
+                linhaEmEdicao = null;
+                carregarRegistros();
+                
+            } catch (error) {
+                console.error("Erro ao atualizar registro:", error);
+                alert("Erro ao editar o registro. Verifique a conexão.");
+            }
         });
 
         // =========================================
