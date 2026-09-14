@@ -22,6 +22,7 @@
             --logo-stroke: #004b87;
             --btn-theme-bg: rgba(0,0,0,0.05);
             --btn-theme-color: #004b87;
+            --table-border: #cbd5e1;
         }
 
         .dark-theme {
@@ -35,89 +36,36 @@
             --logo-stroke: #8ca4c0;
             --btn-theme-bg: rgba(255,255,255,0.1);
             --btn-theme-color: #fcd34d;
+            --table-border: #1e293b;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-primary); transition: background-color 0.3s ease, color 0.3s ease; }
 
-        body {
-            display: flex;
-            height: 100vh;
-            background-color: var(--bg-body);
-            color: var(--text-primary);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        /* =========================================
-            BOTÃO DE TROCA DE TEMA
-            ========================================= */
-        .theme-toggle-btn {
-            position: fixed;
-            top: 30px;
-            right: 50px;
-            background-color: var(--btn-theme-bg);
-            border: none;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            transition: background-color 0.3s ease;
-        }
-
+        /* BOTÃO TEMA */
+        .theme-toggle-btn { position: fixed; top: 30px; right: 50px; background-color: var(--btn-theme-bg); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 100; transition: background-color 0.3s ease; }
         .theme-toggle-btn:hover { background-color: rgba(128, 128, 128, 0.2); }
         .theme-icon { width: 24px; height: 24px; fill: none; stroke: var(--btn-theme-color); stroke-width: 1.5; }
         #theme-icon-dark { display: none; }
         .dark-theme #theme-icon-light { display: none; }
         .dark-theme #theme-icon-dark { display: block; fill: var(--btn-theme-color); }
 
-        /* =========================================
-            BARRA LATERAL (SIDEBAR)
-            ========================================= */
-        .sidebar {
-            width: 80px; 
-            background-color: var(--bg-sidebar);
-            display: flex;
-            flex-direction: column;
-            border-right: 2px solid var(--border-sidebar);
-            padding-bottom: 20px;
-            transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-            z-index: 50;
-        }
+        /* SIDEBAR */
+        .sidebar { width: 80px; background-color: var(--bg-sidebar); display: flex; flex-direction: column; border-right: 2px solid var(--border-sidebar); padding-bottom: 20px; transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease; z-index: 50; }
         .sidebar.expanded { width: 250px; }
-        .logo-container {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 25px 0; color: var(--text-sidebar); font-weight: 900; font-size: 0.9rem;
-            white-space: nowrap; transition: padding 0.3s ease, justify-content 0.3s ease;
-        }
+        .logo-container { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 25px 0; color: var(--text-sidebar); font-weight: 900; font-size: 0.9rem; white-space: nowrap; transition: padding 0.3s ease, justify-content 0.3s ease; }
         .sidebar.expanded .logo-container { justify-content: flex-start; padding: 25px 20px; }
         .logo-svg { width: 45px; height: auto; flex-shrink: 0; }
         .logo-text { display: none; }
         .sidebar.expanded .logo-text { display: block; }
-
         .nav-menu { flex: 1; margin-top: 30px; }
-        .nav-item {
-            display: flex; align-items: center; justify-content: center; gap: 15px;
-            padding: 15px; color: var(--text-sidebar); font-weight: 700; font-size: 1.05rem;
-            text-decoration: none; white-space: nowrap; transition: background 0.2s, padding 0.3s ease, justify-content 0.3s ease;
-        }
+        .nav-item { display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; color: var(--text-sidebar); font-weight: 700; font-size: 1.05rem; text-decoration: none; white-space: nowrap; transition: background 0.2s, padding 0.3s ease, justify-content 0.3s ease; }
         .sidebar.expanded .nav-item { justify-content: flex-start; padding: 15px 25px; }
         .nav-text { display: none; }
         .sidebar.expanded .nav-text { display: block; }
         .nav-item:hover, .nav-item.active { background-color: var(--bg-hover); }
         .nav-item i, .nav-item svg { font-size: 1.5rem; flex-shrink: 0; }
-
-        .sidebar-footer {
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            gap: 20px; color: var(--text-sidebar); transition: flex-direction 0.3s ease, padding 0.3s ease;
-        }
+        .sidebar-footer { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 0; color: var(--text-sidebar); transition: flex-direction 0.3s ease, padding 0.3s ease; }
         .sidebar.expanded .sidebar-footer { flex-direction: row; justify-content: space-between; padding: 0 25px; }
         .user-info { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 700; }
         #display-cd { display: none; white-space: nowrap; }
@@ -128,37 +76,21 @@
 
         /* Dropdown Perfil */
         .profile-container { position: relative; display: flex; align-items: center; cursor: pointer; padding: 5px; margin-left: -5px; }
-        .profile-dropdown {
-            position: absolute; bottom: 40px; left: 0; background-color: var(--bg-body);
-            border: 1px solid var(--border-sidebar); border-radius: 8px; padding: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px;
-            min-width: 130px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 100;
-        }
+        .profile-dropdown { position: absolute; bottom: 40px; left: 0; background-color: var(--bg-body); border: 1px solid var(--border-sidebar); border-radius: 8px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px; min-width: 130px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 100; }
         .dark-theme .profile-dropdown { box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .profile-container:hover .profile-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-name { font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--border-sidebar); padding-bottom: 8px; text-align: center; }
         .dropdown-logout { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; color: #ef4444; text-decoration: none; font-weight: 700; padding: 6px; border-radius: 6px; }
         .dropdown-logout:hover { background-color: rgba(239, 68, 68, 0.1); }
 
-        /* =========================================
-            CONTEÚDO PRINCIPAL (DESVIO DE ROTA)
-            ========================================= */
-        .main-content {
-            flex: 1; padding: 30px 50px; overflow-y: auto; position: relative;
-        }
-
-        .page-title {
-            color: #004b87; font-size: 1.4rem; font-weight: 900; margin-bottom: 20px; transition: color 0.3s ease;
-        }
+        /* CONTEÚDO PRINCIPAL */
+        .main-content { flex: 1; padding: 30px 50px; overflow-y: auto; position: relative; }
+        .page-title { color: #004b87; font-size: 1.4rem; font-weight: 900; margin-bottom: 20px; transition: color 0.3s ease; }
         .dark-theme .page-title { color: var(--text-sidebar); }
 
-        /* CARDS KPI ADAPTADOS PARA DESVIO DE ROTA (CLICÁVEIS) */
+        /* CARDS KPI ADAPTADOS PARA DESVIO DE ROTA */
         .hu-cards-container { display: flex; gap: 20px; margin-bottom: 10px; flex-wrap: wrap; }
-        .hu-card {
-            flex: 1; min-width: 140px; border-radius: 8px; padding: 15px 15px; color: white; text-align: center;
-            box-shadow: 4px 4px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; min-height: 100px;
-            cursor: pointer; transition: transform 0.2s, filter 0.2s;
-        }
+        .hu-card { flex: 1; min-width: 140px; border-radius: 8px; padding: 15px 15px; color: white; text-align: center; box-shadow: 4px 4px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; min-height: 100px; cursor: pointer; transition: transform 0.2s, filter 0.2s; }
         .hu-card:hover { transform: translateY(-3px); filter: brightness(1.1); }
         .hu-card-title { font-size: 1rem; font-weight: 700; margin-bottom: 5px; text-transform: none; line-height: 1.1;}
         .hu-card-value { font-size: 2.2rem; font-style: italic; font-weight: 900; font-family: serif; }
@@ -169,155 +101,86 @@
         .hu-card-recusado { background: linear-gradient(90deg, #111 0%, #3e1f00 40%, #e67e22 100%); }
         .hu-card-finalizado { background: linear-gradient(90deg, #111 0%, #003b30 40%, #10e0a5 100%); }
 
-        .hu-actions-container { display: flex; justify-content: flex-end; margin-bottom: 5px; padding-right: 5px; }
-        .btn-novo-registro {
-            background: linear-gradient(to bottom, #f0f0f0, #d0d0d0); border: 1px solid #ccc;
-            padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #555;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.4); box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: filter 0.2s;
-        }
+        .hu-actions-container { display: flex; justify-content: flex-end; margin-bottom: 5px; padding-right: 5px; gap: 10px;}
+        
+        .btn-tratar-grupo { background: linear-gradient(to bottom, #004b87, #003366); border: 1px solid #003366; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: filter 0.2s; display: none; }
+        .btn-tratar-grupo:hover { filter: brightness(1.15); }
+        .dark-theme .btn-tratar-grupo { background: linear-gradient(to bottom, #3b82f6, #1d4ed8); border-color: #1e293b; }
+
+        .btn-novo-registro { background: linear-gradient(to bottom, #f0f0f0, #d0d0d0); border: 1px solid #ccc; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #555; text-shadow: 1px 1px 2px rgba(255,255,255,0.4); box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: filter 0.2s; }
         .btn-novo-registro:hover { filter: brightness(1.05); }
         .dark-theme .btn-novo-registro { background: linear-gradient(to bottom, #475569, #334155); border-color: #1e293b; color: white; text-shadow: none; }
 
         /* BARRA DE FILTROS */
-        .hu-filter-bar {
-            background-color: #d1d9e2; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px;
-            display: flex; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; font-weight: 700; color: #004b87;
-            transition: background-color 0.3s, color 0.3s;
-        }
+        .hu-filter-bar { background-color: #d1d9e2; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; font-weight: 700; color: #004b87; transition: background-color 0.3s, color 0.3s; }
         .dark-theme .hu-filter-bar { background-color: #1e293b; color: #8ca4c0; }
-
-        .hu-filter-bar input, .hu-filter-bar select {
-            padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px; font-size: 0.85rem; font-family: 'Inter', sans-serif;
-        }
+        .hu-filter-bar input, .hu-filter-bar select { padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px; font-size: 0.85rem; font-family: 'Inter', sans-serif; }
         .dark-theme .hu-filter-bar input, .dark-theme .hu-filter-bar select { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
-        .dark-theme .hu-filter-bar select option { background-color: #0f172a; color: #f1f5f9; }
-        
         .search-input-wrapper { position: relative; display: flex; align-items: center; }
         .search-input-wrapper i { position: absolute; left: 8px; color: #004b87; font-size: 0.9rem; }
         .dark-theme .search-input-wrapper i { color: #8ca4c0; }
         .search-input { width: 140px; padding-left: 25px !important; }
         .small-input { width: 70px; }
 
-        /* ESTILOS DO DROPDOWN CUSTOMIZADO */
+        /* DROPDOWNS CUSTOMIZADOS */
         .custom-dropdown-container { position: relative; display: inline-block; }
-        .custom-dropdown-list {
-            position: absolute; top: 100%; left: 0; min-width: 140px; background: #ffffff;
-            border: 1px solid #cbd5e1; border-radius: 8px; max-height: 200px; overflow-y: auto;
-            margin-top: 5px; padding: 5px 0; list-style: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            display: none; z-index: 1000;
-        }
+        .custom-dropdown-list { position: absolute; top: 100%; left: 0; min-width: 140px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 200px; overflow-y: auto; margin-top: 5px; padding: 5px 0; list-style: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: none; z-index: 1000; }
         .custom-dropdown-list.show { display: block; }
-        .custom-dropdown-list::-webkit-scrollbar { width: 6px; }
-        .custom-dropdown-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        
-        .custom-dropdown-item {
-            padding: 8px 12px; cursor: pointer; color: #555; font-weight: 600; transition: background-color 0.1s, color 0.1s;
-        }
+        .custom-dropdown-item { padding: 8px 12px; cursor: pointer; color: #555; font-weight: 600; transition: background-color 0.1s, color 0.1s; }
         .custom-dropdown-item:hover { background-color: #004b87; color: #ffffff; }
-
         .dark-theme .custom-dropdown-list { background: #0f172a; border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
-        .dark-theme .custom-dropdown-list::-webkit-scrollbar-thumb { background: #334155; }
         .dark-theme .custom-dropdown-item { color: #cbd5e1; }
         .dark-theme .custom-dropdown-item:hover { background-color: #1e293b; color: #fcd34d; }
 
-        /* MULTI-SELECT STATUS DROPDOWN */
+        /* MULTI-SELECT STATUS */
         .multi-select-container { position: relative; display: inline-block; }
-        .multi-select-display {
-            background: white; border: 1px solid #004b87; border-radius: 4px; padding: 4px 8px;
-            font-size: 0.85rem; color: #333; cursor: pointer; height: 24px; display: flex;
-            align-items: center; justify-content: space-between; width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        .multi-select-display { background: white; border: 1px solid #004b87; border-radius: 4px; padding: 4px 8px; font-size: 0.85rem; color: #333; cursor: pointer; height: 24px; display: flex; align-items: center; justify-content: space-between; width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .dark-theme .multi-select-display { background: #0f172a; border-color: #334155; color: #f1f5f9; }
-        
-        .multi-select-dropdown {
-            position: absolute; top: 100%; left: 0; min-width: 180px; background: #ffffff;
-            border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            padding: 10px; display: none; z-index: 2000; margin-top: 5px; list-style: none;
-        }
+        .multi-select-dropdown { position: absolute; top: 100%; left: 0; min-width: 180px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); padding: 10px; display: none; z-index: 2000; margin-top: 5px; list-style: none; }
         .multi-select-dropdown.show { display: block; }
         .dark-theme .multi-select-dropdown { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
-        
         .multi-select-items-box { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
-        .multi-select-items-box::-webkit-scrollbar { width: 6px; }
-        .multi-select-items-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        .dark-theme .multi-select-items-box::-webkit-scrollbar-thumb { background: #334155; }
-
-        .multi-select-item {
-            padding: 6px 8px; cursor: pointer; color: #555; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; border-radius: 4px;
-        }
+        .multi-select-item { padding: 6px 8px; cursor: pointer; color: #555; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; border-radius: 4px; }
         .multi-select-item:hover { background-color: rgba(0, 75, 135, 0.1); }
         .dark-theme .multi-select-item { color: #cbd5e1; }
         .dark-theme .multi-select-item:hover { background-color: rgba(140, 164, 192, 0.15); }
-        .multi-select-item input[type="checkbox"] { cursor: pointer; }
-
         .multi-select-footer { display: flex; justify-content: flex-end; align-items: center; margin-top: 10px; border-top: 1px solid #cbd5e1; padding-top: 8px; }
         .dark-theme .multi-select-footer { border-color: #334155; }
         .multi-select-footer button { background: none; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; padding: 4px 10px; border-radius: 4px; color: #004b87; }
         .dark-theme .multi-select-footer button { color: #60a5fa; }
-        .multi-select-footer button:hover { background: rgba(0,75,135,0.15); }
 
-        /* CALENDÁRIO CUSTOMIZADO MULTI-SELEÇÃO */
+        /* CALENDÁRIO */
         .date-picker-wrapper { position: relative; display: inline-block; }
-        .date-input-display {
-            background: white; border: 1px solid #004b87; border-radius: 4px; padding: 4px 8px;
-            font-size: 0.85rem; color: #333; cursor: pointer; height: 24px; display: flex;
-            align-items: center; justify-content: space-between; width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        .date-input-display { background: white; border: 1px solid #004b87; border-radius: 4px; padding: 4px 8px; font-size: 0.85rem; color: #333; cursor: pointer; height: 24px; display: flex; align-items: center; justify-content: space-between; width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .dark-theme .date-input-display { background: #0f172a; border-color: #334155; color: #f1f5f9; }
-
-        .calendar-popup {
-            position: absolute; top: 100%; left: 0; background: #ffffff; border: 1px solid #cbd5e1;
-            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 280px; padding: 15px;
-            display: none; z-index: 2000; margin-top: 5px;
-        }
+        .calendar-popup { position: absolute; top: 100%; left: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 280px; padding: 15px; display: none; z-index: 2000; margin-top: 5px; }
         .calendar-popup.show { display: block; }
         .dark-theme .calendar-popup { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
-
         .cal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 700; color: #004b87; margin-bottom: 12px; font-size: 0.95rem; }
         .dark-theme .cal-header { color: #8ca4c0; }
         .cal-header button { background: none; border: none; cursor: pointer; font-size: 1rem; color: #004b87; padding: 2px 8px; border-radius: 4px; }
-        .cal-header button:hover { background: rgba(0,75,135,0.1); }
         .dark-theme .cal-header button { color: #8ca4c0; }
         .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.75rem; font-weight: 700; color: #666; margin-bottom: 8px; }
-        .dark-theme .cal-weekdays { color: #94a3b8; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
         .cal-day { padding: 6px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer; border-radius: 50%; color: #333; transition: background 0.2s, color 0.2s; user-select: none; }
-        .dark-theme .cal-day { color: #f1f5f9; }
-        .cal-day:hover { background: rgba(0,75,135,0.15); }
-        .cal-day.other-month { color: #aaa; }
-        .dark-theme .cal-day.other-month { color: #475569; }
         .cal-day.selected { background-color: #004b87; color: #ffffff !important; }
-        .dark-theme .cal-day.selected { background-color: #3b82f6; }
         .cal-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid #cbd5e1; padding-top: 10px; }
-        .dark-theme .cal-footer { border-color: #334155; }
         .cal-footer button { background: none; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
         .cal-btn-clear { color: #ef4444; }
-        .cal-btn-clear:hover { background: rgba(239, 68, 68, 0.1); }
         .cal-btn-apply { color: #004b87; }
-        .dark-theme .cal-btn-apply { color: #60a5fa; }
-        .cal-btn-apply:hover { background: rgba(0,75,135,0.15); }
 
-        /* CONTAINER DA TABELA */
-        .hu-table-container {
-            background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
-            transition: background-color 0.3s, border-color 0.3s; border: 1px solid transparent; 
-        }
+        /* TABELA */
+        .hu-table-container { background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto; transition: background-color 0.3s, border-color 0.3s; border: 1px solid transparent; }
         .dark-theme .hu-table-container { background-color: #0f172a; border: 1px solid #1e293b; }
-
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
-        
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
-        
         .hu-table th:first-child { border-top-left-radius: 8px; }
         .hu-table th:last-child { border-top-right-radius: 8px; }
-        
         .hu-table th, .hu-table td { padding: 12px 10px; border-bottom: 1px solid #c0c8d1; transition: border-color 0.3s; }
         .hu-table td { color: #444; }
         .dark-theme .hu-table td { color: #cbd5e1; border-color: #1e293b; }
-        .hu-table th { font-weight: 700; }
         
-        /* Badges baseados na Imagem */
         .status-badge { padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; display: inline-block; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
         .status-pendente { background-color: #ffcccc; color: #cc0000; }
         .status-agendado { background-color: #ffcce6; color: #cc0066; }
@@ -332,70 +195,36 @@
         .dark-theme .status-recusado { background-color: rgba(255, 153, 51, 0.2); color: #ffad33; }
 
         .table-actions { display: flex; justify-content: center; gap: 8px; font-size: 1.3rem; color: #666; }
-        .dark-theme .table-actions i, .dark-theme .table-actions svg { color: #8ca4c0; fill: #8ca4c0; }
-        .table-actions i, .table-actions svg { cursor: pointer; transition: transform 0.2s; width: 20px; height: 20px; fill: #555; }
-        .table-actions i:hover, .table-actions svg:hover { transform: scale(1.1); }
+        .dark-theme .table-actions i { color: #8ca4c0; }
+        .table-actions i { cursor: pointer; transition: transform 0.2s; }
+        .table-actions i:hover { transform: scale(1.1); }
 
-        /* =========================================
-            MODAIS
-            ========================================= */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px); display: flex;
-            justify-content: center; align-items: center; z-index: 2000;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
+        /* MODAIS */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-
-        .modal-content {
-            background-color: #d1d9e2; border-radius: 20px; padding: 25px 30px; width: 380px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #aebac9;
-            transform: translateY(-20px); transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s;
-        }
+        .modal-content { background-color: #d1d9e2; border-radius: 20px; padding: 25px 30px; width: 380px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #aebac9; transform: translateY(-20px); transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
         .dark-theme .modal-content { background-color: #1e293b; border-color: #334155; }
-
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #004b87; }
         .dark-theme .modal-header { color: #8ca4c0; }
         .modal-header h2 { font-size: 1.1rem; font-weight: 900; margin-left: auto; margin-right: auto; padding-left: 24px; }
-        .modal-close { cursor: pointer; font-size: 1.2rem; font-weight: bold; transition: opacity 0.2s; }
-        .modal-close:hover { opacity: 0.6; }
-
+        .modal-close { cursor: pointer; font-size: 1.2rem; font-weight: bold; }
         .modal-body { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
-
-        .input-pill {
-            display: flex; align-items: center; border: 1px solid #004b87; border-radius: 20px;
-            padding: 6px 15px; background-color: transparent; transition: border-color 0.3s;
-            position: relative; overflow: visible;
-        }
+        .input-pill { display: flex; align-items: center; border: 1px solid #004b87; border-radius: 20px; padding: 6px 15px; background-color: transparent; position: relative; overflow: visible; }
         .dark-theme .input-pill { border-color: #8ca4c0; }
-
-        .input-prefix { font-weight: 900; color: #004b87; margin-right: 5px; font-size: 0.95rem; white-space: nowrap; }
+        .input-prefix { font-weight: 900; color: #004b87; margin-right: 5px; font-size: 0.95rem; }
         .dark-theme .input-prefix { color: #8ca4c0; }
-
-        .input-pill input, .input-pill select {
-            border: none; background: transparent; outline: none; flex: 1; color: #333;
-            font-weight: 600; font-size: 0.95rem; width: 100%; font-family: 'Inter', sans-serif;
-        }
+        .input-pill input, .input-pill select { border: none; background: transparent; outline: none; flex: 1; color: #333; font-weight: 600; font-size: 0.95rem; width: 100%; }
         .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
         .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
-
         .modal-footer { display: flex; justify-content: center; gap: 10px; }
-
-        .btn-salvar {
-            background-color: #004b87; color: white; border: none; border-radius: 20px; padding: 8px 30px;
-            font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: filter 0.2s, background-color 0.3s;
-        }
-        .btn-salvar:hover { filter: brightness(1.2); }
+        .btn-salvar { background-color: #004b87; color: white; border: none; border-radius: 20px; padding: 8px 30px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .dark-theme .btn-salvar { background: linear-gradient(to bottom, #475569, #334155); border: 1px solid #1e293b; color: #f1f5f9; }
-
+        
         .detalhes-body { font-size: 0.9rem; font-weight: 700; color: #004b87; display: flex; flex-direction: column; gap: 8px; }
         .dark-theme .detalhes-body { color: #8ca4c0; }
         .detalhes-body span { font-weight: 400; color: #333; }
         .dark-theme .detalhes-body span { color: #f1f5f9; }
-        
-        /* HISTÓRICO CSS */
         .historico-box { margin-top: 10px; border-top: 1px solid #aebac9; padding-top: 8px; }
         .dark-theme .historico-box { border-color: #334155; }
         .historico-lista { font-size: 0.8rem; font-weight: 400; margin-top: 5px; display: flex; flex-direction: column; gap: 4px; max-height: 100px; overflow-y: auto; }
@@ -458,14 +287,8 @@
     <main class="main-content">
         
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
-            <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
-                <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
-            </svg>
-            <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
-                <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
-            </svg>
+            <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path><path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path></svg>
+            <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path><path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path></svg>
         </button>
 
         <h1 class="page-title">Desvio de Rota</h1>
@@ -494,6 +317,7 @@
         </div>
 
         <div class="hu-actions-container">
+            <button class="btn-tratar-grupo" id="btn-tratar-grupo">Tratar em Grupo</button>
             <button class="btn-novo-registro">+ Novo Registro</button>
         </div>
 
@@ -527,37 +351,18 @@
                 </div>
             </div>
 
-            <!-- FILTRO DE STATUS MULTI-SELEÇÃO COM BOTÃO APLICAR -->
             <div style="display: flex; gap: 5px; align-items: center;">
                 Status 
                 <div class="multi-select-container" id="status-multi-container">
                     <div class="multi-select-display" id="status-display-btn">Todos</div>
                     <div class="multi-select-dropdown" id="status-dropdown-list">
                         <div class="multi-select-items-box">
-                            <label class="multi-select-item">
-                                <input type="checkbox" id="chk-status-todos" value="Todos" checked>
-                                Todos
-                            </label>
-                            <label class="multi-select-item">
-                                <input type="checkbox" class="chk-status" value="Pendente" checked>
-                                Pendente
-                            </label>
-                            <label class="multi-select-item">
-                                <input type="checkbox" class="chk-status" value="Agendado" checked>
-                                Agendado
-                            </label>
-                            <label class="multi-select-item">
-                                <input type="checkbox" class="chk-status" value="Aguardando Recusa" checked>
-                                Aguardando Recusa
-                            </label>
-                            <label class="multi-select-item">
-                                <input type="checkbox" class="chk-status" value="Recusado" checked>
-                                Recusado
-                            </label>
-                            <label class="multi-select-item">
-                                <input type="checkbox" class="chk-status" value="Finalizado" checked>
-                                Finalizado
-                            </label>
+                            <label class="multi-select-item"><input type="checkbox" id="chk-status-todos" value="Todos" checked> Todos</label>
+                            <label class="multi-select-item"><input type="checkbox" class="chk-status" value="Pendente" checked> Pendente</label>
+                            <label class="multi-select-item"><input type="checkbox" class="chk-status" value="Agendado" checked> Agendado</label>
+                            <label class="multi-select-item"><input type="checkbox" class="chk-status" value="Aguardando Recusa" checked> Aguardando Recusa</label>
+                            <label class="multi-select-item"><input type="checkbox" class="chk-status" value="Recusado" checked> Recusado</label>
+                            <label class="multi-select-item"><input type="checkbox" class="chk-status" value="Finalizado" checked> Finalizado</label>
                         </div>
                         <div class="multi-select-footer">
                             <button id="status-btn-aplicar">Aplicar</button>
@@ -570,21 +375,13 @@
                 <span style="font-weight: 700;">Data:</span>
                 <div class="date-picker-wrapper">
                     <div class="date-input-display" id="date-display-btn">Selecionar...</div>
-                    
                     <div class="calendar-popup" id="calendar-popup">
                         <div class="cal-header">
-                            <button id="cal-prev">&#10094;</button>
-                            <span id="cal-month-year"></span>
-                            <button id="cal-next">&#10095;</button>
+                            <button id="cal-prev">&#10094;</button><span id="cal-month-year"></span><button id="cal-next">&#10095;</button>
                         </div>
-                        <div class="cal-weekdays">
-                            <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
-                        </div>
+                        <div class="cal-weekdays"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
                         <div class="cal-grid" id="cal-grid"></div>
-                        <div class="cal-footer">
-                            <button class="cal-btn-clear" id="cal-clear">Limpar</button>
-                            <button class="cal-btn-apply" id="cal-apply">Aplicar</button>
-                        </div>
+                        <div class="cal-footer"><button class="cal-btn-clear" id="cal-clear">Limpar</button><button class="cal-btn-apply" id="cal-apply">Aplicar</button></div>
                     </div>
                 </div>
             </div>
@@ -594,7 +391,7 @@
             <table class="hu-table">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select-all-checkbox"></th>
                         <th>HU</th>
                         <th>IS</th>
                         <th>Origem</th>
@@ -606,124 +403,37 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-hu-corpo">
-                    <tr data-hu="15878526144691" data-is="74564567" data-origem="SC02" data-destino="BA01" data-desvio="MG02" data-status="Pendente" data-agendamento="" data-data-reg="27/10/2026 14:00" data-historico="Pendente - Sistema (27/10/2026 14:00)">
-                        <td><input type="checkbox"></td>
-                        <td>15878526144691</td>
-                        <td>74564567</td>
-                        <td>SC02</td>
-                        <td>BA01</td>
-                        <td>MG02</td>
-                        <td><span class="status-badge status-pendente">Pendente</span></td>
-                        <td></td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-hu="77859526454822" data-is="65114795" data-origem="SP15" data-destino="SC02" data-desvio="PE01" data-status="Agendado" data-agendamento="01/09/2026 00:00" data-data-reg="01/09/2026 00:00" data-historico="Pendente - Sistema (01/09/2026 00:00) | Agendado - Sistema (01/09/2026 00:00)">
-                        <td><input type="checkbox"></td>
-                        <td>77859526454822</td>
-                        <td>65114795</td>
-                        <td>SP15</td>
-                        <td>SC02</td>
-                        <td>PE01</td>
-                        <td><span class="status-badge status-agendado">Agendado</span></td>
-                        <td>01/09/2026 00:00</td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr data-hu="92217863644863" data-is="21875314" data-origem="PR06" data-destino="RJ10" data-desvio="SP02" data-status="Finalizado" data-agendamento="30/10/2026 10:00" data-data-reg="30/10/2026 10:00" data-historico="Pendente - Sistema (29/10/2026 14:00) | Finalizado - Sistema (30/10/2026 10:00)">
-                        <td><input type="checkbox"></td>
-                        <td>92217863644863</td>
-                        <td>21875314</td>
-                        <td>PR06</td>
-                        <td>RJ10</td>
-                        <td>SP02</td>
-                        <td><span class="status-badge status-finalizado">Finalizado</span></td>
-                        <td></td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    </tr>
+                    <!-- FIRESTORE DATA WILL LOAD HERE -->
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- MODAL DE NOVO REGISTRO -->
+    <!-- MODAIS DO SISTEMA -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Novo Registro</h2>
-                <i class="ph ph-x modal-close" id="fechar-modal-btn"></i>
-            </div>
-            
+            <div class="modal-header"><h2>Novo Registro</h2><i class="ph ph-x modal-close" id="fechar-modal-btn"></i></div>
             <div class="modal-body">
-                <div class="input-pill">
-                    <span class="input-prefix">HU:</span>
-                    <input type="text" id="input-hu">
-                </div>
-                
-                <div class="input-pill">
-                    <span class="input-prefix">IS:</span>
-                    <input type="text" id="input-is">
-                </div>
-                
-                <div class="input-pill">
-                    <span class="input-prefix">Origem:</span>
-                    <input type="text" id="modal-origem" class="custom-dropdown-input" autocomplete="off">
-                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
-                </div>
-                
-                <div class="input-pill">
-                    <span class="input-prefix">Destino:</span>
-                    <input type="text" id="modal-destino" class="custom-dropdown-input" autocomplete="off">
-                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
-                </div>
-
-                <div class="input-pill">
-                    <span class="input-prefix">Desvio:</span>
-                    <input type="text" id="modal-desvio" class="custom-dropdown-input" autocomplete="off">
-                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
-                </div>
+                <div class="input-pill"><span class="input-prefix">HU:</span><input type="text" id="input-hu"></div>
+                <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="input-is"></div>
+                <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="modal-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
+                <div class="input-pill"><span class="input-prefix">Destino:</span><input type="text" id="modal-destino" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
+                <div class="input-pill"><span class="input-prefix">Desvio:</span><input type="text" id="modal-desvio" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
             </div>
-
-            <div class="modal-footer">
-                <button class="btn-salvar" id="btn-salvar-registro">Salvar</button>
-            </div>
+            <div class="modal-footer"><button class="btn-salvar" id="btn-salvar-registro">Salvar</button></div>
         </div>
     </div>
 
-    <!-- MODAL DE DETALHES DO REGISTRO -->
     <div class="modal-overlay" id="modal-detalhes">
         <div class="modal-content" style="width: 360px;">
-            <div class="modal-header" style="color: #004b87;">
-                <h2 style="font-size: 1rem;">Detalhes do Desvio</h2>
-                <i class="ph ph-x modal-close" id="fechar-detalhes-btn"></i>
-            </div>
+            <div class="modal-header" style="color: #004b87;"><h2 style="font-size: 1rem;">Detalhes do Desvio</h2><i class="ph ph-x modal-close" id="fechar-detalhes-btn"></i></div>
             <div class="modal-body detalhes-body" id="detalhes-conteudo"></div>
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DO REGISTRO -->
     <div class="modal-overlay" id="modal-editar">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Editar Registro</h2>
-                <i class="ph ph-x modal-close" id="fechar-editar-btn"></i>
-            </div>
+            <div class="modal-header"><h2>Editar Registro</h2><i class="ph ph-x modal-close" id="fechar-editar-btn"></i></div>
             <div class="modal-body">
                 <div class="input-pill"><span class="input-prefix">HU:</span><input type="text" id="edit-hu"></div>
                 <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="edit-is"></div>
@@ -740,29 +450,18 @@
                         <option value="Finalizado">Finalizado</option>
                     </select>
                 </div>
-                
                 <div id="edit-agendamento-container" style="display: none; flex-direction: column; gap: 12px;">
-                    <div class="input-pill">
-                        <span class="input-prefix">Data Agend.:</span>
-                        <input type="date" id="edit-data-agend" style="width: 100%;">
-                    </div>
-                    <div class="input-pill">
-                        <span class="input-prefix">Hora Agend.:</span>
-                        <input type="time" id="edit-hora-agend" style="width: 100%;">
-                    </div>
+                    <div class="input-pill"><span class="input-prefix">Data Agend.:</span><input type="date" id="edit-data-agend" style="width: 100%;"></div>
+                    <div class="input-pill"><span class="input-prefix">Hora Agend.:</span><input type="time" id="edit-hora-agend" style="width: 100%;"></div>
                 </div>
             </div>
             <div class="modal-footer"><button class="btn-salvar" id="btn-atualizar-registro">Atualizar</button></div>
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMAÇÃO DE AVANÇO -->
     <div class="modal-overlay" id="modal-confirmacao-avancar">
         <div class="modal-content" style="width: 320px; text-align: center;">
-            <div class="modal-header">
-                <h2>Confirmar Ação</h2>
-                <i class="ph ph-x modal-close" id="fechar-confirmacao-btn"></i>
-            </div>
+            <div class="modal-header"><h2>Confirmar Ação</h2><i class="ph ph-x modal-close" id="fechar-confirmacao-btn"></i></div>
             <div class="modal-body" style="gap: 15px;">
                 <p style="font-weight: 600; font-size: 0.95rem; color: #333;" id="texto-confirmacao-avancar">Deseja avançar o Status para...</p>
                 <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
@@ -773,30 +472,24 @@
         </div>
     </div>
 
-    <!-- MODAL DE PREENCHER AGENDAMENTO -->
     <div class="modal-overlay" id="modal-input-agendamento">
         <div class="modal-content" style="width: 320px;">
-            <div class="modal-header">
-                <h2>Agendar Registro</h2>
-                <i class="ph ph-x modal-close" id="fechar-modal-agendamento-btn"></i>
-            </div>
+            <div class="modal-header"><h2>Agendar Registro</h2><i class="ph ph-x modal-close" id="fechar-modal-agendamento-btn"></i></div>
             <div class="modal-body">
-                <div class="input-pill">
-                    <span class="input-prefix">Data:</span>
-                    <input type="date" id="input-data-agend" style="width: 100%;">
-                </div>
-                <div class="input-pill">
-                    <span class="input-prefix">Hora:</span>
-                    <input type="time" id="input-hora-agend" style="width: 100%;">
-                </div>
+                <div class="input-pill"><span class="input-prefix">Data:</span><input type="date" id="input-data-agend" style="width: 100%;"></div>
+                <div class="input-pill"><span class="input-prefix">Hora:</span><input type="time" id="input-hora-agend" style="width: 100%;"></div>
             </div>
-            <div class="modal-footer">
-                <button class="btn-salvar" id="btn-confirmar-agendamento">Confirmar Agendamento</button>
-            </div>
+            <div class="modal-footer"><button class="btn-salvar" id="btn-confirmar-agendamento">Confirmar</button></div>
         </div>
     </div>
 
-    <script>
+    <!-- SCRIPT COM INTEGRAÇÃO FIRESTORE -->
+    <script type="module">
+        import { app } from './firebase-config.js';
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const db = getFirestore(app);
+
         // =========================================
         // LÓGICA DO TEMA E LOCALSTORAGE
         // =========================================
@@ -804,58 +497,115 @@
         const body = document.body;
 
         const currentTheme = localStorage.getItem('theme');
-        if (currentTheme) {
-            body.classList.add(currentTheme);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            body.classList.add('dark-theme');
+        if (currentTheme) { body.classList.add(currentTheme); } 
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { body.classList.add('dark-theme'); }
+
+        function checkThemeText() {
+            const txtConfirm = document.getElementById('texto-confirmacao-avancar');
+            if(txtConfirm) { txtConfirm.style.color = body.classList.contains('dark-theme') ? '#f1f5f9' : '#333'; }
         }
 
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-theme');
-            let theme = 'light-theme';
-            if (body.classList.contains('dark-theme')) {
-                theme = 'dark-theme';
-                document.getElementById('texto-confirmacao-avancar').style.color = '#f1f5f9';
-            } else {
-                document.getElementById('texto-confirmacao-avancar').style.color = '#333';
-            }
+            let theme = body.classList.contains('dark-theme') ? 'dark-theme' : 'light-theme';
             localStorage.setItem('theme', theme); 
+            checkThemeText();
         });
-
-        if (body.classList.contains('dark-theme')) {
-            document.getElementById('texto-confirmacao-avancar').style.color = '#f1f5f9';
-        }
+        checkThemeText();
 
         document.addEventListener('DOMContentLoaded', () => {
             const cdDisplay = document.getElementById('display-cd');
             const savedCD = localStorage.getItem('userCD');
-            if (savedCD) { cdDisplay.textContent = savedCD; } 
-            else { cdDisplay.textContent = 'Admin'; }
+            if (savedCD) { cdDisplay.textContent = savedCD; } else { cdDisplay.textContent = 'Admin'; }
 
             const usernameDisplay = document.getElementById('display-username');
             const savedUsername = localStorage.getItem('userName'); 
-            if (savedUsername) { usernameDisplay.textContent = savedUsername; } 
-            else { usernameDisplay.textContent = 'Usuário'; }
+            if (savedUsername) { usernameDisplay.textContent = savedUsername; } else { usernameDisplay.textContent = 'Usuário'; }
 
-            atualizarKPIs(); 
+            carregarRegistros(); 
         });
 
+        // SIDEBAR E LOGOUT
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
-        if (sidebarToggleBtn && sidebar) {
-            sidebarToggleBtn.addEventListener('click', () => { sidebar.classList.toggle('expanded'); });
+        if (sidebarToggleBtn && sidebar) { sidebarToggleBtn.addEventListener('click', () => { sidebar.classList.toggle('expanded'); }); }
+
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                localStorage.removeItem('userCD'); localStorage.removeItem('userName');
+                window.location.href = 'index.html'; 
+            });
         }
 
         // =========================================
-        // FUNÇÃO DE ATUALIZAÇÃO DOS CARDS (KPIs)
+        // CARREGAR REGISTROS DO FIRESTORE
+        // =========================================
+        const tabelaCorpo = document.getElementById('tabela-hu-corpo');
+
+        async function carregarRegistros() {
+            tabelaCorpo.innerHTML = ''; 
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "desvios_rota"));
+                
+                querySnapshot.forEach((documento) => {
+                    const dados = documento.data();
+                    const idDoBanco = documento.id; 
+                    
+                    const novaLinha = document.createElement('tr');
+                    novaLinha.setAttribute('data-db-id', idDoBanco); 
+                    novaLinha.setAttribute('data-hu', dados.hu || '');
+                    novaLinha.setAttribute('data-is', dados.is || '');
+                    novaLinha.setAttribute('data-origem', dados.origem || '');
+                    novaLinha.setAttribute('data-destino', dados.destino || '');
+                    novaLinha.setAttribute('data-desvio', dados.desvio || '');
+                    novaLinha.setAttribute('data-status', dados.status || 'Pendente');
+                    novaLinha.setAttribute('data-agendamento', dados.agendamento || '');
+                    novaLinha.setAttribute('data-data-reg', dados.dataReg || '');
+                    novaLinha.setAttribute('data-historico', dados.historico || '');
+
+                    let badgeClass = 'status-pendente';
+                    if (dados.status === 'Agendado') badgeClass = 'status-agendado';
+                    if (dados.status === 'Aguardando Recusa') badgeClass = 'status-aguardando';
+                    if (dados.status === 'Recusado') badgeClass = 'status-recusado';
+                    if (dados.status === 'Finalizado') badgeClass = 'status-finalizado';
+
+                    novaLinha.innerHTML = `
+                        <td><input type="checkbox" class="row-checkbox"></td>
+                        <td>${dados.hu}</td>
+                        <td>${dados.is}</td>
+                        <td>${dados.origem}</td>
+                        <td>${dados.destino}</td>
+                        <td>${dados.desvio}</td>
+                        <td><span class="status-badge ${badgeClass}">${dados.status}</span></td>
+                        <td>${dados.agendamento}</td>
+                        <td>
+                            <div class="table-actions">
+                                <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
+                            </div>
+                        </td>
+                    `;
+                    tabelaCorpo.appendChild(novaLinha);
+                });
+                
+                atualizarKPIs();
+                filtrarTabela();
+                verificarSelecaoLinhas();
+            } catch (error) {
+                console.error("Erro ao carregar registros: ", error);
+            }
+        }
+
+        // =========================================
+        // ATUALIZAR KPIs E SELEÇÃO DE GRUPO
         // =========================================
         function atualizarKPIs() {
             const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
-            let total = linhas.length;
-            let pendente = 0;
-            let aguardando = 0;
-            let recusado = 0;
-            let finalizado = 0;
+            let total = linhas.length, pendente = 0, aguardando = 0, recusado = 0, finalizado = 0;
 
             linhas.forEach(tr => {
                 const status = tr.getAttribute('data-status');
@@ -872,26 +622,39 @@
             document.getElementById('kpi-finalizado').textContent = finalizado;
         }
 
+        const selectAllCheckbox = document.getElementById('select-all-checkbox');
+        const btnTratarGrupo = document.getElementById('btn-tratar-grupo');
+
+        function verificarSelecaoLinhas() {
+            const selecionados = document.querySelectorAll('.row-checkbox:checked').length;
+            btnTratarGrupo.style.display = selecionados >= 2 ? 'block' : 'none';
+        }
+
+        selectAllCheckbox.addEventListener('change', () => {
+            document.querySelectorAll('.row-checkbox').forEach(cb => {
+                if (cb.closest('tr').style.display !== 'none') cb.checked = selectAllCheckbox.checked;
+            });
+            verificarSelecaoLinhas();
+        });
+
+        document.addEventListener('change', (e) => { if (e.target.classList.contains('row-checkbox')) verificarSelecaoLinhas(); });
+
         // =========================================
-        // LÓGICA DE FILTRAGEM UNIFICADA (BUSCA, ORIGEM, DESTINO, DESVIO, STATUS MULTI)
+        // FILTROS
         // =========================================
         function filtrarTabela() {
             const termoBusca = document.getElementById('filtro-busca').value.toLowerCase();
-            const filtroOrigemVal = document.getElementById('filtro-origem').value.trim().toLowerCase();
-            const filtroDestinoVal = document.getElementById('filtro-destino').value.trim().toLowerCase();
-            const filtroDesvioVal = document.getElementById('filtro-desvio').value.trim().toLowerCase();
+            const fOrigem = document.getElementById('filtro-origem').value.trim().toLowerCase();
+            const fDestino = document.getElementById('filtro-destino').value.trim().toLowerCase();
+            const fDesvio = document.getElementById('filtro-desvio').value.trim().toLowerCase();
             
             const chkTodos = document.getElementById('chk-status-todos');
             let statusSelecionados = [];
             if (!chkTodos.checked) {
-                document.querySelectorAll('.chk-status:checked').forEach(chk => {
-                    statusSelecionados.push(chk.value);
-                });
+                document.querySelectorAll('.chk-status:checked').forEach(chk => statusSelecionados.push(chk.value));
             }
 
-            const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
-
-            linhas.forEach(tr => {
+            document.querySelectorAll('#tabela-hu-corpo tr').forEach(tr => {
                 const hu = tr.getAttribute('data-hu').toLowerCase();
                 const is = tr.getAttribute('data-is').toLowerCase();
                 const origem = tr.getAttribute('data-origem').toLowerCase();
@@ -900,34 +663,20 @@
                 const status = tr.getAttribute('data-status');
 
                 const atendeBusca = !termoBusca || hu.includes(termoBusca) || is.includes(termoBusca) || origem.includes(termoBusca) || destino.includes(termoBusca) || desvio.includes(termoBusca);
-                const atendeOrigem = !filtroOrigemVal || filtroOrigemVal === 'todos' || origem === filtroOrigemVal;
-                const atendeDestino = !filtroDestinoVal || filtroDestinoVal === 'todos' || destino === filtroDestinoVal;
-                const atendeDesvio = !filtroDesvioVal || filtroDesvioVal === 'todos' || desvio === filtroDesvioVal;
+                const atendeOrigem = !fOrigem || fOrigem === 'todos' || origem === fOrigem;
+                const atendeDestino = !fDestino || fDestino === 'todos' || destino === fDestino;
+                const atendeDesvio = !fDesvio || fDesvio === 'todos' || desvio === fDesvio;
                 
-                let atendeStatus = false;
-                if (chkTodos.checked) {
-                    atendeStatus = true;
-                } else {
-                    if (statusSelecionados.includes(status)) {
-                        atendeStatus = true;
-                    } else if (statusSelecionados.includes('Pendente') && status === 'Agendado') {
-                        atendeStatus = true;
-                    }
-                }
+                let atendeStatus = chkTodos.checked || statusSelecionados.includes(status) || (statusSelecionados.includes('Pendente') && status === 'Agendado');
 
-                if (atendeBusca && atendeOrigem && atendeDestino && atendeDesvio && atendeStatus) {
-                    tr.style.display = '';
-                } else {
-                    tr.style.display = 'none';
-                }
+                tr.style.display = (atendeBusca && atendeOrigem && atendeDestino && atendeDesvio && atendeStatus) ? '' : 'none';
             });
+            verificarSelecaoLinhas();
         }
 
         document.getElementById('filtro-busca').addEventListener('input', filtrarTabela);
 
-        // =========================================
-        // LÓGICA DE CLIQUE NOS CARDS KPI (FILTRAGEM DIRETA)
-        // =========================================
+        // CLIQUE NOS CARDS KPI
         function selecionarStatusUnico(statusAlvo) {
             const chkTodos = document.getElementById('chk-status-todos');
             const chksStatus = document.querySelectorAll('.chk-status');
@@ -937,457 +686,82 @@
                 chksStatus.forEach(chk => chk.checked = false);
             } else {
                 chkTodos.checked = false;
-                chksStatus.forEach(chk => {
-                    if (chk.value === statusAlvo) {
-                        chk.checked = true;
-                    } else {
-                        chk.checked = false;
-                    }
-                });
+                chksStatus.forEach(chk => chk.checked = (chk.value === statusAlvo));
             }
             atualizarTextoStatus();
             filtrarTabela();
         }
-
         document.getElementById('card-kpi-total').addEventListener('click', () => selecionarStatusUnico(null));
         document.getElementById('card-kpi-pendente').addEventListener('click', () => selecionarStatusUnico('Pendente'));
         document.getElementById('card-kpi-aguardando').addEventListener('click', () => selecionarStatusUnico('Aguardando Recusa'));
         document.getElementById('card-kpi-recusado').addEventListener('click', () => selecionarStatusUnico('Recusado'));
         document.getElementById('card-kpi-finalizado').addEventListener('click', () => selecionarStatusUnico('Finalizado'));
 
-        // =========================================
-        // LÓGICA DO DROPDOWN MULTI-SELECT DE STATUS COM BOTÃO APLICAR
-        // =========================================
+        // DROPDOWN MULTI-SELECT STATUS
         const statusDisplayBtn = document.getElementById('status-display-btn');
         const statusDropdownList = document.getElementById('status-dropdown-list');
         const chkStatusTodos = document.getElementById('chk-status-todos');
         const chksStatus = document.querySelectorAll('.chk-status');
-        const statusBtnAplicar = document.getElementById('status-btn-aplicar');
 
-        statusDisplayBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            statusDropdownList.classList.toggle('show');
-        });
-
-        window.addEventListener('click', (e) => {
-            if (!document.getElementById('status-multi-container').contains(e.target)) {
-                statusDropdownList.classList.remove('show');
-            }
-        });
+        statusDisplayBtn.addEventListener('click', (e) => { e.stopPropagation(); statusDropdownList.classList.toggle('show'); });
+        window.addEventListener('click', (e) => { if (!document.getElementById('status-multi-container').contains(e.target)) statusDropdownList.classList.remove('show'); });
 
         function atualizarTextoStatus() {
-            if (chkStatusTodos.checked) {
-                statusDisplayBtn.textContent = 'Todos';
-                return;
-            }
+            if (chkStatusTodos.checked) { statusDisplayBtn.textContent = 'Todos'; return; }
             const marcados = document.querySelectorAll('.chk-status:checked');
-            if (marcados.length === 0) {
-                statusDisplayBtn.textContent = 'Nenhum';
-            } else if (marcados.length === 1) {
-                statusDisplayBtn.textContent = marcados[0].value;
-            } else {
-                statusDisplayBtn.textContent = `${marcados.length} selecionados`;
-            }
+            if (marcados.length === 0) statusDisplayBtn.textContent = 'Nenhum';
+            else if (marcados.length === 1) statusDisplayBtn.textContent = marcados[0].value;
+            else statusDisplayBtn.textContent = `${marcados.length} selecionados`;
         }
 
-        chkStatusTodos.addEventListener('change', () => {
-            if (chkStatusTodos.checked) {
-                chksStatus.forEach(chk => chk.checked = false);
-            }
-        });
+        chkStatusTodos.addEventListener('change', () => { if (chkStatusTodos.checked) chksStatus.forEach(chk => chk.checked = false); });
+        chksStatus.forEach(chk => { chk.addEventListener('change', () => { chkStatusTodos.checked = document.querySelectorAll('.chk-status:checked').length === 0; }); });
+        document.getElementById('status-btn-aplicar').addEventListener('click', (e) => { e.stopPropagation(); atualizarTextoStatus(); filtrarTabela(); statusDropdownList.classList.remove('show'); });
 
-        chksStatus.forEach(chk => {
-            chk.addEventListener('change', () => {
-                const totalMarcados = document.querySelectorAll('.chk-status:checked').length;
-                if (totalMarcados > 0) {
-                    chkStatusTodos.checked = false;
+        // =========================================
+        // DROPDOWNS CUSTOMIZADOS (CDs)
+        // =========================================
+        const listaCDs = ["Todos", "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", "BRMG01", "BRMG02", "BRMG03", "BRMG04", "BRMS01", "BRPE01", "BRPR01", "BRPR04", "BRRC01", "BRRC02", "BRRC03", "BRRC04", "BRRC05", "BRRJ01", "BRRJ02", "BRRS01", "BRRS03", "BRRS04", "BRSC02", "BRSP02", "BRSP03", "BRSP04", "BRSP05", "BRSP06", "BRSP09", "BRSP10", "BRSP11", "BRSP14", "BRSP15", "BRSP18", "BRSP19", "BRSP21", "BRSP23", "BRSP24", "BRSP25", "BRSP26", "BRSP27", "BRSP28", "BRSP29", "BRSP30", "BRSP31", "BRSP33", "BRSP34", "BRSP35", "BRSP38", "BRSP51", "BRSP52", "BRSP53", "BRSP55"];
+
+        document.querySelectorAll('.custom-dropdown-input').forEach(input => {
+            const listElement = input.nextElementSibling;
+            const renderList = (filterText = '') => {
+                listElement.innerHTML = '';
+                const filtrados = listaCDs.filter(cd => cd.toLowerCase().includes(filterText.toLowerCase()));
+                if (filtrados.length === 0) {
+                    listElement.innerHTML = `<li class="custom-dropdown-item" style="pointer-events:none;color:#999;">Não encontrado</li>`;
                 } else {
-                    chkStatusTodos.checked = true;
+                    filtrados.forEach(cd => {
+                        const li = document.createElement('li'); li.className = 'custom-dropdown-item'; li.textContent = cd;
+                        li.addEventListener('mousedown', () => { input.value = cd === 'Todos' ? '' : cd; listElement.classList.remove('show'); filtrarTabela(); });
+                        listElement.appendChild(li);
+                    });
                 }
-            });
-        });
-
-        // O filtro só é aplicado na tabela e o dropdown fecha quando clica no botão "Aplicar"
-        statusBtnAplicar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            atualizarTextoStatus();
-            filtrarTabela();
-            statusDropdownList.classList.remove('show');
+            };
+            input.addEventListener('focus', () => { renderList(input.value); listElement.classList.add('show'); });
+            input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); filtrarTabela(); });
+            input.addEventListener('blur', () => { setTimeout(() => listElement.classList.remove('show'), 150); filtrarTabela(); });
         });
 
         // =========================================
-        // LÓGICA DOS MODAIS
-        // =========================================
-        const btnAbrirModal = document.querySelector('.btn-novo-registro');
-        const modalOverlay = document.getElementById('modal-novo-registro');
-        const btnFecharModal = document.getElementById('fechar-modal-btn');
-        const modalDesvioInput = document.getElementById('modal-desvio'); 
-        const btnSalvarRegistro = document.getElementById('btn-salvar-registro');
-        const tabelaCorpo = document.getElementById('tabela-hu-corpo');
-
-        const modalConfirmacao = document.getElementById('modal-confirmacao-avancar');
-        const btnFecharConfirmacao = document.getElementById('fechar-confirmacao-btn');
-        const textoConfirmacao = document.getElementById('texto-confirmacao-avancar');
-        const btnConfirmarSim = document.getElementById('btn-confirmar-sim');
-        const btnConfirmarNao = document.getElementById('btn-confirmar-nao');
-
-        const modalAgendamento = document.getElementById('modal-input-agendamento');
-        const btnFecharAgendamento = document.getElementById('fechar-modal-agendamento-btn');
-        const btnConfirmarAgendamento = document.getElementById('btn-confirmar-agendamento');
-
-        let linhaEmEdicao = null;
-        let linhaParaAvancar = null;
-        let statusParaAvancar = '';
-
-        btnAbrirModal.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
-            const savedCD = localStorage.getItem('userCD');
-            if (savedCD) modalDesvioInput.value = savedCD;
-        });
-        
-        btnFecharModal.addEventListener('click', () => modalOverlay.classList.remove('active'));
-        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
-
-        const modalDetalhes = document.getElementById('modal-detalhes');
-        const btnFecharDetalhes = document.getElementById('fechar-detalhes-btn');
-        const detalhesConteudo = document.getElementById('detalhes-conteudo');
-        
-        const modalEditar = document.getElementById('modal-editar');
-        const btnFecharEditar = document.getElementById('fechar-editar-btn');
-        const btnAtualizarRegistro = document.getElementById('btn-atualizar-registro');
-        const editStatusSelect = document.getElementById('edit-status');
-        const editAgendamentoContainer = document.getElementById('edit-agendamento-container');
-
-        editStatusSelect.addEventListener('change', () => {
-            if (editStatusSelect.value === 'Agendado') {
-                editAgendamentoContainer.style.display = 'flex';
-            } else {
-                editAgendamentoContainer.style.display = 'none';
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.btn-detalhes') || e.target.classList.contains('btn-detalhes')) {
-                const tr = e.target.closest('tr');
-                const hu = tr.getAttribute('data-hu');
-                const is = tr.getAttribute('data-is');
-                const origem = tr.getAttribute('data-origem');
-                const destino = tr.getAttribute('data-destino');
-                const desvio = tr.getAttribute('data-desvio');
-                const status = tr.getAttribute('data-status');
-                const agendamento = tr.getAttribute('data-agendamento');
-                
-                const historico = tr.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
-
-                let agendamentoHtml = '';
-                if (status === 'Agendado' && agendamento) {
-                    agendamentoHtml = `<div>Data/Agendamento: <span style="font-weight:400;">${agendamento}</span></div>`;
-                }
-
-                let htmlDetalhes = `
-                    <div>Status: <span style="font-weight:400;">${status}</span></div>
-                    <div>HU: <span style="font-weight:400;">${hu}</span></div>
-                    <div>IS: <span style="font-weight:400;">${is}</span></div>
-                    <div>Origem: <span style="font-weight:400;">${origem}</span></div>
-                    <div>Destino: <span style="font-weight:400;">${destino}</span></div>
-                    <div>Desvio: <span style="font-weight:400;">${desvio}</span></div>
-                    ${agendamentoHtml}
-                `;
-                
-                htmlDetalhes += `<div class="historico-box">Histórico:<div class="historico-lista">`;
-                historico.split(' | ').forEach(item => { htmlDetalhes += `<div>• ${item}</div>`; });
-                htmlDetalhes += `</div></div>`;
-
-                detalhesConteudo.innerHTML = htmlDetalhes;
-                modalDetalhes.classList.add('active');
-            }
-
-            if (e.target.classList.contains('btn-editar')) {
-                linhaEmEdicao = e.target.closest('tr');
-                document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
-                document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
-                document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
-                document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
-                document.getElementById('edit-desvio').value = linhaEmEdicao.getAttribute('data-desvio');
-                
-                const statusAtual = linhaEmEdicao.getAttribute('data-status');
-                editStatusSelect.value = statusAtual;
-
-                if (statusAtual === 'Agendado') {
-                    editAgendamentoContainer.style.display = 'flex';
-                    const agendamentoStr = linhaEmEdicao.getAttribute('data-agendamento'); 
-                    if (agendamentoStr && agendamentoStr.includes(' ')) {
-                        const [dataPt, horaPt] = agendamentoStr.split(' ');
-                        const [dia, mes, ano] = dataPt.split('/');
-                        document.getElementById('edit-data-agend').value = `${ano}-${mes}-${dia}`;
-                        document.getElementById('edit-hora-agend').value = horaPt;
-                    } else {
-                        document.getElementById('edit-data-agend').value = '';
-                        document.getElementById('edit-hora-agend').value = '';
-                    }
-                } else {
-                    editAgendamentoContainer.style.display = 'none';
-                    document.getElementById('edit-data-agend').value = '';
-                    document.getElementById('edit-hora-agend').value = '';
-                }
-
-                modalEditar.classList.add('active');
-            }
-
-            if (e.target.classList.contains('btn-avancar')) {
-                const tr = e.target.closest('tr');
-                const statusAtual = tr.getAttribute('data-status');
-                let novoStatus = '';
-
-                if (statusAtual === 'Pendente') novoStatus = 'Agendado';
-                else if (statusAtual === 'Agendado') novoStatus = 'Aguardando Recusa';
-                else if (statusAtual === 'Aguardando Recusa') novoStatus = 'Recusado';
-                else if (statusAtual === 'Recusado') novoStatus = 'Finalizado';
-
-                if (novoStatus) {
-                    linhaParaAvancar = tr;
-                    statusParaAvancar = novoStatus;
-                    
-                    if (novoStatus === 'Agendado') {
-                        modalAgendamento.classList.add('active');
-                    } else {
-                        textoConfirmacao.textContent = `Deseja avançar o Status para ${novoStatus}?`;
-                        modalConfirmacao.classList.add('active');
-                    }
-                }
-            }
-        });
-
-        btnFecharDetalhes.addEventListener('click', () => modalDetalhes.classList.remove('active'));
-        modalDetalhes.addEventListener('click', (e) => { if (e.target === modalDetalhes) modalDetalhes.classList.remove('active'); });
-        
-        btnFecharEditar.addEventListener('click', () => modalEditar.classList.remove('active'));
-        modalEditar.addEventListener('click', (e) => { if (e.target === modalEditar) modalEditar.classList.remove('active'); });
-
-        btnFecharConfirmacao.addEventListener('click', () => modalConfirmacao.classList.remove('active'));
-        btnConfirmarNao.addEventListener('click', () => modalConfirmacao.classList.remove('active'));
-        modalConfirmacao.addEventListener('click', (e) => { if (e.target === modalConfirmacao) modalConfirmacao.classList.remove('active'); });
-
-        btnFecharAgendamento.addEventListener('click', () => modalAgendamento.classList.remove('active'));
-        modalAgendamento.addEventListener('click', (e) => { if (e.target === modalAgendamento) modalAgendamento.classList.remove('active'); });
-
-        btnConfirmarAgendamento.addEventListener('click', () => {
-            if (linhaParaAvancar) {
-                const dataVal = document.getElementById('input-data-agend').value;
-                const horaVal = document.getElementById('input-hora-agend').value;
-                if (!dataVal || !horaVal) {
-                    alert('É obrigatório preencher a data e o horário para agendar.');
-                    return;
-                }
-                const dParts = dataVal.split('-');
-                const agendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaVal}`;
-                
-                linhaParaAvancar.setAttribute('data-agendamento', agendamentoFormatado);
-                linhaParaAvancar.cells[7].textContent = agendamentoFormatado; 
-
-                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-                const agora = new Date();
-                const dataFormatadaHist = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-                
-                linhaParaAvancar.setAttribute('data-status', 'Agendado');
-                
-                let historicoAtual = linhaParaAvancar.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
-                historicoAtual += ` | Agendado - ${usuarioLogado} (${dataFormatadaHist})`;
-                linhaParaAvancar.setAttribute('data-historico', historicoAtual);
-                
-                linhaParaAvancar.cells[6].innerHTML = `<span class="status-badge status-agendado">Agendado</span>`;
-                
-                atualizarKPIs();
-            }
-            modalAgendamento.classList.remove('active');
-            document.getElementById('input-data-agend').value = '';
-            document.getElementById('input-hora-agend').value = '';
-            linhaParaAvancar = null;
-            statusParaAvancar = '';
-        });
-
-        btnConfirmarSim.addEventListener('click', () => {
-            if (linhaParaAvancar && statusParaAvancar) {
-                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-                const agora = new Date();
-                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-                
-                linhaParaAvancar.setAttribute('data-status', statusParaAvancar);
-                
-                let historicoAtual = linhaParaAvancar.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
-                historicoAtual += ` | ${statusParaAvancar} - ${usuarioLogado} (${dataFormatada})`;
-                linhaParaAvancar.setAttribute('data-historico', historicoAtual);
-                
-                let badgeClass = 'status-pendente';
-                if (statusParaAvancar === 'Agendado') badgeClass = 'status-agendado';
-                if (statusParaAvancar === 'Aguardando Recusa') badgeClass = 'status-aguardando';
-                if (statusParaAvancar === 'Recusado') badgeClass = 'status-recusado';
-                if (statusParaAvancar === 'Finalizado') badgeClass = 'status-finalizado';
-                
-                linhaParaAvancar.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${statusParaAvancar}</span>`;
-                
-                if (statusParaAvancar !== 'Agendado') {
-                    linhaParaAvancar.setAttribute('data-agendamento', '');
-                    linhaParaAvancar.cells[7].textContent = '';
-                }
-
-                atualizarKPIs();
-            }
-            modalConfirmacao.classList.remove('active');
-            linhaParaAvancar = null;
-            statusParaAvancar = '';
-        });
-
-        btnAtualizarRegistro.addEventListener('click', () => {
-            if (!linhaEmEdicao) return;
-            
-            const novoStatus = editStatusSelect.value;
-            let agendamentoFormatado = linhaEmEdicao.getAttribute('data-agendamento') || '';
-
-            if (novoStatus === 'Agendado') {
-                const dataVal = document.getElementById('edit-data-agend').value;
-                const horaVal = document.getElementById('edit-hora-agend').value;
-                if (!dataVal || !horaVal) {
-                    alert('É obrigatório preencher a data e a hora do agendamento.');
-                    return;
-                }
-                const dParts = dataVal.split('-');
-                agendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaVal}`;
-            } else {
-                agendamentoFormatado = '';
-            }
-
-            linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value.trim());
-            linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value.trim());
-            linhaEmEdicao.setAttribute('data-origem', document.getElementById('edit-origem').value.trim());
-            linhaEmEdicao.setAttribute('data-destino', document.getElementById('edit-destino').value.trim());
-            linhaEmEdicao.setAttribute('data-desvio', document.getElementById('edit-desvio').value.trim());
-            linhaEmEdicao.setAttribute('data-agendamento', agendamentoFormatado);
-            
-            const statusAntigo = linhaEmEdicao.getAttribute('data-status');
-            linhaEmEdicao.setAttribute('data-status', novoStatus);
-            
-            if (novoStatus !== statusAntigo) {
-                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-                const agora = new Date();
-                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-                
-                let historicoAtual = linhaEmEdicao.getAttribute('data-historico') || 'Pendente - Sistema (Histórico inicial)';
-                historicoAtual += ` | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`;
-                linhaEmEdicao.setAttribute('data-historico', historicoAtual);
-            }
-            
-            linhaEmEdicao.cells[1].textContent = document.getElementById('edit-hu').value;
-            linhaEmEdicao.cells[2].textContent = document.getElementById('edit-is').value;
-            linhaEmEdicao.cells[3].textContent = document.getElementById('edit-origem').value;
-            linhaEmEdicao.cells[4].textContent = document.getElementById('edit-destino').value;
-            linhaEmEdicao.cells[5].textContent = document.getElementById('edit-desvio').value;
-            
-            let badgeClass = 'status-pendente';
-            if (novoStatus === 'Agendado') badgeClass = 'status-agendado';
-            if (novoStatus === 'Aguardando Recusa') badgeClass = 'status-aguardando';
-            if (novoStatus === 'Recusado') badgeClass = 'status-recusado';
-            if (novoStatus === 'Finalizado') badgeClass = 'status-finalizado';
-            
-            linhaEmEdicao.cells[6].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
-            linhaEmEdicao.cells[7].textContent = agendamentoFormatado;
-
-            modalEditar.classList.remove('active');
-            linhaEmEdicao = null;
-            atualizarKPIs();
-        });
-
-        btnSalvarRegistro.addEventListener('click', () => {
-            const hu = document.getElementById('input-hu').value.trim();
-            const is = document.getElementById('input-is').value.trim();
-            const origem = document.getElementById('modal-origem').value.trim();
-            const destino = document.getElementById('modal-destino').value.trim();
-            const desvio = document.getElementById('modal-desvio').value.trim();
-
-            if (!hu || !is || !origem || !destino || !desvio) {
-                alert('Preencha os campos obrigatórios.');
-                return;
-            }
-
-            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-            const agora = new Date();
-            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-
-            const novaLinha = document.createElement('tr');
-            novaLinha.setAttribute('data-hu', hu);
-            novaLinha.setAttribute('data-is', is);
-            novaLinha.setAttribute('data-origem', origem);
-            novaLinha.setAttribute('data-destino', destino);
-            novaLinha.setAttribute('data-desvio', desvio);
-            novaLinha.setAttribute('data-status', 'Pendente');
-            novaLinha.setAttribute('data-agendamento', ''); 
-            novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
-
-            novaLinha.innerHTML = `
-                <td><input type="checkbox"></td>
-                <td>${hu}</td>
-                <td>${is}</td>
-                <td>${origem}</td>
-                <td>${destino}</td>
-                <td>${desvio}</td>
-                <td><span class="status-badge status-pendente">Pendente</span></td>
-                <td></td>
-                <td>
-                    <div class="table-actions">
-                        <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                        <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
-                        <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
-                    </div>
-                </td>
-            `;
-
-            tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
-            modalOverlay.classList.remove('active');
-            
-            document.getElementById('input-hu').value = '';
-            document.getElementById('input-is').value = '';
-            document.getElementById('modal-origem').value = '';
-            document.getElementById('modal-destino').value = '';
-            document.getElementById('modal-desvio').value = '';
-
-            atualizarKPIs(); 
-        });
-
-        // =========================================
-        // LÓGICA DO CALENDÁRIO MULTI-SELEÇÃO
+        // CALENDÁRIO MULTI-SELEÇÃO
         // =========================================
         const dateDisplayBtn = document.getElementById('date-display-btn');
         const calendarPopup = document.getElementById('calendar-popup');
         const calGrid = document.getElementById('cal-grid');
         const calMonthYear = document.getElementById('cal-month-year');
-        const calPrev = document.getElementById('cal-prev');
-        const calNext = document.getElementById('cal-next');
-        const calClear = document.getElementById('cal-clear');
-        const calApply = document.getElementById('cal-apply');
-
-        let currentMonth = 8; 
-        let currentYear = 2026;
-        let selectedDates = new Set();
+        let currentMonth = 8, currentYear = 2026, selectedDates = new Set();
         const monthsNames = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
         function renderCalendar(month, year) {
-            calGrid.innerHTML = '';
-            calMonthYear.textContent = `${monthsNames[month]} de ${year}`;
+            calGrid.innerHTML = ''; calMonthYear.textContent = `${monthsNames[month]} de ${year}`;
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDays = new Date(year, month + 1, 0).getDate();
             const prevTotalDays = new Date(year, month, 0).getDate();
 
-            for (let i = firstDayIndex; i > 0; i--) {
-                const div = document.createElement('div');
-                div.className = 'cal-day other-month';
-                div.textContent = prevTotalDays - i + 1;
-                calGrid.appendChild(div);
-            }
-
+            for (let i = firstDayIndex; i > 0; i--) { const div = document.createElement('div'); div.className = 'cal-day other-month'; div.textContent = prevTotalDays - i + 1; calGrid.appendChild(div); }
             for (let i = 1; i <= totalDays; i++) {
-                const div = document.createElement('div');
-                div.className = 'cal-day';
-                div.textContent = i;
+                const div = document.createElement('div'); div.className = 'cal-day'; div.textContent = i;
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 if (selectedDates.has(dateStr)) div.classList.add('selected');
                 div.addEventListener('click', () => {
@@ -1397,12 +771,11 @@
                 calGrid.appendChild(div);
             }
         }
-
         dateDisplayBtn.addEventListener('click', (e) => { e.stopPropagation(); calendarPopup.classList.toggle('show'); renderCalendar(currentMonth, currentYear); });
-        calPrev.addEventListener('click', (e) => { e.stopPropagation(); currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(currentMonth, currentYear); });
-        calNext.addEventListener('click', (e) => { e.stopPropagation(); currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(currentMonth, currentYear); });
-        calClear.addEventListener('click', (e) => { e.stopPropagation(); selectedDates.clear(); renderCalendar(currentMonth, currentYear); dateDisplayBtn.textContent = "Selecionar..."; });
-        calApply.addEventListener('click', (e) => {
+        document.getElementById('cal-prev').addEventListener('click', (e) => { e.stopPropagation(); currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(currentMonth, currentYear); });
+        document.getElementById('cal-next').addEventListener('click', (e) => { e.stopPropagation(); currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(currentMonth, currentYear); });
+        document.getElementById('cal-clear').addEventListener('click', (e) => { e.stopPropagation(); selectedDates.clear(); renderCalendar(currentMonth, currentYear); dateDisplayBtn.textContent = "Selecionar..."; });
+        document.getElementById('cal-apply').addEventListener('click', (e) => {
             e.stopPropagation();
             if (selectedDates.size === 0) dateDisplayBtn.textContent = "Selecionar...";
             else if (selectedDates.size === 1) dateDisplayBtn.textContent = Array.from(selectedDates)[0];
@@ -1412,77 +785,210 @@
         window.addEventListener('click', (e) => { if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) calendarPopup.classList.remove('show'); });
 
         // =========================================
-        // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs COM "TODOS")
+        // SALVAR NOVO REGISTRO NO FIRESTORE
         // =========================================
-        const listaCDs = [
-            "Todos",
-            "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", 
-            "BRMG01", "BRMG02", "BRMG03", "BRMG04", "BRMS01", "BRPE01", 
-            "BRPR01", "BRPR04", "BRRC01", "BRRC02", "BRRC03", "BRRC04", 
-            "BRRC05", "BRRJ01", "BRRJ02", "BRRS01", "BRRS03", "BRRS04", 
-            "BRSC02", "BRSP02", "BRSP03", "BRSP04", "BRSP05", "BRSP06", 
-            "BRSP09", "BRSP10", "BRSP11", "BRSP14", "BRSP15", "BRSP18", 
-            "BRSP19", "BRSP21", "BRSP23", "BRSP24", "BRSP25", "BRSP26", 
-            "BRSP27", "BRSP28", "BRSP29", "BRSP30", "BRSP31", "BRSP33", 
-            "BRSP34", "BRSP35", "BRSP38", "BRSP51", "BRSP52", "BRSP53", 
-            "BRSP55"
-        ];
+        const btnAbrirModal = document.querySelector('.btn-novo-registro');
+        const modalOverlay = document.getElementById('modal-novo-registro');
+        btnAbrirModal.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+            const savedCD = localStorage.getItem('userCD');
+            if (savedCD) document.getElementById('modal-desvio').value = savedCD;
+        });
+        document.getElementById('fechar-modal-btn').addEventListener('click', () => modalOverlay.classList.remove('active'));
 
-        document.querySelectorAll('.custom-dropdown-input').forEach(input => {
-            const listElement = input.nextElementSibling;
-            const renderList = (filterText = '') => {
-                listElement.innerHTML = '';
-                const txt = filterText.toLowerCase();
-                const filtrados = listaCDs.filter(cd => cd.toLowerCase().includes(txt));
-                if (filtrados.length === 0) {
-                    const li = document.createElement('li');
-                    li.textContent = 'Não encontrado';
-                    li.className = 'custom-dropdown-item';
-                    li.style.pointerEvents = 'none'; li.style.color = '#999';
-                    listElement.appendChild(li);
-                } else {
-                    filtrados.forEach(cd => {
-                        const li = document.createElement('li');
-                        li.textContent = cd;
-                        li.className = 'custom-dropdown-item';
-                        li.addEventListener('mousedown', () => { 
-                            input.value = cd === 'Todos' ? '' : cd; 
-                            listElement.classList.remove('show'); 
-                            filtrarTabela();
-                        });
-                        listElement.appendChild(li);
-                    });
-                }
-            };
-            input.addEventListener('focus', () => { renderList(input.value); listElement.classList.add('show'); });
-            input.addEventListener('input', (e) => { 
-                renderList(e.target.value); 
-                listElement.classList.add('show'); 
-                filtrarTabela(); 
-            });
-            input.addEventListener('blur', () => { 
-                setTimeout(() => listElement.classList.remove('show'), 150); 
-                filtrarTabela();
-            });
+        document.getElementById('btn-salvar-registro').addEventListener('click', async () => {
+            const hu = document.getElementById('input-hu').value.trim();
+            const is = document.getElementById('input-is').value.trim();
+            const origem = document.getElementById('modal-origem').value.trim();
+            const destino = document.getElementById('modal-destino').value.trim();
+            const desvio = document.getElementById('modal-desvio').value.trim();
+            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+
+            if (!hu || !is || !origem || !destino || !desvio) {
+                alert('Preencha os campos obrigatórios.'); return;
+            }
+
+            const agora = new Date();
+            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+
+            try {
+                await addDoc(collection(db, "desvios_rota"), {
+                    hu: hu, is: is, origem: origem, destino: destino, desvio: desvio,
+                    status: 'Pendente', agendamento: '', dataReg: dataFormatada,
+                    historico: `Pendente - ${usuarioLogado} (${dataFormatada})`
+                });
+
+                modalOverlay.classList.remove('active');
+                document.getElementById('input-hu').value = '';
+                document.getElementById('input-is').value = '';
+                document.getElementById('modal-origem').value = '';
+                document.getElementById('modal-destino').value = '';
+                document.getElementById('modal-desvio').value = '';
+                carregarRegistros();
+            } catch (e) {
+                console.error("Erro ao salvar:", e); alert("Erro de conexão.");
+            }
         });
 
         // =========================================
-        // LÓGICA DE LOGOUT (SAIR)
+        // ATUALIZAR STATUS E EDITAR NO FIRESTORE
         // =========================================
-        const logoutBtn = document.getElementById('logout-btn');
+        const modalConfirmacao = document.getElementById('modal-confirmacao-avancar');
+        const modalAgendamento = document.getElementById('modal-input-agendamento');
+        const modalDetalhes = document.getElementById('modal-detalhes');
+        const modalEditar = document.getElementById('modal-editar');
+        let linhaProcesso = null, statusAlvo = '';
 
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function(e) {
-                e.preventDefault(); // Evita que a página pule para o topo devido ao href="#"
+        document.getElementById('fechar-confirmacao-btn').addEventListener('click', () => modalConfirmacao.classList.remove('active'));
+        document.getElementById('fechar-modal-agendamento-btn').addEventListener('click', () => modalAgendamento.classList.remove('active'));
+        document.getElementById('fechar-detalhes-btn').addEventListener('click', () => modalDetalhes.classList.remove('active'));
+        document.getElementById('fechar-editar-btn').addEventListener('click', () => modalEditar.classList.remove('active'));
+        
+        document.getElementById('btn-confirmar-nao').addEventListener('click', () => modalConfirmacao.classList.remove('active'));
+
+        document.addEventListener('click', (e) => {
+            // DETALHES
+            if (e.target.classList.contains('btn-detalhes')) {
+                const tr = e.target.closest('tr');
+                let html = `<div>Status: <span style="font-weight:400;">${tr.getAttribute('data-status')}</span></div>
+                            <div>HU: <span style="font-weight:400;">${tr.getAttribute('data-hu')}</span></div>
+                            <div>IS: <span style="font-weight:400;">${tr.getAttribute('data-is')}</span></div>
+                            <div>Origem: <span style="font-weight:400;">${tr.getAttribute('data-origem')}</span></div>
+                            <div>Destino: <span style="font-weight:400;">${tr.getAttribute('data-destino')}</span></div>
+                            <div>Desvio: <span style="font-weight:400;">${tr.getAttribute('data-desvio')}</span></div>`;
+                if (tr.getAttribute('data-status') === 'Agendado' && tr.getAttribute('data-agendamento')) {
+                    html += `<div>Data/Agendamento: <span style="font-weight:400;">${tr.getAttribute('data-agendamento')}</span></div>`;
+                }
+                html += `<div class="historico-box">Histórico:<div class="historico-lista">`;
+                (tr.getAttribute('data-historico')||'').split(' | ').forEach(item => { html += `<div>• ${item}</div>`; });
+                html += `</div></div>`;
+                document.getElementById('detalhes-conteudo').innerHTML = html;
+                modalDetalhes.classList.add('active');
+            }
+
+            // AVANÇAR STATUS
+            if (e.target.classList.contains('btn-avancar')) {
+                linhaProcesso = e.target.closest('tr');
+                const sAtual = linhaProcesso.getAttribute('data-status');
+                if (sAtual === 'Pendente') statusAlvo = 'Agendado';
+                else if (sAtual === 'Agendado') statusAlvo = 'Aguardando Recusa';
+                else if (sAtual === 'Aguardando Recusa') statusAlvo = 'Recusado';
+                else if (sAtual === 'Recusado') statusAlvo = 'Finalizado';
+                else statusAlvo = '';
+
+                if (statusAlvo) {
+                    if (statusAlvo === 'Agendado') modalAgendamento.classList.add('active');
+                    else {
+                        document.getElementById('texto-confirmacao-avancar').textContent = `Deseja avançar o Status para ${statusAlvo}?`;
+                        modalConfirmacao.classList.add('active');
+                    }
+                }
+            }
+
+            // EDITAR (Abrir)
+            if (e.target.classList.contains('btn-editar')) {
+                linhaProcesso = e.target.closest('tr');
+                document.getElementById('edit-hu').value = linhaProcesso.getAttribute('data-hu');
+                document.getElementById('edit-is').value = linhaProcesso.getAttribute('data-is');
+                document.getElementById('edit-origem').value = linhaProcesso.getAttribute('data-origem');
+                document.getElementById('edit-destino').value = linhaProcesso.getAttribute('data-destino');
+                document.getElementById('edit-desvio').value = linhaProcesso.getAttribute('data-desvio');
                 
-                // Opcional: Limpar os dados do usuário do localStorage ao sair
-                // localStorage.removeItem('userName');
-                // localStorage.removeItem('userCD');
-                
-                // Redirecionar para a página de login
-                window.location.href = 'index.html'; 
-            });
+                const sAtual = linhaProcesso.getAttribute('data-status');
+                document.getElementById('edit-status').value = sAtual;
+
+                const editAgend = document.getElementById('edit-agendamento-container');
+                if (sAtual === 'Agendado') {
+                    editAgend.style.display = 'flex';
+                    const ag = linhaProcesso.getAttribute('data-agendamento');
+                    if(ag && ag.includes(' ')) {
+                        const [d, h] = ag.split(' ');
+                        const [dia, mes, ano] = d.split('/');
+                        document.getElementById('edit-data-agend').value = `${ano}-${mes}-${dia}`;
+                        document.getElementById('edit-hora-agend').value = h;
+                    }
+                } else {
+                    editAgend.style.display = 'none';
+                }
+                modalEditar.classList.add('active');
+            }
+        });
+
+        document.getElementById('edit-status').addEventListener('change', (e) => {
+            document.getElementById('edit-agendamento-container').style.display = e.target.value === 'Agendado' ? 'flex' : 'none';
+        });
+
+        async function salvarAlteracaoStatus(novoStatus, agendamento = '') {
+            if(!linhaProcesso) return;
+            const idBanco = linhaProcesso.getAttribute('data-db-id');
+            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+            const agora = new Date();
+            const dForm = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+            
+            let hist = linhaProcesso.getAttribute('data-historico') || '';
+            hist += ` | ${novoStatus} - ${usuarioLogado} (${dForm})`;
+
+            try {
+                await updateDoc(doc(db, "desvios_rota", idBanco), {
+                    status: novoStatus, agendamento: agendamento, historico: hist
+                });
+                carregarRegistros();
+            } catch (e) { console.error(e); alert("Erro ao atualizar status."); }
+            linhaProcesso = null;
         }
+
+        document.getElementById('btn-confirmar-agendamento').addEventListener('click', () => {
+            const dv = document.getElementById('input-data-agend').value;
+            const hv = document.getElementById('input-hora-agend').value;
+            if (!dv || !hv) { alert('Preencha data e hora.'); return; }
+            const dp = dv.split('-');
+            const ag = `${dp[2]}/${dp[1]}/${dp[0]} ${hv}`;
+            modalAgendamento.classList.remove('active');
+            salvarAlteracaoStatus('Agendado', ag);
+            document.getElementById('input-data-agend').value = ''; document.getElementById('input-hora-agend').value = '';
+        });
+
+        document.getElementById('btn-confirmar-sim').addEventListener('click', () => {
+            modalConfirmacao.classList.remove('active');
+            salvarAlteracaoStatus(statusAlvo);
+        });
+
+        document.getElementById('btn-atualizar-registro').addEventListener('click', async () => {
+            if(!linhaProcesso) return;
+            const idBanco = linhaProcesso.getAttribute('data-db-id');
+            const novoStatus = document.getElementById('edit-status').value;
+            let ag = linhaProcesso.getAttribute('data-agendamento') || '';
+
+            if (novoStatus === 'Agendado') {
+                const dv = document.getElementById('edit-data-agend').value;
+                const hv = document.getElementById('edit-hora-agend').value;
+                if (!dv || !hv) { alert('Preencha data e hora.'); return; }
+                const dp = dv.split('-');
+                ag = `${dp[2]}/${dp[1]}/${dp[0]} ${hv}`;
+            } else { ag = ''; }
+
+            let hist = linhaProcesso.getAttribute('data-historico');
+            if (novoStatus !== linhaProcesso.getAttribute('data-status')) {
+                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+                const agora = new Date();
+                const dForm = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+                hist += ` | Editado para ${novoStatus} - ${usuarioLogado} (${dForm})`;
+            }
+
+            try {
+                await updateDoc(doc(db, "desvios_rota", idBanco), {
+                    hu: document.getElementById('edit-hu').value.trim(),
+                    is: document.getElementById('edit-is').value.trim(),
+                    origem: document.getElementById('edit-origem').value.trim(),
+                    destino: document.getElementById('edit-destino').value.trim(),
+                    desvio: document.getElementById('edit-desvio').value.trim(),
+                    status: novoStatus, agendamento: ag, historico: hist
+                });
+                modalEditar.classList.remove('active');
+                linhaProcesso = null;
+                carregarRegistros();
+            } catch (e) { console.error(e); alert("Erro ao editar."); }
+        });
     </script>
 </body>
 </html>
