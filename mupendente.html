@@ -717,6 +717,68 @@
         </div>
     </div>
 
+    <!-- MODAL: AÇÃO DA HU -->
+    <div class="modal-overlay" id="modal-acao-hu">
+        <div class="modal-content" style="width: 340px; text-align: center;">
+            <div class="modal-header">
+                <h2>Destino da HU</h2>
+                <i class="ph ph-x modal-close" id="fechar-acao-hu-btn"></i>
+            </div>
+            <div class="modal-body" style="gap: 10px;">
+                <p style="font-weight: 600; font-size: 0.95rem;">O que deseja fazer com a HU criada?</p>
+                <button class="btn-salvar" id="btn-acao-expedir" style="width: 100%;">Expedir</button>
+                <button class="btn-salvar" id="btn-acao-agendar" style="width: 100%;">Agendar Expedição</button>
+                <button class="btn-salvar" id="btn-acao-pendente" style="width: 100%; background-color: #64748b;">Deixar Pendente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: TS PARA EXPEDIR -->
+    <div class="modal-overlay" id="modal-ts-hu">
+        <div class="modal-content" style="width: 320px;">
+            <form id="form-ts-hu" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="modal-header">
+                    <h2>Expedir HU</h2>
+                    <i class="ph ph-x modal-close" id="fechar-ts-hu-btn"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="input-pill">
+                        <span class="input-prefix">TS:</span>
+                        <input type="text" id="input-ts-hu" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-salvar" id="btn-confirmar-ts-hu">Confirmar Expedição</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: AGENDAR EXPEDIÇÃO -->
+    <div class="modal-overlay" id="modal-agendar-hu">
+        <div class="modal-content" style="width: 320px;">
+            <form id="form-agendar-hu" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="modal-header">
+                    <h2>Agendar Expedição</h2>
+                    <i class="ph ph-x modal-close" id="fechar-agendar-hu-btn"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="input-pill">
+                        <span class="input-prefix">Data:</span>
+                        <input type="date" id="input-data-agend-hu" style="width: 100%;" required>
+                    </div>
+                    <div class="input-pill">
+                        <span class="input-prefix">Hora:</span>
+                        <input type="time" id="input-hora-agend-hu" style="width: 100%;" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-salvar" id="btn-confirmar-agendar-hu">Confirmar Agendamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL DE DETALHES -->
     <div class="modal-overlay" id="modal-detalhes">
         <div class="modal-content" style="width: 360px;">
@@ -939,7 +1001,7 @@
             document.getElementById('modal-destino').value = '';
             document.getElementById('modal-desvio').value = '';
             muContainer.innerHTML = '';
-            adicionarCampoMU(muContainer); // Adiciona ao menos 1 vazio por padrão
+            adicionarCampoMU(muContainer); 
         }
 
         // =========================================
@@ -1021,6 +1083,16 @@
         const modalEscolha = document.getElementById('modal-escolha-avancar');
         document.getElementById('fechar-escolha-btn').addEventListener('click', () => modalEscolha.classList.remove('active'));
 
+        const modalAcaoHu = document.getElementById('modal-acao-hu');
+        document.getElementById('fechar-acao-hu-btn').addEventListener('click', () => modalAcaoHu.classList.remove('active'));
+
+        const modalTsHu = document.getElementById('modal-ts-hu');
+        document.getElementById('fechar-ts-hu-btn').addEventListener('click', () => modalTsHu.classList.remove('active'));
+
+        const modalAgendarHu = document.getElementById('modal-agendar-hu');
+        document.getElementById('fechar-agendar-hu-btn').addEventListener('click', () => modalAgendarHu.classList.remove('active'));
+
+
         const modalDetalhes = document.getElementById('modal-detalhes');
         const detalhesConteudo = document.getElementById('detalhes-conteudo');
         document.getElementById('fechar-detalhes-btn').addEventListener('click', () => modalDetalhes.classList.remove('active'));
@@ -1030,6 +1102,8 @@
 
         let linhaEmProcesso = null;
         let linhaEmEdicao = null;
+        let tempHuVal = '';
+        let tempIsVal = '';
 
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-avancar')) {
@@ -1037,6 +1111,8 @@
                 if (linhaEmProcesso.getAttribute('data-status') === 'Pendente') {
                     document.getElementById('avancar-hu').value = '';
                     document.getElementById('avancar-is').value = '';
+                    tempHuVal = '';
+                    tempIsVal = '';
                     modalEscolha.classList.add('active');
                 }
             }
@@ -1096,38 +1172,101 @@
             }
         });
 
-// FORMULÁRIO CONFIRMAR AVANÇAR STATUS
-document.getElementById('form-avancar-status').addEventListener('submit', (e) => {
-    e.preventDefault(); 
+        // =========================================
+        // NOVO FLUXO: AVANÇAR STATUS -> HU CRIADA
+        // =========================================
+        document.getElementById('form-avancar-status').addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            if (linhaEmProcesso) {
+                const huInput = document.getElementById('avancar-hu');
+                const isInput = document.getElementById('avancar-is');
 
-    if (linhaEmProcesso) {
-        const huInput = document.getElementById('avancar-hu');
-        const isInput = document.getElementById('avancar-is');
+                huInput.value = huInput.value.trim();
+                isInput.value = isInput.value.trim();
 
-        const inputHu = huInput.value.trim();
-        const inputIs = isInput.value.trim();
+                if (!huInput.checkValidity()) { huInput.reportValidity(); return; }
+                if (!isInput.checkValidity()) { isInput.reportValidity(); return; }
 
-        linhaEmProcesso.setAttribute('data-hu', inputHu);
-        linhaEmProcesso.setAttribute('data-is', inputIs);
-        linhaEmProcesso.cells[6].textContent = inputHu; 
-        linhaEmProcesso.cells[7].textContent = inputIs; 
+                tempHuVal = huInput.value;
+                tempIsVal = isInput.value;
 
-        // LÓGICA DE TRANSFERÊNCIA PARA HU PENDENTE
-        const desvio = linhaEmProcesso.getAttribute('data-desvio');
-        if (!desvio || desvio.trim() === '') {
-            const origem = linhaEmProcesso.getAttribute('data-origem');
-            const destino = linhaEmProcesso.getAttribute('data-destino');
-            
-            // Puxa a lista existente ou cria uma nova
-            const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
-            filaHUs.push({ hu: inputHu, is: inputIs, origem: origem, destino: destino });
-            localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
+                modalEscolha.classList.remove('active');
+                modalAcaoHu.classList.add('active');
+            }
+        });
+
+        function finalizarAvancoMU(statusHU, tsOrigem = '', agendamento = '') {
+            linhaEmProcesso.setAttribute('data-hu', tempHuVal);
+            linhaEmProcesso.setAttribute('data-is', tempIsVal);
+            linhaEmProcesso.cells[6].textContent = tempHuVal; // Coluna HU (6)
+            linhaEmProcesso.cells[7].textContent = tempIsVal; // Coluna IS (7)
+
+            const desvio = linhaEmProcesso.getAttribute('data-desvio');
+            // Só gera registro na aba HU se não houver desvio
+            if (!desvio || desvio.trim() === '') {
+                const origem = linhaEmProcesso.getAttribute('data-origem');
+                const destino = linhaEmProcesso.getAttribute('data-destino');
+                
+                const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
+                filaHUs.push({ 
+                    hu: tempHuVal, 
+                    is: tempIsVal, 
+                    origem: origem, 
+                    destino: destino,
+                    statusHU: statusHU,
+                    tsOrigem: tsOrigem,
+                    agendamento: agendamento
+                });
+                localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
+            }
+
+            atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
+            linhaEmProcesso = null;
         }
 
-        atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
-    }
-    modalEscolha.classList.remove('active');
-});
+        document.getElementById('btn-acao-pendente').addEventListener('click', () => {
+            modalAcaoHu.classList.remove('active');
+            finalizarAvancoMU('Pendente');
+        });
+
+        document.getElementById('btn-acao-expedir').addEventListener('click', () => {
+            modalAcaoHu.classList.remove('active');
+            document.getElementById('input-ts-hu').value = '';
+            modalTsHu.classList.add('active');
+        });
+
+        document.getElementById('btn-acao-agendar').addEventListener('click', () => {
+            modalAcaoHu.classList.remove('active');
+            document.getElementById('input-data-agend-hu').value = '';
+            document.getElementById('input-hora-agend-hu').value = '';
+            modalAgendarHu.classList.add('active');
+        });
+
+        document.getElementById('form-ts-hu').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const tsInput = document.getElementById('input-ts-hu');
+            tsInput.value = tsInput.value.trim();
+            if (!tsInput.checkValidity()) { tsInput.reportValidity(); return; }
+            
+            modalTsHu.classList.remove('active');
+            finalizarAvancoMU('Expedido', tsInput.value, '');
+        });
+
+        document.getElementById('form-agendar-hu').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const dataInput = document.getElementById('input-data-agend-hu');
+            const horaInput = document.getElementById('input-hora-agend-hu');
+            
+            if (!dataInput.checkValidity()) { dataInput.reportValidity(); return; }
+            if (!horaInput.checkValidity()) { horaInput.reportValidity(); return; }
+            
+            const dParts = dataInput.value.split('-');
+            const agendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaInput.value}`;
+            
+            modalAgendarHu.classList.remove('active');
+            finalizarAvancoMU('Agendado', '', agendamentoFormatado);
+        });
+
 
         // BOTÃO ATUALIZAR REGISTRO (EDIÇÃO)
         document.getElementById('btn-atualizar-registro').addEventListener('click', () => {
