@@ -444,24 +444,42 @@
         // FUNÇÃO PARA LER OS DADOS DO FIRESTORE E ATUALIZAR OS CARDS
         async function atualizarDashboard() {
             try {
-                const querySnapshot = await getDocs(collection(db, "hus_pendentes"));
-                
                 let pendentes = 0;
                 let finalizados = 0;
 
-                querySnapshot.forEach((doc) => {
+                // 1. Busca e Conta: HU's PENDENTES
+                const queryHUs = await getDocs(collection(db, "hus_pendentes"));
+                queryHUs.forEach((doc) => {
                     const status = doc.data().status;
-                    // Se o status for "Pendente" ou "Agendado", nós somamos como pendente no Dashboard
                     if (status === 'Pendente' || status === 'Agendado') {
                         pendentes++;
-                    } 
-                    // Se for "Finalizado", somamos como finalizado
-                    else if (status === 'Finalizado') {
+                    } else if (status === 'Finalizado') {
                         finalizados++;
                     }
                 });
 
-                // Atualiza o texto na tela
+                // 2. Busca e Conta: DESVIO DE ROTA
+                const queryDesvios = await getDocs(collection(db, "desvios_rota"));
+                queryDesvios.forEach((doc) => {
+                    const status = doc.data().status;
+                    if (status === 'Pendente' || status === 'Agendado' || status === 'Aguardando Recusa') {
+                        pendentes++;
+                    } else if (status === 'Finalizado') {
+                        finalizados++;
+                    }
+                });
+
+                // 3. Busca e Conta: MU's PENDENTES
+                const queryMUs = await getDocs(collection(db, "mus_pendentes"));
+                queryMUs.forEach((doc) => {
+                    const status = doc.data().status;
+                    if (status === 'Pendente') {
+                        pendentes++;
+                    }
+                    // MUs não somam nada nos Finalizados, conforme a sua regra
+                });
+
+                // Atualiza o texto na tela com o total consolidado
                 document.getElementById('dash-total-pendentes').textContent = pendentes;
                 document.getElementById('dash-total-finalizados').textContent = finalizados;
 
