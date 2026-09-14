@@ -309,12 +309,12 @@
         <div class="dashboard-grid">
             <div class="card card-red">
                 <h2>Total<br>Pendentes</h2>
-                <div class="card-number">30</div>
+                <div class="card-number" id="dash-total-pendentes">0</div>
             </div>
 
             <div class="card card-green">
                 <h2>Total<br>Finalizados</h2>
-                <div class="card-number">100</div>
+                <div class="card-number" id="dash-total-finalizados">0</div>
             </div>
 
             <div class="card card-orange">
@@ -431,13 +431,48 @@
             });
         }
     </script>
-<!-- ADICIONE O CÓDIGO DO FIREBASE AQUI -->
+
+    <!-- ADICIONE O CÓDIGO DO FIREBASE AQUI -->
     <script type="module">
-        import { app, analytics } from './firebase-config.js';
+        import { app } from './firebase-config.js';
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        
+        const db = getFirestore(app);
         
         console.log("Firebase conectado ao Dashboard com sucesso!");
-       </script>
 
+        // FUNÇÃO PARA LER OS DADOS DO FIRESTORE E ATUALIZAR OS CARDS
+        async function atualizarDashboard() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "hus_pendentes"));
+                
+                let pendentes = 0;
+                let finalizados = 0;
+
+                querySnapshot.forEach((doc) => {
+                    const status = doc.data().status;
+                    // Se o status for "Pendente" ou "Agendado", nós somamos como pendente no Dashboard
+                    if (status === 'Pendente' || status === 'Agendado') {
+                        pendentes++;
+                    } 
+                    // Se for "Finalizado", somamos como finalizado
+                    else if (status === 'Finalizado') {
+                        finalizados++;
+                    }
+                });
+
+                // Atualiza o texto na tela
+                document.getElementById('dash-total-pendentes').textContent = pendentes;
+                document.getElementById('dash-total-finalizados').textContent = finalizados;
+
+            } catch (error) {
+                console.error("Erro ao carregar dados do Dashboard: ", error);
+            }
+        }
+
+        // Chama a função assim que a página carregar
+        atualizarDashboard();
+
+    </script>
 </body>
 </html>
-
