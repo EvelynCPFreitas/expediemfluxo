@@ -1081,55 +1081,63 @@
             processarHUsTransferidas();
         });
 
-        // =========================================
-        // PROCESSAR HUS RECEBIDAS DA ABA DE MU
-        // =========================================
-        function processarHUsTransferidas() {
-            const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
-            if (filaHUs.length > 0) {
-                const tabelaCorpo = document.getElementById('tabela-hu-corpo');
-                const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
-                const agora = new Date();
-                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+       // =========================================
+// PROCESSAR HUS RECEBIDAS DA ABA DE MU
+// =========================================
+function processarHUsTransferidas() {
+    const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
+    if (filaHUs.length > 0) {
+        const tabelaCorpo = document.getElementById('tabela-hu-corpo');
+        const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
+        const agora = new Date();
+        const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 
-                filaHUs.forEach(item => {
-                    const novaLinha = document.createElement('tr');
-                    novaLinha.setAttribute('data-hu', item.hu);
-                    novaLinha.setAttribute('data-is', item.is);
-                    novaLinha.setAttribute('data-origem', item.origem);
-                    novaLinha.setAttribute('data-destino', item.destino);
-                    novaLinha.setAttribute('data-status', 'Pendente');
-                    novaLinha.setAttribute('data-agendamento', '');
-                    novaLinha.setAttribute('data-ts-origem', '');
-                    novaLinha.setAttribute('data-ts-destino', ''); 
-                    novaLinha.setAttribute('data-data-reg', dataFormatada);
-                    novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
+        filaHUs.forEach(item => {
+            const statusFinal = item.statusHU || 'Pendente';
+            const tsOrigem = item.tsOrigem || '';
+            const agendamento = item.agendamento || '';
 
-                    novaLinha.innerHTML = `
-                        <td><input type="checkbox" class="row-checkbox"></td>
-                        <td>${item.hu}</td>
-                        <td>${item.is}</td>
-                        <td>${item.origem}</td>
-                        <td>${item.destino}</td>
-                        <td><span class="status-badge status-pendente">Pendente</span></td>
-                        <td></td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    `;
-                    tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
-                });
+            const novaLinha = document.createElement('tr');
+            novaLinha.setAttribute('data-hu', item.hu);
+            novaLinha.setAttribute('data-is', item.is);
+            novaLinha.setAttribute('data-origem', item.origem);
+            novaLinha.setAttribute('data-destino', item.destino);
+            novaLinha.setAttribute('data-status', statusFinal);
+            novaLinha.setAttribute('data-agendamento', agendamento);
+            novaLinha.setAttribute('data-ts-origem', tsOrigem);
+            novaLinha.setAttribute('data-ts-destino', ''); 
+            novaLinha.setAttribute('data-data-reg', dataFormatada);
+            novaLinha.setAttribute('data-historico', `${statusFinal} - ${usuarioLogado} (${dataFormatada})`);
 
-                // Limpa a fila após injetar
-                localStorage.removeItem('filaNovasHUs');
-                atualizarKPIs();
-                aplicarFiltros();
-            }
-        }
+            let badgeClass = 'status-pendente';
+            if (statusFinal === 'Agendado') badgeClass = 'status-agendado';
+            if (statusFinal === 'Expedido') badgeClass = 'status-expedido';
+
+            novaLinha.innerHTML = `
+                <td><input type="checkbox" class="row-checkbox"></td>
+                <td>${item.hu}</td>
+                <td>${item.is}</td>
+                <td>${item.origem}</td>
+                <td>${item.destino}</td>
+                <td><span class="status-badge ${badgeClass}">${statusFinal}</span></td>
+                <td>${agendamento}</td>
+                <td>
+                    <div class="table-actions">
+                        <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
+                        <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
+                        <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
+                    </div>
+                </td>
+            `;
+            tabelaCorpo.insertBefore(novaLinha, tabelaCorpo.firstChild);
+        });
+
+        // Limpa a fila após injetar
+        localStorage.removeItem('filaNovasHUs');
+        atualizarKPIs();
+        aplicarFiltros();
+    }
+}
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
