@@ -9,7 +9,7 @@
     
     <style>
         /* =========================================
-           VARIÁVEIS DE TEMA (CLARO/ESCURO)
+           VARIÁVEIS DE TEMA E RESETS
            ========================================= */
         :root {
             --bg-body: #ffffff;
@@ -37,174 +37,94 @@
             --btn-theme-color: #fcd34d;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-        body {
-            display: flex;
-            height: 100vh;
-            background-color: var(--bg-body);
-            color: var(--text-primary);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+        body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-primary); transition: background-color 0.3s ease, color 0.3s ease; }
 
         /* =========================================
-           BOTÃO DE TROCA DE TEMA
+           BOTÃO DE TEMA E SIDEBAR (Mantidos)
            ========================================= */
-        .theme-toggle-btn {
-            position: fixed;
-            top: 30px;
-            right: 50px;
-            background-color: var(--btn-theme-bg);
-            border: none;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            transition: background-color 0.3s ease;
-        }
-
+        .theme-toggle-btn { position: fixed; top: 30px; right: 50px; background-color: var(--btn-theme-bg); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 100; transition: background-color 0.3s ease; }
         .theme-toggle-btn:hover { background-color: rgba(128, 128, 128, 0.2); }
         .theme-icon { width: 24px; height: 24px; fill: none; stroke: var(--btn-theme-color); stroke-width: 1.5; }
         #theme-icon-dark { display: none; }
         .dark-theme #theme-icon-light { display: none; }
         .dark-theme #theme-icon-dark { display: block; fill: var(--btn-theme-color); }
 
-        /* =========================================
-           BARRA LATERAL (SIDEBAR)
-           ========================================= */
-        .sidebar {
-            width: 80px; 
-            background-color: var(--bg-sidebar);
-            display: flex;
-            flex-direction: column;
-            border-right: 2px solid var(--border-sidebar);
-            padding-bottom: 20px;
-            transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-            z-index: 50;
-        }
-
+        .sidebar { width: 80px; background-color: var(--bg-sidebar); display: flex; flex-direction: column; border-right: 2px solid var(--border-sidebar); padding-bottom: 20px; transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease; z-index: 50; }
         .sidebar.expanded { width: 250px; }
-
-        .logo-container {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 25px 0; color: var(--text-sidebar); font-weight: 900; font-size: 0.9rem;
-            letter-spacing: -0.5px; transition: padding 0.3s ease, justify-content 0.3s ease; white-space: nowrap;
-        }
-
+        .logo-container { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 25px 0; color: var(--text-sidebar); font-weight: 900; font-size: 0.9rem; letter-spacing: -0.5px; transition: padding 0.3s ease, justify-content 0.3s ease; white-space: nowrap; }
         .sidebar.expanded .logo-container { justify-content: flex-start; padding: 25px 20px; }
         .logo-svg { width: 45px; height: auto; flex-shrink: 0; }
         .logo-text { display: none; }
         .sidebar.expanded .logo-text { display: block; }
-
         .nav-menu { flex: 1; margin-top: 30px; }
-        .nav-item {
-            display: flex; align-items: center; justify-content: center; gap: 15px;
-            padding: 15px; color: var(--text-sidebar); font-weight: 700; font-size: 1.05rem;
-            text-decoration: none; transition: background 0.2s, padding 0.3s ease, justify-content 0.3s ease; white-space: nowrap;
-        }
+        .nav-item { display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; color: var(--text-sidebar); font-weight: 700; font-size: 1.05rem; text-decoration: none; transition: background 0.2s, padding 0.3s ease, justify-content 0.3s ease; white-space: nowrap; }
         .sidebar.expanded .nav-item { justify-content: flex-start; padding: 15px 25px; }
         .nav-text { display: none; }
         .sidebar.expanded .nav-text { display: block; }
         .nav-item:hover, .nav-item.active { background-color: var(--bg-hover); }
-        .nav-item i { font-size: 1.5rem; flex-shrink: 0; }
-
-        .sidebar-footer {
-            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;
-            padding: 0; color: var(--text-sidebar); transition: flex-direction 0.3s ease, padding 0.3s ease;
-        }
+        .nav-item i, .nav-item svg { font-size: 1.5rem; flex-shrink: 0; }
+        .sidebar-footer { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 0; color: var(--text-sidebar); transition: flex-direction 0.3s ease, padding 0.3s ease; }
         .sidebar.expanded .sidebar-footer { flex-direction: row; justify-content: space-between; padding: 0 25px; }
-
         .user-info { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 700; }
         #display-cd { display: none; white-space: nowrap; }
         .sidebar.expanded #display-cd { display: inline; }
+        .profile-container { position: relative; display: flex; align-items: center; cursor: pointer; padding: 5px; margin-left: -5px; }
         .profile-container i.ph-user { font-size: 1.5rem; }
         #sidebar-toggle { font-size: 1.5rem; cursor: pointer; transition: transform 0.3s ease; }
         .sidebar.expanded #sidebar-toggle { transform: rotate(180deg); }
-
-        /* Dropdown do Perfil */
-        .profile-container { position: relative; display: flex; align-items: center; cursor: pointer; padding: 5px; margin-left: -5px; }
-        .profile-dropdown {
-            position: absolute; bottom: 40px; left: 0; background-color: var(--bg-body); border: 1px solid var(--border-sidebar);
-            border-radius: 8px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column;
-            gap: 8px; min-width: 130px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 100;
-        }
+        .profile-dropdown { position: absolute; bottom: 40px; left: 0; background-color: var(--bg-body); border: 1px solid var(--border-sidebar); border-radius: 8px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px; min-width: 130px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 100; }
         .dark-theme .profile-dropdown { box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .profile-dropdown::after {
-            content: ''; position: absolute; bottom: -6px; left: 15px; width: 12px; height: 12px;
-            background-color: var(--bg-body); border-bottom: 1px solid var(--border-sidebar); border-right: 1px solid var(--border-sidebar); transform: rotate(45deg);
-        }
+        .profile-dropdown::after { content: ''; position: absolute; bottom: -6px; left: 15px; width: 12px; height: 12px; background-color: var(--bg-body); border-bottom: 1px solid var(--border-sidebar); border-right: 1px solid var(--border-sidebar); transform: rotate(45deg); }
         .profile-container:hover .profile-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-name { font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--border-sidebar); padding-bottom: 8px; text-align: center; }
         .dropdown-logout { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; color: #ef4444; text-decoration: none; font-weight: 700; padding: 6px; border-radius: 6px; }
         .dropdown-logout:hover { background-color: rgba(239, 68, 68, 0.1); }
 
         /* =========================================
-           CONTEÚDO PRINCIPAL
+           CONTEÚDO PRINCIPAL E CARDS
            ========================================= */
         .main-content { flex: 1; padding: 30px 50px; overflow-y: auto; position: relative; animation: fadeIn 0.3s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page-title { color: var(--text-sidebar); font-size: 1.8rem; font-weight: 900; margin-bottom: 30px; text-transform: uppercase; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); transition: color 0.3s ease; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .dashboard-grid { display: grid; grid-template-columns: minmax(250px, 340px) minmax(250px, 340px) 1fr; grid-template-rows: auto auto; gap: 25px; }
 
-        .page-title {
-            color: var(--text-sidebar); font-size: 1.8rem; font-weight: 900; margin-bottom: 30px;
-            text-transform: uppercase; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); transition: color 0.3s ease;
-        }
-
-        /* GRID DO DASHBOARD */
-        .dashboard-grid {
-            display: grid; grid-template-columns: minmax(250px, 340px) minmax(250px, 340px) 1fr; grid-template-rows: auto auto; gap: 25px;
-        }
-
-        .card {
-            border-radius: 12px; padding: 15px 20px; color: white; box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.15);
-            display: flex; flex-direction: column; justify-content: center; 
-        }
+        .card { border-radius: 12px; padding: 15px 20px; color: white; box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.15); display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
         .dark-theme .card { box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.4); }
-        .card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
-
+        .card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; z-index: 2; }
+        
         .card-red { background: linear-gradient(to right, #1a0000, #f82525); text-align: center; align-items: center; height: 145px; }
         .card-green { background: linear-gradient(to right, #001a10, #1de68f); text-align: center; align-items: center; height: 145px; }
         .card-purple { background: linear-gradient(to right, #15002b, #a529f7); height: 145px; }
         .card-cyan { background: linear-gradient(to right, #001924, #1eddf5); height: 145px; }
-        
-        .card-orange {
-            background: linear-gradient(to right, #2e0d00, #fa6f19); grid-column: 3; grid-row: 1 / 3; height: 100%; justify-content: space-between;
-        }
-        
-        .card-dark {
-            background: #334155; grid-column: 1 / -1; grid-row: 3; margin-top: 25px; height: 300px; padding: 15px; justify-content: flex-end;
-        }
-        .dark-theme .card-dark { background: #1e293b; border: 1px solid var(--border-sidebar); }
+        .card-number { font-size: 3.5rem; font-weight: 900; font-style: italic; font-family: serif; margin-top: 0; z-index: 2; }
 
-        .card-number { font-size: 3.5rem; font-weight: 900; font-style: italic; font-family: serif; margin-top: 0; }
+        /* GRÁFICO LARANJA (OFENSORES) - Dashboard */
+        .card-orange { 
+            background: linear-gradient(to right, #2e0d00, #fa6f19); grid-column: 3; grid-row: 1 / 3; height: 100%; 
+            justify-content: space-between; cursor: pointer; transition: transform 0.2s, filter 0.2s;
+        }
+        .card-orange:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .bar-chart-orange { display: flex; align-items: flex-end; justify-content: space-around; height: 100%; margin-top: 20px; padding-bottom: 10px; width: 100%; gap: 10px; z-index: 2; }
+        .bar-white { background-color: white; flex: 1; max-width: 40px; border-radius: 4px 4px 0 0; box-shadow: 2px 0 5px rgba(0,0,0,0.1); position: relative; display: flex; justify-content: center; }
+        .bar-label-dash { position: absolute; bottom: -20px; color: white; font-size: 0.65rem; font-weight: 700; }
+        .bar-value-dash { position: absolute; top: -20px; color: white; font-size: 0.8rem; font-weight: 900; }
 
-        /* GRÁFICOS */
-        .pie-chart-container { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; }
+        /* Outros gráficos */
+        .pie-chart-container { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; z-index: 2;}
         .legend { font-size: 0.8rem; font-weight: 600; font-style: italic; display: flex; flex-direction: column; gap: 6px;}
         .legend-item { display: flex; align-items: center; gap: 8px; justify-content: space-between; width: 110px;}
         .legend-color { width: 10px; height: 10px; border-radius: 2px; }
         .pie { width: 75px; height: 75px; border-radius: 50%; background: conic-gradient(#8cbaf6 0% 50%, #ea5c85 50% 80%, #3e84f4 80% 100%); margin-right: 10px; }
-
-        .ranking-list { list-style: none; font-weight: 900; font-style: italic; font-size: 1.1rem; margin-top: 5px; display: flex; flex-direction: column; gap: 6px; }
-        .bar-chart-orange { display: flex; align-items: flex-end; justify-content: space-around; height: 100%; margin-top: 20px; padding-bottom: 10px; }
-        .bar-white { background-color: white; width: 35px; border-radius: 4px 4px 0 0; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-
+        .ranking-list { list-style: none; font-weight: 900; font-style: italic; font-size: 1.1rem; margin-top: 5px; display: flex; flex-direction: column; gap: 6px; z-index: 2;}
+        
+        .card-dark { background: #334155; grid-column: 1 / -1; grid-row: 3; margin-top: 25px; height: 300px; padding: 15px; justify-content: flex-end; }
+        .dark-theme .card-dark { background: #1e293b; border: 1px solid var(--border-sidebar); }
         .dark-chart-header { display: flex; justify-content: center; gap: 20px; font-size: 0.7rem; color: #ddd; margin-bottom: 15px; }
         .dark-legend { display: flex; align-items: center; gap: 5px; }
         .dark-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-        
         .dark-chart-area { display: flex; align-items: flex-end; height: 75%; border-left: 1px solid #777; border-bottom: 1px solid #777; padding-left: 10px; gap: 30px; position: relative; margin-left: 45px; margin-bottom: 25px; }
         .y-axis { position: absolute; left: -45px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.6rem; color: #aaa; width: 40px; text-align: right; padding-right: 5px; }
         .month-group { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 2px; position: relative; height: 100%;}
@@ -213,11 +133,77 @@
         .c-blue1 { background-color: #8ce1f8; }
         .c-pink { background-color: #f7558f; }
         .c-blue2 { background-color: #4b8df8; }
+
+        /* =========================================
+           MODAL CADS OFENSORES (Desfoque e Rolagem)
+           ========================================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); /* Desfoque fundo */
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        
+        .modal-ofensores-content {
+            background: linear-gradient(135deg, #1a0800 0%, #fa6f19 100%);
+            width: 90%; max-width: 900px; height: 500px;
+            border-radius: 12px; padding: 20px 30px 40px 50px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative; display: flex; flex-direction: column;
+            transform: scale(0.95); transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-ofensores-content { transform: scale(1); }
+        
+        .modal-ofensores-content h2 {
+            color: white; font-size: 1.8rem; font-weight: 900; margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .close-modal-btn {
+            position: absolute; top: 20px; right: 20px; color: white;
+            font-size: 1.5rem; cursor: pointer; transition: opacity 0.2s;
+        }
+        .close-modal-btn:hover { opacity: 0.7; }
+
+        /* Área do gráfico dentro do modal */
+        .ofensores-chart-area {
+            flex: 1; display: flex; align-items: flex-end; position: relative;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 0; margin-top: 10px; margin-left: 20px;
+            overflow-x: auto; /* Rolagem horizontal se tiver muitos */
+            gap: 15px; padding-top: 30px;
+        }
+        
+        /* Personalização da barra de rolagem do modal */
+        .ofensores-chart-area::-webkit-scrollbar { height: 8px; }
+        .ofensores-chart-area::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; margin-top: 20px;}
+        .ofensores-chart-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
+        
+        /* Eixo Y do modal */
+        .y-axis-ofensores {
+            position: absolute; left: -40px; top: 0; bottom: 0;
+            display: flex; flex-direction: column; justify-content: space-between;
+            color: white; font-weight: 700; font-size: 0.8rem; text-align: right;
+            border-right: 2px solid rgba(255,255,255,0.3); padding-right: 5px; padding-bottom: 8px; /* espaço pro scroll */
+        }
+        
+        /* Barras do Modal */
+        .bar-wrapper {
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            height: 100%; min-width: 45px; position: relative;
+        }
+        .bar-modal-white {
+            background-color: white; width: 100%; border-radius: 6px 6px 0 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2); transition: height 0.5s ease-out;
+        }
+        .bar-label { color: white; font-size: 0.7rem; font-weight: 700; margin-top: 5px; white-space: nowrap; }
+        .bar-value { position: absolute; top: -25px; color: white; font-weight: 900; font-size: 1rem; }
+
     </style>
 </head>
 <body>
 
-    <!-- BARRA LATERAL (Atualizada com links diretos) -->
+    <!-- BARRA LATERAL -->
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
             <svg class="logo-svg" viewBox="0 0 100 65" xmlns="http://www.w3.org/2000/svg">
@@ -235,42 +221,18 @@
         </div>
 
         <nav class="nav-menu">
-            <!-- Link ativo para esta página -->
-            <a href="dashboard.html" class="nav-item active">
-                <i class="ph ph-squares-four"></i> 
-                <span class="nav-text">Dashboard</span>
-            </a>
-            <!-- Links para as outras páginas -->
+            <a href="dashboard.html" class="nav-item active"><i class="ph ph-squares-four"></i><span class="nav-text">Dashboard</span></a>
             <a href="hupendente.html" class="nav-item">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.5rem; height: 1.5rem; flex-shrink: 0;">
-                    <rect x="2" y="2" width="6" height="5.5" />
-                    <rect x="4.25" y="2" width="1.5" height="2.5" />
-                    <rect x="9" y="2" width="6" height="5.5" />
-                    <rect x="11.25" y="2" width="1.5" height="2.5" />
-                    <rect x="16" y="2" width="6" height="5.5" />
-                    <rect x="18.25" y="2" width="1.5" height="2.5" />
-                    <rect x="2" y="8.5" width="6" height="5.5" />
-                    <rect x="4.25" y="8.5" width="1.5" height="2.5" />
-                    <rect x="9" y="8.5" width="6" height="5.5" />
-                    <rect x="11.25" y="8.5" width="1.5" height="2.5" />
-                    <rect x="16" y="8.5" width="6" height="5.5" />
-                    <rect x="18.25" y="8.5" width="1.5" height="2.5" />
-                    <rect x="1" y="15" width="22" height="2" />
-                    <rect x="1" y="21" width="22" height="2" />
-                    <rect x="3.5" y="17" width="2" height="4" />
-                    <rect x="11" y="17" width="2" height="4" />
-                    <rect x="18.5" y="17" width="2" height="4" />
+                    <rect x="2" y="2" width="6" height="5.5" /><rect x="4.25" y="2" width="1.5" height="2.5" /><rect x="9" y="2" width="6" height="5.5" /><rect x="11.25" y="2" width="1.5" height="2.5" /><rect x="16" y="2" width="6" height="5.5" /><rect x="18.25" y="2" width="1.5" height="2.5" />
+                    <rect x="2" y="8.5" width="6" height="5.5" /><rect x="4.25" y="8.5" width="1.5" height="2.5" /><rect x="9" y="8.5" width="6" height="5.5" /><rect x="11.25" y="8.5" width="1.5" height="2.5" /><rect x="16" y="8.5" width="6" height="5.5" /><rect x="18.25" y="8.5" width="1.5" height="2.5" />
+                    <rect x="1" y="15" width="22" height="2" /><rect x="1" y="21" width="22" height="2" />
+                    <rect x="3.5" y="17" width="2" height="4" /><rect x="11" y="17" width="2" height="4" /><rect x="18.5" y="17" width="2" height="4" />
                 </svg>
                 <span class="nav-text">HU's Pendentes</span>
             </a>
-            <a href="desvio.html" class="nav-item">
-                <i class="ph ph-arrows-split"></i> 
-                <span class="nav-text">Desvio de Rota</span>
-            </a>
-            <a href="mupendente.html" class="nav-item">
-                <i class="ph ph-package"></i> 
-                <span class="nav-text">MU's Pendentes</span>
-            </a>
+            <a href="desvio.html" class="nav-item"><i class="ph ph-arrows-split"></i><span class="nav-text">Desvio de Rota</span></a>
+            <a href="mupendente.html" class="nav-item"><i class="ph ph-package"></i><span class="nav-text">MU's Pendentes</span></a>
         </nav>
 
         <div class="sidebar-footer">
@@ -279,9 +241,7 @@
                     <i class="ph ph-user"></i>
                     <div class="profile-dropdown">
                         <span id="display-username" class="dropdown-name">Usuário</span>
-                        <a href="#" id="logout-btn" class="dropdown-logout">
-                            <i class="ph ph-sign-out"></i> Sair
-                        </a>
+                        <a href="#" id="logout-btn" class="dropdown-logout"><i class="ph ph-sign-out"></i> Sair</a>
                     </div>
                 </div>
                 <span id="display-cd">Buscando...</span>
@@ -290,18 +250,10 @@
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL (DASHBOARD) -->
     <main class="main-content">
-        
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
-            <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
-                <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
-            </svg>
-            <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
-                <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
-            </svg>
+            <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path><path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path></svg>
+            <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path><path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path></svg>
         </button>
 
         <h1 class="page-title">DASHBOARD</h1>
@@ -317,13 +269,11 @@
                 <div class="card-number" id="dash-total-finalizados">0</div>
             </div>
 
-            <div class="card card-orange">
+            <!-- CARD DE OFENSORES QUE AGORA É CLICÁVEL -->
+            <div class="card card-orange" id="card-ofensores" title="Clique para expandir">
                 <h2>CAD'S Ofensores</h2>
-                <div class="bar-chart-orange">
-                    <div class="bar-white" style="height: 30%;"></div>
-                    <div class="bar-white" style="height: 50%;"></div>
-                    <div class="bar-white" style="height: 80%;"></div>
-                    <div class="bar-white" style="height: 100%;"></div>
+                <div class="bar-chart-orange" id="mini-grafico-ofensores">
+                    <!-- Barras dinâmicas serão injetadas aqui -->
                 </div>
             </div>
 
@@ -357,9 +307,7 @@
             </div>
             
             <div class="dark-chart-area">
-                <div class="y-axis">
-                    <span>7.000</span><span>6.000</span><span>5.000</span><span>4.000</span><span>3.000</span><span>2.000</span><span>1.000</span><span>0</span>
-                </div>
+                <div class="y-axis"><span>7.000</span><span>6.000</span><span>5.000</span><span>4.000</span><span>3.000</span><span>2.000</span><span>1.000</span><span>0</span></div>
                 <div class="month-group"><div class="bar-sm c-blue1" style="height: 70%;"></div><div class="bar-sm c-pink" style="height: 45%;"></div><div class="bar-sm c-blue2" style="height: 45%;"></div><span class="month-label">Jan</span></div>
                 <div class="month-group"><div class="bar-sm c-blue1" style="height: 55%;"></div><div class="bar-sm c-pink" style="height: 25%;"></div><div class="bar-sm c-blue2" style="height: 38%;"></div><span class="month-label">Fev</span></div>
                 <div class="month-group"><div class="bar-sm c-blue1" style="height: 40%;"></div><div class="bar-sm c-pink" style="height: 20%;"></div><div class="bar-sm c-blue2" style="height: 20%;"></div><span class="month-label">Mar</span></div>
@@ -371,6 +319,19 @@
 
     </main>
 
+    <!-- MODAL EXPANDIDO DE OFENSORES -->
+    <div class="modal-overlay" id="modal-ofensores">
+        <div class="modal-ofensores-content">
+            <i class="ph ph-x close-modal-btn" id="fechar-modal-ofensores"></i>
+            <h2>CAD'S Ofensores</h2>
+            
+            <div class="ofensores-chart-area" id="modal-grafico-ofensores">
+                <!-- Eixo Y dinâmico será injetado aqui -->
+                <!-- Barras dinâmicas serão injetadas aqui -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // =========================================
         // LÓGICA DO TEMA E LOCALSTORAGE
@@ -379,57 +340,40 @@
         const body = document.body;
 
         const currentTheme = localStorage.getItem('theme');
-        if (currentTheme) {
-            body.classList.add(currentTheme);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            body.classList.add('dark-theme');
-        }
+        if (currentTheme) { body.classList.add(currentTheme); } 
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { body.classList.add('dark-theme'); }
 
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-theme');
-            let theme = 'light-theme';
-            if (body.classList.contains('dark-theme')) {
-                theme = 'dark-theme';
-            }
-            localStorage.setItem('theme', theme); 
+            localStorage.setItem('theme', body.classList.contains('dark-theme') ? 'dark-theme' : 'light-theme'); 
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            const cdDisplay = document.getElementById('display-cd');
             const savedCD = localStorage.getItem('userCD');
-            if (savedCD) { cdDisplay.textContent = savedCD; } 
-            else { cdDisplay.textContent = 'Admin'; }
+            if (savedCD) { document.getElementById('display-cd').textContent = savedCD; } 
+            else { document.getElementById('display-cd').textContent = 'Admin'; }
 
-            const usernameDisplay = document.getElementById('display-username');
             const savedUsername = localStorage.getItem('userName'); 
-            if (savedUsername) { usernameDisplay.textContent = savedUsername; } 
-            else { usernameDisplay.textContent = 'Usuário'; }
+            if (savedUsername) { document.getElementById('display-username').textContent = savedUsername; } 
+            else { document.getElementById('display-username').textContent = 'Usuário'; }
         });
 
-        // =========================================
-        // LÓGICA DE ABRIR/FECHAR A SIDEBAR
-        // =========================================
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
+        if (sidebarToggleBtn && sidebar) { sidebarToggleBtn.addEventListener('click', () => { sidebar.classList.toggle('expanded'); }); }
 
-        if (sidebarToggleBtn && sidebar) {
-            sidebarToggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('expanded');
-            });
-        }
-
-        // =========================================
-        // LÓGICA DE LOGOUT
-        // =========================================
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault(); 
-                localStorage.removeItem('userCD'); 
-                localStorage.removeItem('userName'); 
-                window.location.href = 'index.html'; 
+                e.preventDefault(); localStorage.removeItem('userCD'); localStorage.removeItem('userName'); window.location.href = 'index.html'; 
             });
         }
+        
+        // Modal de Ofensores Open/Close
+        const modalOfensores = document.getElementById('modal-ofensores');
+        document.getElementById('card-ofensores').addEventListener('click', () => { modalOfensores.classList.add('active'); });
+        document.getElementById('fechar-modal-ofensores').addEventListener('click', () => { modalOfensores.classList.remove('active'); });
+        modalOfensores.addEventListener('click', (e) => { if (e.target === modalOfensores) modalOfensores.classList.remove('active'); });
     </script>
 
     <!-- ADICIONE O CÓDIGO DO FIREBASE AQUI -->
@@ -441,47 +385,119 @@
         
         console.log("Firebase conectado ao Dashboard com sucesso!");
 
-        // FUNÇÃO PARA LER OS DADOS DO FIRESTORE E ATUALIZAR OS CARDS
         async function atualizarDashboard() {
             try {
                 let pendentes = 0;
                 let finalizados = 0;
+                
+                // Objeto para contar as ocorrências de cada origem
+                const ofensoresCount = {};
+
+                // Função auxiliar para contar as origens
+                const registrarOrigem = (origem) => {
+                    if (origem) {
+                        const cad = origem.trim().toUpperCase();
+                        ofensoresCount[cad] = (ofensoresCount[cad] || 0) + 1;
+                    }
+                };
 
                 // 1. Busca e Conta: HU's PENDENTES
                 const queryHUs = await getDocs(collection(db, "hus_pendentes"));
                 queryHUs.forEach((doc) => {
-                    const status = doc.data().status;
-                    if (status === 'Pendente' || status === 'Agendado') {
-                        pendentes++;
-                    } else if (status === 'Finalizado') {
-                        finalizados++;
-                    }
+                    const data = doc.data();
+                    const status = data.status;
+                    if (status === 'Pendente' || status === 'Agendado') pendentes++;
+                    else if (status === 'Finalizado') finalizados++;
+                    
+                    registrarOrigem(data.origem);
                 });
 
                 // 2. Busca e Conta: DESVIO DE ROTA
                 const queryDesvios = await getDocs(collection(db, "desvios_rota"));
                 queryDesvios.forEach((doc) => {
-                    const status = doc.data().status;
-                    if (status === 'Pendente' || status === 'Agendado' || status === 'Aguardando Recusa') {
-                        pendentes++;
-                    } else if (status === 'Finalizado') {
-                        finalizados++;
-                    }
+                    const data = doc.data();
+                    const status = data.status;
+                    if (status === 'Pendente' || status === 'Agendado' || status === 'Aguardando Recusa') pendentes++;
+                    else if (status === 'Finalizado') finalizados++;
+                    
+                    registrarOrigem(data.origem);
                 });
 
                 // 3. Busca e Conta: MU's PENDENTES
                 const queryMUs = await getDocs(collection(db, "mus_pendentes"));
                 queryMUs.forEach((doc) => {
-                    const status = doc.data().status;
-                    if (status === 'Pendente') {
-                        pendentes++;
-                    }
-                    // MUs não somam nada nos Finalizados, conforme a sua regra
+                    const data = doc.data();
+                    const status = data.status;
+                    if (status === 'Pendente') pendentes++;
+                    
+                    registrarOrigem(data.origem);
                 });
 
-                // Atualiza o texto na tela com o total consolidado
+                // Atualiza o texto na tela
                 document.getElementById('dash-total-pendentes').textContent = pendentes;
                 document.getElementById('dash-total-finalizados').textContent = finalizados;
+
+                // ==============================================
+                // RENDERIZAR GRÁFICOS DE OFENSORES
+                // ==============================================
+                // Transforma o objeto em array e ordena do maior para o menor
+                const ofensoresArray = Object.entries(ofensoresCount)
+                    .map(([cad, count]) => ({ cad, count }))
+                    .sort((a, b) => b.count - a.count); // Maior para o menor
+
+                const maxCount = ofensoresArray.length > 0 ? ofensoresArray[0].count : 1; // Para calcular a % de altura
+
+                // 1. Renderiza o Card Menor (Top 5 no máximo)
+                const miniGrafico = document.getElementById('mini-grafico-ofensores');
+                miniGrafico.innerHTML = ''; // Limpa o que tinha
+
+                // Pega só os 5 primeiros
+                const top5 = ofensoresArray.slice(0, 5);
+                
+                // Se não houver dados
+                if (top5.length === 0) {
+                    miniGrafico.innerHTML = '<span style="color:white; font-size: 0.9rem;">Sem dados no momento.</span>';
+                } else {
+                    top5.forEach(item => {
+                        const alturaPerc = Math.max((item.count / maxCount) * 100, 10); // minimo 10% pra aparecer algo
+                        miniGrafico.innerHTML += `
+                            <div class="bar-wrapper" style="flex:1; max-width: 40px;">
+                                <div class="bar-value-dash" style="display:none;">${item.count}</div>
+                                <div class="bar-white" style="height: ${alturaPerc}%; max-width:100%;"></div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // 2. Renderiza o Modal Expandido (Todos)
+                const modalGrafico = document.getElementById('modal-grafico-ofensores');
+                modalGrafico.innerHTML = '';
+                
+                // Adiciona o Eixo Y
+                modalGrafico.innerHTML += `
+                    <div class="y-axis-ofensores">
+                        <span>${maxCount}</span>
+                        <span>${Math.floor(maxCount * 0.75)}</span>
+                        <span>${Math.floor(maxCount * 0.5)}</span>
+                        <span>${Math.floor(maxCount * 0.25)}</span>
+                        <span>0</span>
+                    </div>
+                `;
+
+                if (ofensoresArray.length === 0) {
+                    modalGrafico.innerHTML += '<span style="color:white; align-self: center; margin-left: 20px;">Sem dados no momento.</span>';
+                } else {
+                    ofensoresArray.forEach(item => {
+                        const alturaPerc = Math.max((item.count / maxCount) * 100, 5);
+                        modalGrafico.innerHTML += `
+                            <div class="bar-wrapper">
+                                <div class="bar-value">${item.count}</div>
+                                <div class="bar-modal-white" style="height: ${alturaPerc}%;"></div>
+                                <div class="bar-label">${item.cad}</div>
+                            </div>
+                        `;
+                    });
+                }
 
             } catch (error) {
                 console.error("Erro ao carregar dados do Dashboard: ", error);
