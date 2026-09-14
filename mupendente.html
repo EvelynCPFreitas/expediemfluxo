@@ -220,6 +220,24 @@
         .input-prefix { font-weight: 900; color: #004b87; margin-right: 5px; font-size: 0.95rem; white-space: nowrap; }
         .dark-theme .input-prefix { color: #8ca4c0; }
         .input-pill input, .input-pill select { border: none; background: transparent; outline: none; flex: 1; color: #333; font-weight: 600; font-size: 0.95rem; width: 100%; font-family: 'Inter', sans-serif; }
+        
+        /* Remove a cor de fundo do preenchimento automático (autofill) do navegador */
+        .input-pill input:-webkit-autofill,
+        .input-pill input:-webkit-autofill:hover, 
+        .input-pill input:-webkit-autofill:focus, 
+        .input-pill input:-webkit-autofill:active {
+            transition: background-color 5000s ease-in-out 0s;
+            -webkit-text-fill-color: #333 !important;
+        }
+
+        /* Garante que a fonte fique clara no modo escuro ao usar o autofill */
+        .dark-theme .input-pill input:-webkit-autofill,
+        .dark-theme .input-pill input:-webkit-autofill:hover, 
+        .dark-theme .input-pill input:-webkit-autofill:focus, 
+        .dark-theme .input-pill input:-webkit-autofill:active {
+            -webkit-text-fill-color: #f1f5f9 !important;
+        }
+
         .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
         .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
         .modal-footer { display: flex; justify-content: center; gap: 10px; flex-shrink: 0; }
