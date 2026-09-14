@@ -1457,6 +1457,24 @@
             input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); aplicarFiltros(); });
             input.addEventListener('blur', () => setTimeout(() => listElement.classList.remove('show'), 150));
         });
+        
+        // =========================================
+        // LÓGICA DE LOGOUT (SAIR)
+        // =========================================
+        const logoutBtn = document.getElementById('logout-btn');
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault(); // Evita que a página pule para o topo devido ao href="#"
+                
+                // Opcional: Limpar os dados do usuário do localStorage ao sair
+                // localStorage.removeItem('userName');
+                // localStorage.removeItem('userCD');
+                
+                // Redirecionar para a página de login
+                window.location.href = 'index.html'; 
+            });
+        }
     </script>
 </body>
 </html>
