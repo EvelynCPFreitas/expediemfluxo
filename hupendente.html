@@ -1197,7 +1197,7 @@
         }
 
         // =========================================
-        // CARREGAR REGISTROS DO FIRESTORE
+        // CARREGAR REGISTROS DO FIRESTORE (COM ORDENAÇÃO)
         // =========================================
         const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
@@ -1207,13 +1207,36 @@
             try {
                 const querySnapshot = await getDocs(collection(db, "hus_pendentes"));
                 
+                // 1. Extrair os dados para um array
+                let registros = [];
                 querySnapshot.forEach((documento) => {
-                    const dados = documento.data();
-                    const idDoBanco = documento.id; 
+                    let dados = documento.data();
+                    dados.idDoBanco = documento.id;
+                    registros.push(dados);
+                });
+
+                // 2. Ordenar o array pela dataReg (mais recente primeiro)
+                registros.sort((a, b) => {
+                    // Função para transformar a string "DD/MM/YYYY HH:mm" em timestamp para poder comparar
+                    const parseData = (dataStr) => {
+                        if (!dataStr) return 0;
+                        const partes = dataStr.split(' ');
+                        if (partes.length < 2) return 0;
+                        
+                        const [dia, mes, ano] = partes[0].split('/');
+                        const [h, m] = partes[1].split(':');
+                        // Cria um objeto Date válido (formato ISO: YYYY-MM-DDTHH:mm:00)
+                        return new Date(`${ano}-${mes}-${dia}T${h}:${m}:00`).getTime();
+                    };
                     
+                    return parseData(b.dataReg) - parseData(a.dataReg); // Ordem decrescente
+                });
+
+                // 3. Renderizar na tabela já ordenado
+                registros.forEach((dados) => {
                     const novaLinha = document.createElement('tr');
                     
-                    novaLinha.setAttribute('data-db-id', idDoBanco); 
+                    novaLinha.setAttribute('data-db-id', dados.idDoBanco); 
                     novaLinha.setAttribute('data-hu', dados.hu || '');
                     novaLinha.setAttribute('data-is', dados.is || '');
                     novaLinha.setAttribute('data-origem', dados.origem || '');
