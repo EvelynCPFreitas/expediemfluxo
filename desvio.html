@@ -9,8 +9,8 @@
     
     <style>
         /* =========================================
-             VARIÁVEIS DE TEMA (CLARO/ESCURO)
-             ========================================= */
+            VARIÁVEIS DE TEMA (CLARO/ESCURO)
+            ========================================= */
         :root {
             --bg-body: #ffffff;
             --bg-sidebar: #e2e8f0;
@@ -483,7 +483,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT COM INTEGRAÇÃO FIRESTORE E LOCALSTORAGE -->
+    <!-- SCRIPT COM INTEGRAÇÃO FIRESTORE -->
     <script type="module">
         import { app } from './firebase-config.js';
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -522,50 +522,8 @@
             const savedUsername = localStorage.getItem('userName'); 
             if (savedUsername) { usernameDisplay.textContent = savedUsername; } else { usernameDisplay.textContent = 'Usuário'; }
 
-            processarDesviosTransferidos();
+            carregarRegistros(); 
         });
-
-        // =========================================
-        // PROCESSAR DESVIOS RECEBIDOS DA ABA DE MU
-        // =========================================
-        async function processarDesviosTransferidos() {
-            const filaDesvios = JSON.parse(localStorage.getItem('filaNovasDesvios') || '[]');
-            if (filaDesvios.length > 0) {
-                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-                const agora = new Date();
-                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-
-                for (const item of filaDesvios) {
-                    let statusFinal = item.statusDesvio || 'Pendente';
-                    let agendamentoVal = item.agendamento || '';
-                    
-                    // Se veio como expedido, adicionamos a TS no histórico ou informamos no agendamento/dados
-                    let historicoTexto = `${statusFinal} - ${usuarioLogado} (${dataFormatada})`;
-                    if(item.tsOrigem) {
-                        historicoTexto += ` | TS: ${item.tsOrigem}`;
-                    }
-
-                    try {
-                        await addDoc(collection(db, "desvios_rota"), {
-                            hu: item.hu,
-                            is: item.is,
-                            origem: item.origem,
-                            destino: item.destino,
-                            desvio: item.desvio,
-                            status: statusFinal,
-                            agendamento: agendamentoVal,
-                            dataReg: dataFormatada,
-                            historico: historicoTexto
-                        });
-                    } catch (e) {
-                        console.error("Erro ao transferir desvio para o Firestore: ", e);
-                    }
-                }
-
-                localStorage.removeItem('filaNovasDesvios');
-            }
-            carregarRegistros();
-        }
 
         // SIDEBAR E LOGOUT
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
@@ -613,7 +571,6 @@
                     if (dados.status === 'Aguardando Recusa') badgeClass = 'status-aguardando';
                     if (dados.status === 'Recusado') badgeClass = 'status-recusado';
                     if (dados.status === 'Finalizado') badgeClass = 'status-finalizado';
-                    if (dados.status === 'Expedido') badgeClass = 'status-finalizado';
 
                     novaLinha.innerHTML = `
                         <td><input type="checkbox" class="row-checkbox"></td>
@@ -652,7 +609,7 @@
 
             linhas.forEach(tr => {
                 const status = tr.getAttribute('data-status');
-                if (status === 'Pendente' || status === 'Agendado' || status === 'Expedido') pendente++;
+                if (status === 'Pendente' || status === 'Agendado') pendente++;
                 if (status === 'Aguardando Recusa') aguardando++;
                 if (status === 'Recusado') recusado++;
                 if (status === 'Finalizado') finalizado++;
@@ -710,7 +667,7 @@
                 const atendeDestino = !fDestino || fDestino === 'todos' || destino === fDestino;
                 const atendeDesvio = !fDesvio || fDesvio === 'todos' || desvio === fDesvio;
                 
-                let atendeStatus = chkTodos.checked || statusSelecionados.includes(status) || (statusSelecionados.includes('Pendente') && (status === 'Agendado' || status === 'Expedido'));
+                let atendeStatus = chkTodos.checked || statusSelecionados.includes(status) || (statusSelecionados.includes('Pendente') && status === 'Agendado');
 
                 tr.style.display = (atendeBusca && atendeOrigem && atendeDestino && atendeDesvio && atendeStatus) ? '' : 'none';
             });
@@ -899,8 +856,8 @@
                             <div>Origem: <span style="font-weight:400;">${tr.getAttribute('data-origem')}</span></div>
                             <div>Destino: <span style="font-weight:400;">${tr.getAttribute('data-destino')}</span></div>
                             <div>Desvio: <span style="font-weight:400;">${tr.getAttribute('data-desvio')}</span></div>`;
-                if (tr.getAttribute('data-agendamento')) {
-                    html += `<div>Agendamento / Info: <span style="font-weight:400;">${tr.getAttribute('data-agendamento')}</span></div>`;
+                if (tr.getAttribute('data-status') === 'Agendado' && tr.getAttribute('data-agendamento')) {
+                    html += `<div>Data/Agendamento: <span style="font-weight:400;">${tr.getAttribute('data-agendamento')}</span></div>`;
                 }
                 html += `<div class="historico-box">Histórico:<div class="historico-lista">`;
                 (tr.getAttribute('data-historico')||'').split(' | ').forEach(item => { html += `<div>• ${item}</div>`; });
