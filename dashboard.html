@@ -128,7 +128,7 @@
         .legend { font-size: 0.8rem; font-weight: 600; font-style: italic; display: flex; flex-direction: column; gap: 6px;}
         .legend-item { display: flex; align-items: center; gap: 8px; justify-content: space-between; width: 110px;}
         .legend-color { width: 10px; height: 10px; border-radius: 2px; }
-        .pie { width: 95px; height: 95px; border-radius: 50%; background: #e2e8f0; margin-right: 5px; position: relative; transition: background 0.5s ease;}
+        .pie { width: 110px; height: 110px; border-radius: 50%; background: #e2e8f0; margin-right: 0px; position: relative; transition: background 0.5s ease;}
         
         .card-dark { background: #334155; grid-column: 1 / -1; grid-row: 3; margin-top: 25px; height: 300px; padding: 15px; justify-content: flex-end; }
         .dark-theme .card-dark { background: #1e293b; border: 1px solid var(--border-sidebar); }
@@ -684,42 +684,47 @@
                     // Limpa números anteriores para não duplicar se recarregar
                     pieElement.innerHTML = '';
 
-                    // Função auxiliar para desenhar o número bem no meio da fatia
-                    const addNumberToSlice = (count, startPerc, endPerc) => {
+                    // Função auxiliar para desenhar o número e a porcentagem bem no meio da fatia
+                    const addNumberToSlice = (count, percValue, startPerc, endPerc) => {
                         if (count <= 0) return; // Não mostra nada se for 0
                         
+                        // Formata a porcentagem no padrão brasileiro (ex: 57,9%)
+                        const formatPerc = percValue.toFixed(1).replace('.', ',') + '%';
+
                         // Acha o centro da fatia (em porcentagem)
                         const midPerc = startPerc + (endPerc - startPerc) / 2;
                         // Converte para radianos para usar na matemática
                         const angleRad = (midPerc * 3.6) * (Math.PI / 180);
                         
-                        // Distância do centro do gráfico (raio) - ajuste se quiser mais pra ponta ou pro centro
-                        const radius = 26; 
+                        // Distância do centro do gráfico (raio ajustado para o novo tamanho de 110px)
+                        const radius = 32; 
                         
-                        // Calcula X e Y (O conic-gradient começa no topo, 0 graus)
+                        // Calcula X e Y
                         const x = Math.sin(angleRad) * radius;
                         const y = -Math.cos(angleRad) * radius;
                         
-                        // Cria a etiqueta com o número
+                        // Cria a etiqueta com o número e a porcentagem
                         const label = document.createElement('div');
-                        label.textContent = count;
+                        label.innerHTML = `${count}<br><span style="font-size: 0.65rem; font-weight: 600;">${formatPerc}</span>`;
                         label.style.position = 'absolute';
                         label.style.left = `calc(50% + ${x}px)`;
                         label.style.top = `calc(50% + ${y}px)`;
                         label.style.transform = 'translate(-50%, -50%)';
                         label.style.color = '#ffffff';
-                        label.style.fontSize = '0.75rem';
+                        label.style.fontSize = '0.8rem';
                         label.style.fontWeight = '900';
-                        label.style.textShadow = '1px 1px 3px rgba(0,0,0,0.8)'; // Sombra pra destacar na cor
+                        label.style.textAlign = 'center';
+                        label.style.lineHeight = '1.1';
+                        label.style.textShadow = '1px 1px 3px rgba(0,0,0,0.8)';
                         label.style.zIndex = '10';
                         
                         pieElement.appendChild(label);
                     };
 
-                    // Adiciona os números em cada fatia
-                    addNumberToSlice(countHu, 0, fimHu);
-                    addNumberToSlice(countDesvio, fimHu, fimDesvio);
-                    addNumberToSlice(countMu, fimDesvio, 100);
+                    // Adiciona os números em cada fatia passando a porcentagem correspondente
+                    addNumberToSlice(countHu, percHu, 0, fimHu);
+                    addNumberToSlice(countDesvio, percDesvio, fimHu, fimDesvio);
+                    addNumberToSlice(countMu, percMu, fimDesvio, 100);
 
                 } else if (pieElement) {
                     // Estado vazio caso não tenha nenhum dado
