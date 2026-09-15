@@ -101,42 +101,34 @@
         .card-cyan { background: linear-gradient(to right, #001924, #1eddf5); height: 145px; }
         .card-number { font-size: 3.5rem; font-weight: 900; font-style: italic; font-family: serif; margin-top: 0; z-index: 2; }
 
-        /* =========================================
-           NOVO GRÁFICO LARANJA (OFENSORES) - Dashboard
-           ========================================= */
+        /* GRÁFICO LARANJA (OFENSORES) */
         .card-orange { 
             background: linear-gradient(to right, #2e0d00, #fa6f19); grid-column: 3; grid-row: 1 / 3; 
             display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s, filter 0.2s;
         }
         .card-orange:hover { transform: scale(1.02); filter: brightness(1.1); }
-        
-        .bar-chart-orange { 
-            flex: 1; display: flex; align-items: flex-end; justify-content: space-around; 
-            width: 100%; gap: 15px; margin-top: 20px; padding-bottom: 5px; z-index: 2; 
+        .bar-chart-orange { flex: 1; display: flex; align-items: flex-end; justify-content: space-around; width: 100%; gap: 15px; margin-top: 20px; padding-bottom: 5px; z-index: 2; }
+        .mini-bar-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; flex: 1; max-width: 45px; }
+        .mini-bar-white { background-color: white; width: 100%; border-radius: 4px 4px 0 0; box-shadow: 2px 0 5px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: flex-end; padding-bottom: 5px; }
+        .mini-bar-value { color: black; font-weight: 900; font-size: 0.75rem; line-height: 1; }
+
+        /* RANKING DE RESOLUÇÃO (CARD CYAN) */
+        .ranking-list { 
+            list-style: none; font-weight: 900; font-style: italic; font-size: 1.1rem; 
+            margin-top: 10px; display: flex; flex-direction: column; gap: 8px; z-index: 2; 
         }
-        
-        .mini-bar-wrapper {
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            height: 100%; flex: 1; max-width: 45px;
-        }
-        
-        .mini-bar-white {
-            background-color: white; width: 100%; border-radius: 4px 4px 0 0; 
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1); transition: height 0.5s ease-out;
-            display: flex; justify-content: center; align-items: flex-end; padding-bottom: 5px;
-        }
-        
-        .mini-bar-value {
-            color: black; font-weight: 900; font-size: 0.75rem; line-height: 1;
+        .ranking-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: 6px;
+            font-style: normal; font-size: 0.95rem; font-weight: 700;
         }
 
-        /* Outros gráficos */
+        /* Outros elementos */
         .pie-chart-container { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; z-index: 2;}
         .legend { font-size: 0.8rem; font-weight: 600; font-style: italic; display: flex; flex-direction: column; gap: 6px;}
         .legend-item { display: flex; align-items: center; gap: 8px; justify-content: space-between; width: 110px;}
         .legend-color { width: 10px; height: 10px; border-radius: 2px; }
         .pie { width: 75px; height: 75px; border-radius: 50%; background: conic-gradient(#8cbaf6 0% 50%, #ea5c85 50% 80%, #3e84f4 80% 100%); margin-right: 10px; }
-        .ranking-list { list-style: none; font-weight: 900; font-style: italic; font-size: 1.1rem; margin-top: 5px; display: flex; flex-direction: column; gap: 6px; z-index: 2;}
         
         .card-dark { background: #334155; grid-column: 1 / -1; grid-row: 3; margin-top: 25px; height: 300px; padding: 15px; justify-content: flex-end; }
         .dark-theme .card-dark { background: #1e293b; border: 1px solid var(--border-sidebar); }
@@ -153,7 +145,7 @@
         .c-blue2 { background-color: #4b8df8; }
 
         /* =========================================
-           MODAL CADS OFENSORES (Desfoque e Rolagem)
+           MODAL CADS OFENSORES
            ========================================= */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -172,25 +164,16 @@
             transform: scale(0.95); transition: transform 0.3s;
         }
         .modal-overlay.active .modal-ofensores-content { transform: scale(1); }
-        
-        .modal-ofensores-content h2 {
-            color: white; font-size: 1.8rem; font-weight: 900; margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .close-modal-btn {
-            position: absolute; top: 20px; right: 20px; color: white;
-            font-size: 1.5rem; cursor: pointer; transition: opacity 0.2s;
-        }
+        .modal-ofensores-content h2 { color: white; font-size: 1.8rem; font-weight: 900; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .close-modal-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 1.5rem; cursor: pointer; transition: opacity 0.2s; }
         .close-modal-btn:hover { opacity: 0.7; }
 
         .ofensores-chart-area {
             flex: 1; display: flex; align-items: flex-end; position: relative;
             border-bottom: 2px solid rgba(255,255,255,0.3);
             padding-bottom: 0; margin-top: 10px; margin-left: 20px;
-            overflow-x: auto; 
-            gap: 15px; padding-top: 30px;
+            overflow-x: auto; gap: 15px; padding-top: 30px;
         }
-        
         .ofensores-chart-area::-webkit-scrollbar { height: 8px; }
         .ofensores-chart-area::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; margin-top: 20px;}
         .ofensores-chart-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
@@ -201,22 +184,10 @@
             color: white; font-weight: 700; font-size: 0.8rem; text-align: right;
             border-right: 2px solid rgba(255,255,255,0.3); padding-right: 5px; padding-bottom: 8px;
         }
-        
-        .bar-wrapper {
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            height: 100%; min-width: 45px; position: relative;
-        }
-        
-        .bar-modal-white {
-            background-color: white; width: 100%; border-radius: 6px 6px 0 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.2); transition: height 0.5s ease-out;
-            display: flex; justify-content: center; align-items: flex-end; padding-bottom: 5px;
-        }
-        
+        .bar-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 45px; position: relative; }
+        .bar-modal-white { background-color: white; width: 100%; border-radius: 6px 6px 0 0; box-shadow: 2px 0 10px rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: flex-end; padding-bottom: 5px; }
         .bar-value { color: black; font-weight: 900; font-size: 0.95rem; line-height: 1; }
-        
         .bar-label { color: white; font-size: 0.75rem; font-weight: 700; margin-top: 5px; white-space: nowrap; }
-
     </style>
 </head>
 <body>
@@ -287,12 +258,10 @@
                 <div class="card-number" id="dash-total-finalizados">0</div>
             </div>
 
-            <!-- CARD DE OFENSORES QUE AGORA É CLICÁVEL -->
+            <!-- CARD DE OFENSORES -->
             <div class="card card-orange" id="card-ofensores" title="Clique para expandir">
                 <h2>CAD'S Ofensores</h2>
-                <div class="bar-chart-orange" id="mini-grafico-ofensores">
-                    <!-- Barras dinâmicas serão injetadas aqui -->
-                </div>
+                <div class="bar-chart-orange" id="mini-grafico-ofensores"></div>
             </div>
 
             <div class="card card-purple">
@@ -307,12 +276,13 @@
                 </div>
             </div>
 
+            <!-- CARD DE RANKING RESOLUÇÃO -->
             <div class="card card-cyan">
                 <h2>Ranking Resolução</h2>
-                <ul class="ranking-list">
-                    <li>1.</li>
-                    <li>2.</li>
-                    <li>3.</li>
+                <ul class="ranking-list" id="ranking-resolucao-lista">
+                    <li class="ranking-item"><span>1. -</span><span>--</span></li>
+                    <li class="ranking-item"><span>2. -</span><span>--</span></li>
+                    <li class="ranking-item"><span>3. -</span><span>--</span></li>
                 </ul>
             </div>
         </div>
@@ -343,9 +313,7 @@
             <i class="ph ph-x close-modal-btn" id="fechar-modal-ofensores"></i>
             <h2>CAD'S Ofensores</h2>
             
-            <div class="ofensores-chart-area" id="modal-grafico-ofensores">
-                <!-- Eixo Y dinâmico e Barras serão injetadas aqui -->
-            </div>
+            <div class="ofensores-chart-area" id="modal-grafico-ofensores"></div>
         </div>
     </div>
 
@@ -386,7 +354,6 @@
             });
         }
         
-        // Modal de Ofensores Open/Close
         const modalOfensores = document.getElementById('modal-ofensores');
         document.getElementById('card-ofensores').addEventListener('click', () => { modalOfensores.classList.add('active'); });
         document.getElementById('fechar-modal-ofensores').addEventListener('click', () => { modalOfensores.classList.remove('active'); });
@@ -401,15 +368,30 @@
         const db = getFirestore(app);
         console.log("Firebase conectado ao Dashboard com sucesso!");
 
+        // Função para converter string de data "DD/MM/YYYY HH:mm" em objeto Date do JS
+        function parseDataPtBr(dataStr) {
+            if (!dataStr || typeof dataStr !== 'string' || !dataStr.includes(' ')) return null;
+            const [dataPart, horaPart] = dataStr.split(' ');
+            const [dia, mes, ano] = dataPart.split('/');
+            const [hora, min] = horaPart.split(':');
+            return new Date(ano, mes - 1, dia, hora, min);
+        }
+
+        // Função auxiliar para calcular tempo em minutos entre duas datas
+        function calcularDiferencaMinutos(inicio, fim) {
+            if (!inicio || !fim || isNaN(inicio) || isNaN(fim)) return 0;
+            const diffMs = fim - inicio;
+            return Math.max(0, Math.floor(diffMs / 60000)); // retorna em minutos
+        }
+
         async function atualizarDashboard() {
             try {
                 let pendentes = 0;
                 let finalizados = 0;
                 
-                // Objeto para contar as ocorrências de cada origem
                 const ofensoresCount = {};
+                const cadTemposRespostas = {}; // Guarda { cad: { tempoTotalMinutos, quantidade } }
 
-                // Função auxiliar para contar as origens de forma segura
                 const registrarOrigem = (origem) => {
                     if (origem && typeof origem === 'string') {
                         const cad = origem.trim().toUpperCase();
@@ -419,7 +401,109 @@
                     }
                 };
 
-                // 1. Busca e Conta: HU's PENDENTES
+                const registrarTempoCad = (cad, minutos) => {
+                    if (!cad || minutos <= 0) return;
+                    const nomeCad = cad.trim().toUpperCase();
+                    if (!cadTemposRespostas[nomeCad]) {
+                        cadTemposRespostas[nomeCad] = { somaMinutos: 0, totalAtendimentos: 0 };
+                    }
+                    cadTemposRespostas[nomeCad].somaMinutos += minutos;
+                    cadTemposRespostas[nomeCad].totalAtendimentos += 1;
+                };
+
+                // Parser inteligente do histórico para calcular o SLA por CAD com base nas suas regras
+                const processarHistoricoEAtribuirTempos = (data, tipoAba) => {
+                    const historicoStr = data.historico || '';
+                    const origem = data.origem;
+                    const destino = data.destino;
+                    const desvio = data.desvio || data.origemDesvio || ''; // Caso haja campo de desvio de rota
+
+                    if (!historicoStr.includes('(')) return;
+
+                    // Divide o histórico pelos separadores ' | '
+                    const eventos = historicoStr.split(' | ').map(ev => {
+                        const matchStatus = ev.match(/^([^-]+)-/);
+                        const matchData = ev.match(/\(([^)]+)\)$/);
+                        if (matchStatus && matchData) {
+                            return {
+                                status: matchStatus[1].trim(),
+                                data: parseDataPtBr(matchData[1].trim())
+                            };
+                        }
+                        return null;
+                    }).filter(ev => ev !== null && ev.data !== null);
+
+                    if (eventos.length < 2) return;
+
+                    // Lógica para HU'S PENDENTES
+                    if (tipoAba === 'hus') {
+                        let tempoOrigem = 0;
+                        let tempoDestino = 0;
+                        let dataFimAgendado = null;
+
+                        for (let i = 0; i < eventos.length - 1; i++) {
+                            const atual = eventos[i];
+                            const proximo = eventos[i+1];
+                            const minutos = calcularDiferencaMinutos(atual.data, proximo.data);
+
+                            if (atual.status === 'Pendente') {
+                                tempoOrigem += minutos;
+                            } else if (atual.status === 'Agendado') {
+                                // Pausado até a data e hora do agendamento
+                                dataFimAgendado = parseDataPtBr(data.agendamento);
+                                if (dataFimAgendado && proximo.data >= dataFimAgendado) {
+                                    const minutosUteis = calcularDiferencaMinutos(dataFimAgendado, proximo.data);
+                                    tempoOrigem += minutosUteis;
+                                }
+                            } else if (atual.status === 'Expedido') {
+                                tempoDestino += minutos;
+                            }
+                        }
+                        registrarTempoCad(origem, tempoOrigem);
+                        registrarTempoCad(destino, tempoDestino);
+                    }
+
+                    // Lógica para DESVIO DE ROTA
+                    else if (tipoAba === 'desvio') {
+                        let tempoOrigem = 0;
+                        let tempoDestino = 0;
+                        let tempoDesvio = 0;
+
+                        for (let i = 0; i < eventos.length - 1; i++) {
+                            const atual = eventos[i];
+                            const proximo = eventos[i+1];
+                            const minutos = calcularDiferencaMinutos(atual.data, proximo.data);
+
+                            if (atual.status === 'Pendente' || atual.status === 'Agendado') {
+                                tempoOrigem += minutos;
+                            } else if (atual.status === 'Aguardando Recusa') {
+                                tempoDestino += minutos;
+                            } else if (atual.status === 'Recusado') {
+                                tempoDesvio += minutos;
+                            }
+                        }
+                        registrarTempoCad(origem, tempoOrigem);
+                        registrarTempoCad(destino, tempoDestino);
+                        registrarTempoCad(desvio, tempoDesvio);
+                    }
+
+                    // Lógica para MU'S PENDENTES
+                    else if (tipoAba === 'mus') {
+                        let tempoOrigem = 0;
+                        for (let i = 0; i < eventos.length - 1; i++) {
+                            const atual = eventos[i];
+                            const proximo = eventos[i+1];
+                            const minutos = calcularDiferencaMinutos(atual.data, proximo.data);
+
+                            if (atual.status === 'Pendente') {
+                                tempoOrigem += minutos;
+                            }
+                        }
+                        registrarTempoCad(origem, tempoOrigem);
+                    }
+                };
+
+                // 1. HU'S PENDENTES
                 try {
                     const queryHUs = await getDocs(collection(db, "hus_pendentes"));
                     queryHUs.forEach((doc) => {
@@ -427,11 +511,13 @@
                         const status = data.status || '';
                         if (status === 'Pendente' || status === 'Agendado') pendentes++;
                         else if (status === 'Finalizado') finalizados++;
+                        
                         registrarOrigem(data.origem);
+                        processarHistoricoEAtribuirTempos(data, 'hus');
                     });
-                } catch(e) { console.warn("Coleção hus_pendentes ainda vazia ou não criada.", e); }
+                } catch(e) { console.warn("hus_pendentes vazia", e); }
 
-                // 2. Busca e Conta: DESVIO DE ROTA
+                // 2. DESVIO DE ROTA
                 try {
                     const queryDesvios = await getDocs(collection(db, "desvios_rota"));
                     queryDesvios.forEach((doc) => {
@@ -439,48 +525,83 @@
                         const status = data.status || '';
                         if (status === 'Pendente' || status === 'Agendado' || status === 'Aguardando Recusa') pendentes++;
                         else if (status === 'Finalizado') finalizados++;
+                        
                         registrarOrigem(data.origem);
+                        processarHistoricoEAtribuirTempos(data, 'desvio');
                     });
-                } catch(e) { console.warn("Coleção desvios_rota ainda vazia ou não criada.", e); }
+                } catch(e) { console.warn("desvios_rota vazia", e); }
 
-                // 3. Busca e Conta: MU's PENDENTES
+                // 3. MU'S PENDENTES
                 try {
                     const queryMUs = await getDocs(collection(db, "mus_pendentes"));
                     queryMUs.forEach((doc) => {
                         const data = doc.data();
                         const status = data.status || '';
                         if (status === 'Pendente') pendentes++;
+                        
                         registrarOrigem(data.origem);
+                        processarHistoricoEAtribuirTempos(data, 'mus');
                     });
-                } catch(e) { console.warn("Coleção mus_pendentes ainda vazia ou não criada.", e); }
+                } catch(e) { console.warn("mus_pendentes vazia", e); }
 
-                // Atualiza o texto de totais na tela
+                // Atualiza cards de totais
                 document.getElementById('dash-total-pendentes').textContent = pendentes;
                 document.getElementById('dash-total-finalizados').textContent = finalizados;
 
                 // ==============================================
+                // MONTAR RANKING DE RESOLUÇÃO (TOP 3 MAIS RÁPIDOS)
+                // ==============================================
+                const rankingArray = Object.entries(cadTemposRespostas).map(([cad, info]) => {
+                    const mediaMinutos = Math.round(info.somaMinutos / info.totalAtendimentos);
+                    return { cad, mediaMinutos };
+                }).sort((a, b) => a.mediaMinutos - b.mediaMinutos); // Menor tempo primeiro (mais rápido)
+
+                const rankingListaEl = document.getElementById('ranking-resolucao-lista');
+                rankingListaEl.innerHTML = '';
+
+                for (let i = 0; i < 3; i++) {
+                    const pos = i + 1;
+                    if (rankingArray[i]) {
+                        const item = rankingArray[i];
+                        // Formata o tempo de forma amigável
+                        let tempoFormatado = `${item.mediaMinutos} min`;
+                        if (item.mediaMinutos >= 60) {
+                            const horas = (item.mediaMinutos / 60).toFixed(1);
+                            tempoFormatado = `${horas}h`;
+                        }
+                        rankingListaEl.innerHTML += `
+                            <li class="ranking-item">
+                                <span>${pos}. ${item.cad}</span>
+                                <span style="font-size: 0.85rem; opacity: 0.9;">${tempoFormatado}</span>
+                            </li>
+                        `;
+                    } else {
+                        rankingListaEl.innerHTML += `
+                            <li class="ranking-item" style="opacity: 0.5;">
+                                <span>${pos}. --</span>
+                                <span>--</span>
+                            </li>
+                        `;
+                    }
+                }
+
+                // ==============================================
                 // RENDERIZAR GRÁFICOS DE OFENSORES
                 // ==============================================
-                
-                // Transforma o objeto em array e ordena do maior para o menor
                 const ofensoresArray = Object.entries(ofensoresCount)
                     .map(([cad, count]) => ({ cad, count }))
                     .sort((a, b) => b.count - a.count);
 
                 const miniGrafico = document.getElementById('mini-grafico-ofensores');
                 miniGrafico.innerHTML = '';
-                
                 const maxCount = ofensoresArray.length > 0 ? ofensoresArray[0].count : 1; 
-                
-                // Pega só os 5 primeiros
                 const top5 = ofensoresArray.slice(0, 5);
 
-                // Renderiza o Top 5 no card laranja da tela inicial
                 if (top5.length === 0) {
-                    miniGrafico.innerHTML = '<span style="color:white; font-size: 0.9rem; align-self: center; width: 100%; text-align: center;">Sem ofensores no momento.</span>';
+                    miniGrafico.innerHTML = '<span style="color:white; font-size: 0.9rem; align-self: center; width: 100%; text-align: center;">Sem ofensores.</span>';
                 } else {
                     top5.forEach(item => {
-                        const alturaPerc = Math.max((item.count / maxCount) * 100, 15); // mínimo de altura
+                        const alturaPerc = Math.max((item.count / maxCount) * 100, 15);
                         miniGrafico.innerHTML += `
                             <div class="mini-bar-wrapper">
                                 <div class="mini-bar-white" style="height: ${alturaPerc}%;" title="${item.cad}: ${item.count}">
@@ -492,12 +613,8 @@
                     });
                 }
 
-                // 2. Renderiza o Modal Expandido (Com todos os ofensores)
                 const modalGrafico = document.getElementById('modal-grafico-ofensores');
-                modalGrafico.innerHTML = '';
-                
-                // Desenha o Eixo Y dinâmico no modal
-                modalGrafico.innerHTML += `
+                modalGrafico.innerHTML = `
                     <div class="y-axis-ofensores">
                         <span>${maxCount}</span>
                         <span>${Math.floor(maxCount * 0.75)}</span>
@@ -508,7 +625,7 @@
                 `;
 
                 if (ofensoresArray.length === 0) {
-                    modalGrafico.innerHTML += '<span style="color:white; align-self: center; margin-left: 20px;">Sem dados no momento.</span>';
+                    modalGrafico.innerHTML += '<span style="color:white; align-self: center; margin-left: 20px;">Sem dados.</span>';
                 } else {
                     ofensoresArray.forEach(item => {
                         const alturaPerc = Math.max((item.count / maxCount) * 100, 10);
@@ -528,9 +645,7 @@
             }
         }
 
-        // Chama a função assim que a página carregar
         atualizarDashboard();
-
     </script>
 </body>
 </html>
