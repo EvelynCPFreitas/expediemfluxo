@@ -528,13 +528,6 @@
                 <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill"><span class="input-prefix">Destino:</span><input type="text" id="edit-destino" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill" id="container-edit-desvio"><span class="input-prefix">Desvio:</span><input type="text" id="edit-desvio" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
-                <div class="input-pill">
-                    <span class="input-prefix">Status:</span>
-                    <select id="edit-status">
-                        <option value="Pendente">Pendente</option>
-                        <option value="HU Criada">HU Criada</option>
-                    </select>
-                </div>
                 <div id="edit-mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;"></div>
                 <button class="btn-add-mu" id="btn-edit-add-mu">+ Adicionar MU</button>
             </div>
@@ -1032,7 +1025,6 @@
                 document.getElementById('edit-desvio').value = linhaEmEdicao.getAttribute('data-desvio') || '';
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
                 document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
-                document.getElementById('edit-status').value = linhaEmEdicao.getAttribute('data-status');
                 
                 editMuContainer.innerHTML = '';
                 const musSalvas = linhaEmEdicao.getAttribute('data-mus');
@@ -1128,7 +1120,7 @@
             if (quantidade === 0) { alert('Adicione ao menos uma MU.'); return; }
 
             const musSalvas = muValues.join(', ');
-            const novoStatus = document.getElementById('edit-status').value;
+            const novoStatus = linhaEmEdicao.getAttribute('data-status');
             
             let hist = linhaEmEdicao.getAttribute('data-historico') || '';
             if (novoStatus !== linhaEmEdicao.getAttribute('data-status')) {
