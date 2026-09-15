@@ -523,7 +523,48 @@
             if (savedUsername) { usernameDisplay.textContent = savedUsername; } else { usernameDisplay.textContent = 'Usuário'; }
 
             carregarRegistros(); 
+            processarDesviosTransferidos(); // VERIFICA E PROCESSA OS DESVIOS TRANSFERIDOS
         });
+
+        // =========================================
+        // PROCESSAR DESVIOS RECEBIDOS DA ABA DE MU
+        // =========================================
+        async function processarDesviosTransferidos() {
+            const filaDesvios = JSON.parse(localStorage.getItem('filaNovosDesvios') || '[]');
+            
+            if (filaDesvios.length > 0) {
+                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+                const agora = new Date();
+                const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+
+                for (const item of filaDesvios) {
+                    const statusFinal = item.statusDesvio || 'Pendente';
+                    const ts = item.ts || '';
+                    const agendamento = item.agendamento || '';
+
+                    try {
+                        await addDoc(collection(db, "desvios_rota"), {
+                            hu: item.hu,
+                            is: item.is,
+                            origem: item.origem,
+                            destino: item.destino,
+                            desvio: item.desvio,
+                            status: statusFinal,
+                            agendamento: agendamento,
+                            ts: ts, // TS adicionada aqui
+                            dataReg: dataFormatada,
+                            historico: `${statusFinal} - Gerado via MU Pendente - ${usuarioLogado} (${dataFormatada})`
+                        });
+                    } catch (error) {
+                        console.error("Erro ao transferir Desvio: ", error);
+                    }
+                }
+
+                // Limpa a fila após salvar e recarrega os dados
+                localStorage.removeItem('filaNovosDesvios');
+                carregarRegistros();
+            }
+        }
 
         // SIDEBAR E LOGOUT
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
@@ -563,6 +604,7 @@
                     novaLinha.setAttribute('data-desvio', dados.desvio || '');
                     novaLinha.setAttribute('data-status', dados.status || 'Pendente');
                     novaLinha.setAttribute('data-agendamento', dados.agendamento || '');
+                    novaLinha.setAttribute('data-ts', dados.ts || ''); // Capturando a TS
                     novaLinha.setAttribute('data-data-reg', dados.dataReg || '');
                     novaLinha.setAttribute('data-historico', dados.historico || '');
 
@@ -814,7 +856,7 @@
             try {
                 await addDoc(collection(db, "desvios_rota"), {
                     hu: hu, is: is, origem: origem, destino: destino, desvio: desvio,
-                    status: 'Pendente', agendamento: '', dataReg: dataFormatada,
+                    status: 'Pendente', agendamento: '', ts: '', dataReg: dataFormatada,
                     historico: `Pendente - ${usuarioLogado} (${dataFormatada})`
                 });
 
@@ -856,6 +898,12 @@
                             <div>Origem: <span style="font-weight:400;">${tr.getAttribute('data-origem')}</span></div>
                             <div>Destino: <span style="font-weight:400;">${tr.getAttribute('data-destino')}</span></div>
                             <div>Desvio: <span style="font-weight:400;">${tr.getAttribute('data-desvio')}</span></div>`;
+                
+                const tsVal = tr.getAttribute('data-ts');
+                if (tsVal && tsVal.trim() !== '') {
+                    html += `<div>TS: <span style="font-weight:400;">${tsVal}</span></div>`;
+                }
+
                 if (tr.getAttribute('data-status') === 'Agendado' && tr.getAttribute('data-agendamento')) {
                     html += `<div>Data/Agendamento: <span style="font-weight:400;">${tr.getAttribute('data-agendamento')}</span></div>`;
                 }
