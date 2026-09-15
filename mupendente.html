@@ -1057,11 +1057,33 @@
             const origem = linhaEmProcesso.getAttribute('data-origem');
             const destino = linhaEmProcesso.getAttribute('data-destino');
 
-            // Se não houver desvio, adiciona à fila do localStorage para a aba HU puxar depois
+            // SE NÃO HOUVER DESVIO -> Envia para HU's Pendentes
             if (!desvio || desvio.trim() === '') {
                 const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
                 filaHUs.push({ hu: tempHuVal, is: tempIsVal, origem: origem, destino: destino, statusHU: statusHU, ts: ts, agendamento: agendamento });
                 localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
+            } 
+            // SE HOUVER DESVIO -> Envia para Desvio de Rota
+            else {
+                const filaDesvios = JSON.parse(localStorage.getItem('filaNovosDesvios') || '[]');
+                
+                // Regra solicitada: Se expedir, vai como "Aguardando Recusa"
+                let statusDesvio = statusHU;
+                if (statusHU === 'Expedido') {
+                    statusDesvio = 'Aguardando Recusa';
+                }
+
+                filaDesvios.push({ 
+                    hu: tempHuVal, 
+                    is: tempIsVal, 
+                    origem: origem, 
+                    destino: destino, 
+                    desvio: desvio,
+                    statusDesvio: statusDesvio, 
+                    ts: ts, 
+                    agendamento: agendamento 
+                });
+                localStorage.setItem('filaNovosDesvios', JSON.stringify(filaDesvios));
             }
 
             // Atualiza status local para HU Criada
