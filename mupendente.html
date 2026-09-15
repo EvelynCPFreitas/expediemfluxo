@@ -574,9 +574,9 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-mu-corpo">
-                    <tr data-processo="Montagem de HU" data-quantidade="2" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-hu="" data-is="" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)" data-mus="MU12345, MU67890">
+                    <tr data-processo="Montagem de HU" data-quantidade="1" data-origem="SC02" data-destino="BA01" data-desvio="" data-status="Pendente" data-hu="" data-is="" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)" data-mus="MU12345">
                         <td>Montagem de HU</td>
-                        <td>2</td>
+                        <td>1</td>
                         <td>SC02</td>
                         <td>BA01</td>
                         <td><span class="status-badge status-pendente">Pendente</span></td>
@@ -760,7 +760,7 @@
                 </div>
                 
                 <div id="edit-mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
-                    <!-- Campos de MU serão injetados aqui na edição -->
+                    <!-- Campos de MU -->
                 </div>
                 <button class="btn-add-mu" id="btn-edit-add-mu">+ Adicionar MU</button>
 
@@ -796,6 +796,8 @@
             else usernameDisplay.textContent = 'Evelyn';
 
             atualizarKPIs();
+            // Adiciona um campo de MU vazio por padrão ao carregar a página
+            adicionarCampoMU(muContainer);
         });
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
@@ -938,7 +940,7 @@
         }
 
         // =========================================
-        // LÓGICA DE NAVEGAÇÃO COM ENTER (AMBOS OS MODAIS)
+        // LÓGICA DE NAVEGAÇÃO COM ENTER
         // =========================================
         document.getElementById('modal-novo-registro').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -972,7 +974,7 @@
         });
 
         // =========================================
-        // LÓGICA DE AÇÕES DA TABELA (MODAIS)
+        // AÇÕES DOS MODAIS E TABELA
         // =========================================
         const modalNovoRegistro = document.getElementById('modal-novo-registro');
         document.getElementById('btn-novo-registro').addEventListener('click', () => {
@@ -1051,7 +1053,6 @@
                 document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
                 document.getElementById('edit-status').value = linhaEmEdicao.getAttribute('data-status');
                 
-                // Popula os campos de MU salvos
                 editMuContainer.innerHTML = '';
                 const musSalvas = linhaEmEdicao.getAttribute('data-mus');
                 if (musSalvas && musSalvas.trim() !== '') {
@@ -1097,36 +1098,18 @@
 
             const origem = linhaEmProcesso.getAttribute('data-origem');
             const destino = linhaEmProcesso.getAttribute('data-destino');
-            const desvio = linhaEmProcesso.getAttribute('data-desvio') || '';
-
-            // Se houver desvio preenchido, envia para a aba Desvio de Rota com o status correspondente
-            if (desvio && desvio.trim() !== '') {
-                const filaDesvios = JSON.parse(localStorage.getItem('filaNovasDesvios') || '[]');
-                filaDesvios.push({ 
-                    hu: tempHuVal, 
-                    is: tempIsVal, 
-                    origem: origem, 
-                    destino: destino,
-                    desvio: desvio,
-                    statusDesvio: statusHU, // "Aguardando Recusa" se Expedido, ou "Agendado"/"Pendente"
-                    tsOrigem: tsOrigem,
-                    agendamento: agendamento
-                });
-                localStorage.setItem('filaNovasDesvios', JSON.stringify(filaDesvios));
-            } else {
-                // Caso contrário, manda para HU's Pendentes padrão
-                const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
-                filaHUs.push({ 
-                    hu: tempHuVal, 
-                    is: tempIsVal, 
-                    origem: origem, 
-                    destino: destino,
-                    statusHU: statusHU === 'Aguardando Recusa' ? 'Expedido' : statusHU,
-                    tsOrigem: tsOrigem,
-                    agendamento: agendamento
-                });
-                localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
-            }
+            
+            const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
+            filaHUs.push({ 
+                hu: tempHuVal, 
+                is: tempIsVal, 
+                origem: origem, 
+                destino: destino,
+                statusHU: statusHU,
+                tsOrigem: tsOrigem,
+                agendamento: agendamento
+            });
+            localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
 
             atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
             linhaEmProcesso = null;
@@ -1157,8 +1140,7 @@
             if (!tsInput.checkValidity()) { tsInput.reportValidity(); return; }
             
             modalTsHu.classList.remove('active');
-            // Se clicar em Expedir e tiver desvio, o status gerado na aba desvio deve ser "Aguardando Recusa"
-            finalizarAvancoMU('Aguardando Recusa', tsInput.value, '');
+            finalizarAvancoMU('Expedido', tsInput.value, '');
         });
 
         document.getElementById('form-agendar-hu').addEventListener('submit', (e) => {
