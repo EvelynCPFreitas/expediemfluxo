@@ -39,33 +39,87 @@
             --table-border: #1e293b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-primary); transition: background-color 0.3s ease, color 0.3s ease; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-        /* BOTÃO TEMA */
-        .theme-toggle-btn { position: fixed; top: 30px; right: 50px; background-color: var(--btn-theme-bg); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 100; transition: background-color 0.3s ease; }
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* =========================================
+           BOTÃO DE TROCA DE TEMA
+           ========================================= */
+        .theme-toggle-btn {
+            position: fixed;
+            top: 30px;
+            right: 50px;
+            background-color: var(--btn-theme-bg);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
         .theme-toggle-btn:hover { background-color: rgba(128, 128, 128, 0.2); }
         .theme-icon { width: 24px; height: 24px; fill: none; stroke: var(--btn-theme-color); stroke-width: 1.5; }
         #theme-icon-dark { display: none; }
         .dark-theme #theme-icon-light { display: none; }
         .dark-theme #theme-icon-dark { display: block; fill: var(--btn-theme-color); }
 
-        /* SIDEBAR */
-        .sidebar { width: 80px; background-color: var(--bg-sidebar); display: flex; flex-direction: column; border-right: 2px solid var(--border-sidebar); padding-bottom: 20px; transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease; z-index: 50; }
+        /* =========================================
+           BARRA LATERAL (SIDEBAR)
+           ========================================= */
+        .sidebar {
+            width: 80px; 
+            background-color: var(--bg-sidebar);
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--border-sidebar);
+            padding-bottom: 20px;
+            transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            z-index: 50;
+        }
         .sidebar.expanded { width: 250px; }
-        .logo-container { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 25px 0; color: var(--text-sidebar); font-weight: 900; font-size: 0.9rem; white-space: nowrap; transition: padding 0.3s ease, justify-content 0.3s ease; }
+        .logo-container {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 25px 0; color: var(--text-sidebar); font-weight: 900; font-size: 0.9rem;
+            white-space: nowrap; transition: padding 0.3s ease, justify-content 0.3s ease;
+        }
         .sidebar.expanded .logo-container { justify-content: flex-start; padding: 25px 20px; }
         .logo-svg { width: 45px; height: auto; flex-shrink: 0; }
         .logo-text { display: none; }
         .sidebar.expanded .logo-text { display: block; }
+
         .nav-menu { flex: 1; margin-top: 30px; }
-        .nav-item { display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; color: var(--text-sidebar); font-weight: 700; font-size: 1.05rem; text-decoration: none; white-space: nowrap; transition: background 0.2s, padding 0.3s ease, justify-content 0.3s ease; }
+        .nav-item {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            padding: 15px; color: var(--text-sidebar); font-weight: 700; font-size: 1.05rem;
+            text-decoration: none; white-space: nowrap; transition: background 0.2s, padding 0.3s ease, justify-content 0.3s ease;
+        }
         .sidebar.expanded .nav-item { justify-content: flex-start; padding: 15px 25px; }
         .nav-text { display: none; }
         .sidebar.expanded .nav-text { display: block; }
         .nav-item:hover, .nav-item.active { background-color: var(--bg-hover); }
         .nav-item i, .nav-item svg { font-size: 1.5rem; flex-shrink: 0; }
-        .sidebar-footer { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 0; color: var(--text-sidebar); transition: flex-direction 0.3s ease, padding 0.3s ease; }
+
+        .sidebar-footer {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            gap: 20px; color: var(--text-sidebar); transition: flex-direction 0.3s ease, padding 0.3s ease;
+        }
         .sidebar.expanded .sidebar-footer { flex-direction: row; justify-content: space-between; padding: 0 25px; }
         .user-info { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 700; }
         #display-cd { display: none; white-space: nowrap; }
@@ -76,21 +130,47 @@
 
         /* Dropdown Perfil */
         .profile-container { position: relative; display: flex; align-items: center; cursor: pointer; padding: 5px; margin-left: -5px; }
-        .profile-dropdown { position: absolute; bottom: 40px; left: 0; background-color: var(--bg-body); border: 1px solid var(--border-sidebar); border-radius: 8px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px; min-width: 130px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 100; }
+        .profile-dropdown {
+            position: absolute; bottom: 40px; left: 0; background-color: var(--bg-body);
+            border: 1px solid var(--border-sidebar); border-radius: 8px; padding: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px;
+            min-width: 130px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 100;
+        }
         .dark-theme .profile-dropdown { box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .profile-dropdown::after { content: ''; position: absolute; bottom: -6px; left: 15px; width: 12px; height: 12px; background-color: var(--bg-body); border-bottom: 1px solid var(--border-sidebar); border-right: 1px solid var(--border-sidebar); transform: rotate(45deg); }
+        .profile-dropdown::after {
+            content: ''; position: absolute; bottom: -6px; left: 15px; width: 12px; height: 12px;
+            background-color: var(--bg-body); border-bottom: 1px solid var(--border-sidebar); border-right: 1px solid var(--border-sidebar); transform: rotate(45deg);
+        }
         .profile-container:hover .profile-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-name { font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--border-sidebar); padding-bottom: 8px; text-align: center; }
         .dropdown-logout { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; color: #ef4444; text-decoration: none; font-weight: 700; padding: 6px; border-radius: 6px; }
         .dropdown-logout:hover { background-color: rgba(239, 68, 68, 0.1); }
 
-        /* CONTEÚDO PRINCIPAL */
-        .main-content { flex: 1; padding: 30px 50px; overflow-y: auto; position: relative; }
-        .page-title { color: #004b87; font-size: 1.4rem; font-weight: 900; margin-bottom: 20px; transition: color 0.3s ease; }
+        /* =========================================
+           CONTEÚDO PRINCIPAL (MU'S PENDENTES)
+           ========================================= */
+        .main-content {
+            flex: 1; padding: 30px 50px; overflow-y: auto; position: relative;
+        }
+
+        .page-title {
+            color: #004b87; font-size: 1.4rem; font-weight: 900; margin-bottom: 20px; transition: color 0.3s ease;
+        }
         .dark-theme .page-title { color: var(--text-sidebar); }
 
-        .hu-cards-container { display: flex; gap: 20px; width: 75%; margin: 0 auto 15px auto; justify-content: center; }
-        .hu-card { flex: 1; border-radius: 8px; padding: 15px 20px; color: white; text-align: center; box-shadow: 4px 4px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; min-height: 100px; cursor: pointer; transition: transform 0.2s, filter 0.2s; }
+        .hu-cards-container { 
+            display: flex; 
+            gap: 20px; 
+            width: 75%; 
+            margin: 0 auto 15px auto; 
+            justify-content: center; 
+        }
+        
+        .hu-card {
+            flex: 1; border-radius: 8px; padding: 15px 20px; color: white; text-align: center;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; min-height: 100px;
+            cursor: pointer; transition: transform 0.2s, filter 0.2s;
+        }
         .hu-card:hover { transform: translateY(-3px); filter: brightness(1.08); }
         .hu-card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; text-transform: none;}
         .hu-card-value { font-size: 2.2rem; font-style: italic; font-weight: 900; font-family: serif; }
@@ -100,15 +180,27 @@
         .mu-card-hucriada { background: linear-gradient(90deg, #05051a 0%, #00004d 40%, #1a1aff 100%); }
 
         .hu-actions-container { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 5px; padding-right: 5px; }
-        .btn-novo-registro { background: linear-gradient(to bottom, #f0f0f0, #d0d0d0); border: 1px solid #ccc; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #666; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: filter 0.2s; }
+        .btn-novo-registro {
+            background: linear-gradient(to bottom, #f0f0f0, #d0d0d0); border: 1px solid #ccc;
+            padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #666;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8); box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: filter 0.2s;
+        }
         .btn-novo-registro:hover { filter: brightness(1.1); }
         .dark-theme .btn-novo-registro { background: linear-gradient(to bottom, #475569, #334155); border-color: #1e293b; color: #fff; text-shadow: none; }
 
         /* BARRA DE FILTROS */
-        .hu-filter-bar { background-color: #d1d9e2; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem; font-weight: 700; color: #004b87; transition: background-color 0.3s, color 0.3s; }
+        .hu-filter-bar {
+            background-color: #d1d9e2; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 12px; font-size: 0.85rem; font-weight: 700; color: #004b87;
+            transition: background-color 0.3s, color 0.3s;
+        }
         .dark-theme .hu-filter-bar { background-color: #1e293b; color: #8ca4c0; }
-        .hu-filter-bar input { padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px; font-size: 0.85rem; font-family: 'Inter', sans-serif; }
+
+        .hu-filter-bar input {
+            padding: 4px 8px; border: 1px solid #004b87; border-radius: 4px; background-color: white; color: #333; outline: none; height: 24px; font-size: 0.85rem; font-family: 'Inter', sans-serif;
+        }
         .dark-theme .hu-filter-bar input { border-color: #334155; background-color: #0f172a; color: #f1f5f9; }
+        
         .search-input-wrapper { position: relative; display: flex; align-items: center; }
         .search-input-wrapper i { position: absolute; left: 8px; color: #004b87; font-size: 0.9rem; }
         .dark-theme .search-input-wrapper i { color: #8ca4c0; }
@@ -117,19 +209,31 @@
 
         /* DROPDOWNS CUSTOMIZADOS */
         .custom-dropdown-container { position: relative; display: inline-block; }
-        .custom-dropdown-list { position: absolute; top: 100%; left: 0; min-width: 140px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 200px; overflow-y: auto; margin-top: 5px; padding: 5px 0; list-style: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: none; z-index: 1000; }
+        .custom-dropdown-list {
+            position: absolute; top: 100%; left: 0; min-width: 140px; background: #ffffff;
+            border: 1px solid #cbd5e1; border-radius: 8px; max-height: 200px; overflow-y: auto;
+            margin-top: 5px; padding: 5px 0; list-style: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: none; z-index: 1000;
+        }
         .custom-dropdown-list.show { display: block; }
         .custom-dropdown-list::-webkit-scrollbar { width: 6px; }
         .custom-dropdown-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        .custom-dropdown-item { padding: 8px 12px; cursor: pointer; color: #555; font-weight: 600; transition: background-color 0.1s, color 0.1s; }
+        .custom-dropdown-item {
+            padding: 8px 12px; cursor: pointer; color: #555; font-weight: 600; transition: background-color 0.1s, color 0.1s;
+        }
         .custom-dropdown-item:hover { background-color: #004b87; color: #ffffff; }
+
         .dark-theme .custom-dropdown-list { background: #0f172a; border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
         .dark-theme .custom-dropdown-list::-webkit-scrollbar-thumb { background: #334155; }
         .dark-theme .custom-dropdown-item { color: #cbd5e1; }
         .dark-theme .custom-dropdown-item:hover { background-color: #1e293b; color: #fcd34d; }
 
         /* Popups Multi-Seleção */
-        .multi-select-popup { position: absolute; top: 100%; left: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 160px; padding: 10px; display: none; z-index: 2000; margin-top: 5px; }
+        .multi-select-popup {
+            position: absolute; top: 100%; left: 0; background: #ffffff; border: 1px solid #cbd5e1;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 160px; padding: 10px;
+            display: none; z-index: 2000; margin-top: 5px;
+        }
         .multi-select-popup.show { display: block; }
         .dark-theme .multi-select-popup { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
         .multi-select-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: #333; border-radius: 4px; }
@@ -143,9 +247,18 @@
 
         /* Calendário */
         .date-picker-wrapper { position: relative; display: inline-block; }
-        .date-input-display { background: white; border: 1px solid #004b87; border-radius: 4px; padding: 4px 8px; font-size: 0.85rem; color: #333; cursor: pointer; height: 24px; display: flex; align-items: center; justify-content: space-between; width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .date-input-display {
+            background: white; border: 1px solid #004b87; border-radius: 4px; padding: 4px 8px;
+            font-size: 0.85rem; color: #333; cursor: pointer; height: 24px; display: flex;
+            align-items: center; justify-content: space-between; width: 140px; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
+        }
         .dark-theme .date-input-display { background: #0f172a; border-color: #334155; color: #f1f5f9; }
-        .calendar-popup { position: absolute; top: 100%; left: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 280px; padding: 15px; display: none; z-index: 2000; margin-top: 5px; }
+        .calendar-popup {
+            position: absolute; top: 100%; left: 0; background: #ffffff; border: 1px solid #cbd5e1;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 280px; padding: 15px;
+            display: none; z-index: 2000; margin-top: 5px;
+        }
         .calendar-popup.show { display: block; }
         .dark-theme .calendar-popup { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
         .cal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 700; color: #004b87; margin-bottom: 12px; font-size: 0.95rem; }
@@ -173,15 +286,28 @@
         .cal-btn-apply:hover { background: rgba(0,75,135,0.15); }
 
         /* =========================================
-           BADGES DE STATUS E TABELA
+           BADGES DE STATUS
            ========================================= */
-        .status-badge { padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; display: inline-block; }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
         .status-pendente { background-color: #ffe6e6; color: #e62020; }
         .dark-theme .status-pendente { background-color: rgba(230, 32, 32, 0.2); color: #ff6b6b; }
+
         .status-hucriada { background-color: #e6e6ff; color: #1a1aff; }
         .dark-theme .status-hucriada { background-color: rgba(26, 26, 255, 0.2); color: #8cb4ff; }
 
-        .hu-table-container { background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto; transition: background-color 0.3s, border-color 0.3s; border: 1px solid transparent; }
+
+        /* CONTAINER DA TABELA */
+        .hu-table-container {
+            background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
+            transition: background-color 0.3s, border-color 0.3s; border: 1px solid transparent; 
+        }
         .dark-theme .hu-table-container { background-color: #0f172a; border: 1px solid #1e293b; }
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
@@ -200,12 +326,19 @@
         .table-actions i { cursor: pointer; transition: transform 0.2s; }
         .table-actions i:hover { transform: scale(1.1); }
 
-        /* =========================================
-           MODAIS
-           ========================================= */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        /* Modais */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background-color: #d1d9e2; border-radius: 20px; padding: 25px 30px; width: 360px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #aebac9; transform: translateY(-20px); transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-content {
+            background-color: #d1d9e2; border-radius: 20px; padding: 25px 30px; width: 360px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #aebac9;
+            transform: translateY(-20px); transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s;
+            max-height: 90vh; display: flex; flex-direction: column;
+        }
         .modal-overlay.active .modal-content { transform: translateY(0); }
         .dark-theme .modal-content { background-color: #1e293b; border-color: #334155; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #004b87; flex-shrink: 0; }
@@ -215,39 +348,37 @@
         .modal-close:hover { opacity: 0.6; }
         .modal-body { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; overflow-y: auto; flex: 1; padding-right: 5px; }
         
-        .input-pill { display: flex; align-items: center; border: 1px solid #004b87; border-radius: 20px; padding: 6px 15px; background-color: transparent; transition: border-color 0.3s; position: relative; overflow: visible; flex-shrink: 0; }
+        .input-pill {
+            display: flex; align-items: center; border: 1px solid #004b87; border-radius: 20px;
+            padding: 6px 15px; background-color: transparent; transition: border-color 0.3s; position: relative; overflow: visible; flex-shrink: 0;
+        }
         .dark-theme .input-pill { border-color: #8ca4c0; }
         .input-prefix { font-weight: 900; color: #004b87; margin-right: 5px; font-size: 0.95rem; white-space: nowrap; }
         .dark-theme .input-prefix { color: #8ca4c0; }
-        .input-pill input, .input-pill select { border: none; background: transparent; outline: none; flex: 1; color: #333; font-weight: 600; font-size: 0.95rem; width: 100%; font-family: 'Inter', sans-serif; }
-        
-        /* Remove a cor de fundo do preenchimento automático (autofill) do navegador */
-        .input-pill input:-webkit-autofill,
-        .input-pill input:-webkit-autofill:hover, 
-        .input-pill input:-webkit-autofill:focus, 
-        .input-pill input:-webkit-autofill:active {
-            transition: background-color 5000s ease-in-out 0s;
-            -webkit-text-fill-color: #333 !important;
+        .input-pill input, .input-pill select {
+            border: none; background: transparent; outline: none; flex: 1; color: #333; font-weight: 600;
+            font-size: 0.95rem; width: 100%; font-family: 'Inter', sans-serif;
         }
-
-        /* Garante que a fonte fique clara no modo escuro ao usar o autofill */
-        .dark-theme .input-pill input:-webkit-autofill,
-        .dark-theme .input-pill input:-webkit-autofill:hover, 
-        .dark-theme .input-pill input:-webkit-autofill:focus, 
-        .dark-theme .input-pill input:-webkit-autofill:active {
-            -webkit-text-fill-color: #f1f5f9 !important;
-        }
-
         .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
         .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
         .modal-footer { display: flex; justify-content: center; gap: 10px; flex-shrink: 0; }
-        .btn-salvar { background-color: #004b87; color: white; border: none; border-radius: 20px; padding: 8px 30px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: filter 0.2s, background-color 0.3s; }
+        .btn-salvar {
+            background-color: #004b87; color: white; border: none; border-radius: 20px; padding: 8px 30px;
+            font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: filter 0.2s, background-color 0.3s;
+        }
         .btn-salvar:hover { filter: brightness(1.2); }
         .dark-theme .btn-salvar { background: linear-gradient(to bottom, #475569, #334155); border: 1px solid #1e293b; color: #f1f5f9; }
 
-        .btn-remove-mu { background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; margin-left: 5px; font-size: 0.8rem; flex-shrink: 0; }
+        .btn-remove-mu {
+            background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer;
+            margin-left: 5px; font-size: 0.8rem; flex-shrink: 0;
+        }
         .btn-remove-mu:hover { color: #dc2626; text-decoration: underline; }
-        .btn-add-mu { background: none; border: none; color: var(--btn-theme-color); font-weight: 700; cursor: pointer; text-align: left; padding-left: 5px; margin-top: -5px; font-size: 0.9rem; }
+
+        .btn-add-mu {
+            background: none; border: none; color: var(--btn-theme-color); font-weight: 700; 
+            cursor: pointer; text-align: left; padding-left: 5px; margin-top: -5px; font-size: 0.9rem;
+        }
         .btn-add-mu:hover { text-decoration: underline; filter: brightness(1.2); }
 
         .detalhes-body { font-size: 0.9rem; font-weight: 700; color: #004b87; display: flex; flex-direction: column; gap: 8px; }
@@ -258,11 +389,6 @@
         .dark-theme .historico-box { border-color: #334155; }
         .historico-lista { font-size: 0.8rem; font-weight: 400; margin-top: 5px; display: flex; flex-direction: column; gap: 4px; max-height: 100px; overflow-y: auto; }
 
-        /* Estilos adicionais para o Modal de Duplicidade */
-        .icon-warning-circle { display: inline-flex; justify-content: center; align-items: center; width: 60px; height: 60px; border-radius: 50%; background-color: #fef3c7; color: #f59e0b; font-size: 2.2rem; margin-bottom: 15px; }
-        .dark-theme .icon-warning-circle { background-color: rgba(245, 158, 11, 0.2); }
-        .dark-theme .dark-theme-text-fix { color: #f1f5f9 !important; }
-        .dark-theme .dark-theme-text-fix-sub { color: #cbd5e1 !important; }
     </style>
 </head>
 <body>
@@ -282,24 +408,53 @@
             </svg>
             <span class="logo-text">EXPEDIÇÃO EM FLUXO</span>
         </div>
+
         <nav class="nav-menu">
-            <a href="dashboard.html" class="nav-item"><i class="ph ph-squares-four"></i><span class="nav-text">Dashboard</span></a>
+            <a href="dashboard.html" class="nav-item">
+                <i class="ph ph-squares-four"></i> 
+                <span class="nav-text">Dashboard</span>
+            </a>
             <a href="hupendente.html" class="nav-item">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.5rem; height: 1.5rem; flex-shrink: 0;">
-                    <rect x="2" y="2" width="6" height="5.5" /><rect x="4.25" y="2" width="1.5" height="2.5" /><rect x="9" y="2" width="6" height="5.5" /><rect x="11.25" y="2" width="1.5" height="2.5" /><rect x="16" y="2" width="6" height="5.5" /><rect x="18.25" y="2" width="1.5" height="2.5" /><rect x="2" y="8.5" width="6" height="5.5" /><rect x="4.25" y="8.5" width="1.5" height="2.5" /><rect x="9" y="8.5" width="6" height="5.5" /><rect x="11.25" y="8.5" width="1.5" height="2.5" /><rect x="16" y="8.5" width="6" height="5.5" /><rect x="18.25" y="8.5" width="1.5" height="2.5" /><rect x="1" y="15" width="22" height="2" /><rect x="1" y="21" width="22" height="2" /><rect x="3.5" y="17" width="2" height="4" /><rect x="11" y="17" width="2" height="4" /><rect x="18.5" y="17" width="2" height="4" />
+                    <rect x="2" y="2" width="6" height="5.5" />
+                    <rect x="4.25" y="2" width="1.5" height="2.5" />
+                    <rect x="9" y="2" width="6" height="5.5" />
+                    <rect x="11.25" y="2" width="1.5" height="2.5" />
+                    <rect x="16" y="2" width="6" height="5.5" />
+                    <rect x="18.25" y="2" width="1.5" height="2.5" />
+                    <rect x="2" y="8.5" width="6" height="5.5" />
+                    <rect x="4.25" y="8.5" width="1.5" height="2.5" />
+                    <rect x="9" y="8.5" width="6" height="5.5" />
+                    <rect x="11.25" y="8.5" width="1.5" height="2.5" />
+                    <rect x="16" y="8.5" width="6" height="5.5" />
+                    <rect x="18.25" y="8.5" width="1.5" height="2.5" />
+                    <rect x="1" y="15" width="22" height="2" />
+                    <rect x="1" y="21" width="22" height="2" />
+                    <rect x="3.5" y="17" width="2" height="4" />
+                    <rect x="11" y="17" width="2" height="4" />
+                    <rect x="18.5" y="17" width="2" height="4" />
                 </svg>
                 <span class="nav-text">HU's Pendentes</span>
             </a>
-            <a href="desvio.html" class="nav-item"><i class="ph ph-arrows-split"></i><span class="nav-text">Desvio de Rota</span></a>
-            <a href="mupendente.html" class="nav-item active"><i class="ph ph-package"></i><span class="nav-text">MU's Pendentes</span></a>
+            <a href="desvio.html" class="nav-item">
+                <i class="ph ph-arrows-split"></i> 
+                <span class="nav-text">Desvio de Rota</span>
+            </a>
+            <a href="mupendente.html" class="nav-item active">
+                <i class="ph ph-package"></i> 
+                <span class="nav-text">MU's Pendentes</span>
+            </a>
         </nav>
+
         <div class="sidebar-footer">
             <div class="user-info">
                 <div class="profile-container">
                     <i class="ph ph-user"></i>
                     <div class="profile-dropdown">
                         <span id="display-username" class="dropdown-name">Usuário</span>
-                        <a href="#" id="logout-btn" class="dropdown-logout"><i class="ph ph-sign-out"></i> Sair</a>
+                        <a href="#" id="logout-btn" class="dropdown-logout">
+                            <i class="ph ph-sign-out"></i> Sair
+                        </a>
                     </div>
                 </div>
                 <span id="display-cd">Buscando...</span>
@@ -309,17 +464,33 @@
     </aside>
 
     <main class="main-content">
+        
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
-            <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path><path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path></svg>
-            <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path><path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path></svg>
+            <svg id="theme-icon-light" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+                <path d="M12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" stroke-dasharray="1 3"></path>
+            </svg>
+            <svg id="theme-icon-dark" class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.8-6.2L16.4 5.6m-8.8 8.8L5.6 16.4m11.2 0l1.4 1.4m-12.6-12.6l1.4 1.4M12 7a5 5 0 110 10 5 5 0 010-10z"></path>
+                <path d="M12 11.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path>
+            </svg>
         </button>
 
         <h1 class="page-title">MU's Pendentes</h1>
         
         <div class="hu-cards-container">
-            <div class="hu-card mu-card-total" data-filtro-card="Total"><div class="hu-card-title">Total</div><div class="hu-card-value" id="kpi-total">0</div></div>
-            <div class="hu-card mu-card-pendente" data-filtro-card="Pendente"><div class="hu-card-title">Pendente</div><div class="hu-card-value" id="kpi-pendente">0</div></div>
-            <div class="hu-card mu-card-hucriada" data-filtro-card="HU Criada"><div class="hu-card-title">HU Criada</div><div class="hu-card-value" id="kpi-hucriada">0</div></div>
+            <div class="hu-card mu-card-total" data-filtro-card="Total">
+                <div class="hu-card-title">Total</div>
+                <div class="hu-card-value" id="kpi-total">0</div>
+            </div>
+            <div class="hu-card mu-card-pendente" data-filtro-card="Pendente">
+                <div class="hu-card-title">Pendente</div>
+                <div class="hu-card-value" id="kpi-pendente">0</div>
+            </div>
+            <div class="hu-card mu-card-hucriada" data-filtro-card="HU Criada">
+                <div class="hu-card-title">HU Criada</div>
+                <div class="hu-card-value" id="kpi-hucriada">0</div>
+            </div>
         </div>
 
         <div class="hu-actions-container">
@@ -331,45 +502,58 @@
                 <i class="ph ph-magnifying-glass"></i>
                 <input type="text" placeholder="Buscar" class="search-input" id="filtro-busca">
             </div>
+            
             <div style="display: flex; gap: 5px; align-items: center;">
                 Origem 
                 <div class="custom-dropdown-container">
-                    <input type="text" class="small-input custom-dropdown-input" id="filtro-origem" autocomplete="off" placeholder="Todos">
+                    <input type="text" class="small-input custom-dropdown-input" id="filtro-origem" autocomplete="off">
                     <ul class="custom-dropdown-list"></ul>
                 </div>
             </div>
+
             <div style="display: flex; gap: 5px; align-items: center;">
                 Destino 
                 <div class="custom-dropdown-container">
-                    <input type="text" class="small-input custom-dropdown-input" id="filtro-destino" autocomplete="off" placeholder="Todos">
+                    <input type="text" class="small-input custom-dropdown-input" id="filtro-destino" autocomplete="off">
                     <ul class="custom-dropdown-list"></ul>
                 </div>
             </div>
+
             <div style="display: flex; gap: 5px; align-items: center;">
                 Status
                 <div class="date-picker-wrapper">
                     <div class="date-input-display" id="status-display-btn" style="width: 105px;">Todos</div>
                     <div class="multi-select-popup" id="status-popup">
                         <div class="multi-select-item" style="font-weight: 700; border-bottom: 1px solid var(--border-sidebar); margin-bottom: 4px; padding-bottom: 6px;">
-                            <input type="checkbox" id="status-todos-checkbox" checked> Todos
+                            <input type="checkbox" id="status-todos-checkbox"> Todos
                         </div>
-                        <div class="multi-select-item"><input type="checkbox" value="Pendente" class="status-checkbox" checked> Pendente</div>
-                        <div class="multi-select-item"><input type="checkbox" value="HU Criada" class="status-checkbox" checked> HU Criada</div>
+                        <div class="multi-select-item"><input type="checkbox" value="Pendente" class="status-checkbox"> Pendente</div>
+                        <div class="multi-select-item"><input type="checkbox" value="HU Criada" class="status-checkbox"> HU Criada</div>
                         <div class="multi-select-footer">
                             <button class="btn-apply-small" id="status-apply-btn">Aplicar</button>
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div style="display: flex; gap: 5px; align-items: center; margin-left: 5px;">
                 Data
                 <div class="date-picker-wrapper">
                     <div class="date-input-display" id="date-display-btn">Selecionar...</div>
                     <div class="calendar-popup" id="calendar-popup">
-                        <div class="cal-header"><button id="cal-prev">&#10094;</button><span id="cal-month-year"></span><button id="cal-next">&#10095;</button></div>
-                        <div class="cal-weekdays"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
+                        <div class="cal-header">
+                            <button id="cal-prev">&#10094;</button>
+                            <span id="cal-month-year"></span>
+                            <button id="cal-next">&#10095;</button>
+                        </div>
+                        <div class="cal-weekdays">
+                            <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                        </div>
                         <div class="cal-grid" id="cal-grid"></div>
-                        <div class="cal-footer"><button class="cal-btn-clear" id="cal-clear">Limpar</button><button class="cal-btn-apply" id="cal-apply">Aplicar</button></div>
+                        <div class="cal-footer">
+                            <button class="cal-btn-clear" id="cal-clear">Limpar</button>
+                            <button class="cal-btn-apply" id="cal-apply">Aplicar</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -380,10 +564,9 @@
                 <thead>
                     <tr>
                         <th>Processo</th>
-                        <th>Quant.</th>
+                        <th>Quantidade</th>
                         <th>Origem</th>
                         <th>Destino</th>
-                        <th>Desvio</th>
                         <th>Status</th>
                         <th>HU</th>
                         <th>IS</th>
@@ -391,30 +574,34 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-mu-corpo">
-                    <!-- FIRESTORE DATA WILL LOAD HERE -->
+                    <tr data-processo="Montagem de HU" data-quantidade="2" data-origem="SC02" data-destino="BA01" data-status="Pendente" data-hu="" data-is="" data-data-reg="12/09/2026 17:46" data-historico="Pendente - Evelyn (12/09/2026 17:46)" data-mus="MU12345, MU67890">
+                        <td>Montagem de HU</td>
+                        <td>2</td>
+                        <td>SC02</td>
+                        <td>BA01</td>
+                        <td><span class="status-badge status-pendente">Pendente</span></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <div class="table-actions">
+                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
+                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- MODAL DE PERGUNTA: DESVIO -->
-    <div class="modal-overlay" id="modal-pergunta-desvio">
-        <div class="modal-content" style="width: 320px; text-align: center;">
-            <div class="modal-header"><h2>Desvio de Rota</h2><i class="ph ph-x modal-close" id="fechar-pergunta-desvio-btn"></i></div>
-            <div class="modal-body" style="gap: 15px; text-align: center;">
-                <p style="font-weight: 600; font-size: 0.95rem;">Houve um desvio de rota?</p>
-                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
-                    <button class="btn-salvar" id="btn-desvio-sim" style="background-color: #10b981; padding: 8px 25px;">Sim</button>
-                    <button class="btn-salvar" id="btn-desvio-nao" style="background-color: #ef4444; padding: 8px 25px;">Não</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL DE NOVO REGISTRO -->
     <div class="modal-overlay" id="modal-novo-registro">
         <div class="modal-content">
-            <div class="modal-header"><h2>Novo Registro (MU)</h2><i class="ph ph-x modal-close" id="fechar-modal-btn"></i></div>
+            <div class="modal-header">
+                <h2>Novo Registro (MU)</h2>
+                <i class="ph ph-x modal-close" id="fechar-modal-btn"></i>
+            </div>
             <div class="modal-body">
                 <div class="input-pill">
                     <span class="input-prefix">Processo:</span>
@@ -424,28 +611,24 @@
                         <option value="Pick To Movable">Pick To Movable</option>
                     </select>
                 </div>
-                <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="modal-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
-                <div class="input-pill"><span class="input-prefix">Destino:</span><input type="text" id="modal-destino" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
-                <div class="input-pill" id="container-desvio" style="display: none;"><span class="input-prefix">Desvio:</span><input type="text" id="modal-desvio" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
-                <div id="mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;"></div>
+                <div class="input-pill">
+                    <span class="input-prefix">Origem:</span>
+                    <input type="text" id="modal-origem" class="custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
+                </div>
+                <div class="input-pill">
+                    <span class="input-prefix">Destino:</span>
+                    <input type="text" id="modal-destino" class="custom-dropdown-input" autocomplete="off">
+                    <ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul>
+                </div>
+                
+                <div id="mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+                    <!-- Campos de MU serão injetados aqui -->
+                </div>
                 <button class="btn-add-mu" id="btn-add-mu">+ Adicionar MU</button>
+
             </div>
             <div class="modal-footer"><button class="btn-salvar" id="btn-salvar-registro">Salvar</button></div>
-        </div>
-    </div>
-    
-    <!-- MODAL DE ALERTA DE DUPLICIDADE -->
-    <div class="modal-overlay" id="modal-alerta-duplicado">
-        <div class="modal-content" style="width: 380px; text-align: center; border-radius: 12px; padding: 30px;">
-            <div class="icon-warning-circle">
-                <i class="ph ph-warning"></i>
-            </div>
-            <h2 style="font-size: 1.4rem; font-weight: 900; color: #333; margin-bottom: 12px;" class="dark-theme-text-fix">Registro Duplicado Detectado</h2>
-            <p style="font-size: 0.95rem; color: #555; margin-bottom: 25px; line-height: 1.4;" class="dark-theme-text-fix-sub">Já existe um registro salvo igual a esse no dia de hoje. Deseja salvar e enviar a solicitação mesmo assim?</p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="btn-salvar" id="btn-duplicado-sim" style="background-color: #10b981; flex: 1; padding: 10px; font-size: 0.9rem;">Sim, salvar mesmo assim</button>
-                <button class="btn-salvar" id="btn-duplicado-nao" style="background-color: #64748b; flex: 1; padding: 10px; font-size: 0.9rem;">Não, cancelar</button>
-            </div>
         </div>
     </div>
 
@@ -453,12 +636,23 @@
     <div class="modal-overlay" id="modal-escolha-avancar">
         <div class="modal-content" style="width: 320px; text-align: center;">
             <form id="form-avancar-status" style="display: flex; flex-direction: column; height: 100%;">
-                <div class="modal-header"><h2>Avançar Status</h2><i class="ph ph-x modal-close" id="fechar-escolha-btn"></i></div>
+                <div class="modal-header">
+                    <h2>Avançar Status</h2>
+                    <i class="ph ph-x modal-close" id="fechar-escolha-btn"></i>
+                </div>
                 <div class="modal-body" style="gap: 15px; text-align: left;">
                     <p style="font-weight: 600; font-size: 0.95rem; text-align: center;">Avançar para HU Criada?</p>
-                    <div class="input-pill"><span class="input-prefix">HU:</span><input type="text" id="avancar-hu" required></div>
-                    <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="avancar-is" required></div>
-                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;"><button type="submit" class="btn-salvar" id="btn-escolha-confirmar">Confirmar</button></div>
+                    <div class="input-pill">
+                        <span class="input-prefix">HU:</span>
+                        <input type="text" id="avancar-hu" required>
+                    </div>
+                    <div class="input-pill">
+                        <span class="input-prefix">IS:</span>
+                        <input type="text" id="avancar-is" required>
+                    </div>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
+                        <button type="submit" class="btn-salvar" id="btn-escolha-confirmar">Confirmar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -467,7 +661,10 @@
     <!-- MODAL: AÇÃO DA HU -->
     <div class="modal-overlay" id="modal-acao-hu">
         <div class="modal-content" style="width: 340px; text-align: center;">
-            <div class="modal-header"><h2>Destino da HU</h2><i class="ph ph-x modal-close" id="fechar-acao-hu-btn"></i></div>
+            <div class="modal-header">
+                <h2>Destino da HU</h2>
+                <i class="ph ph-x modal-close" id="fechar-acao-hu-btn"></i>
+            </div>
             <div class="modal-body" style="gap: 10px;">
                 <p style="font-weight: 600; font-size: 0.95rem;">O que deseja fazer com a HU criada?</p>
                 <button class="btn-salvar" id="btn-acao-expedir" style="width: 100%;">Expedir</button>
@@ -481,9 +678,19 @@
     <div class="modal-overlay" id="modal-ts-hu">
         <div class="modal-content" style="width: 320px;">
             <form id="form-ts-hu" style="display: flex; flex-direction: column; height: 100%;">
-                <div class="modal-header"><h2>Expedir HU</h2><i class="ph ph-x modal-close" id="fechar-ts-hu-btn"></i></div>
-                <div class="modal-body"><div class="input-pill"><span class="input-prefix">TS:</span><input type="text" id="input-ts-hu" required></div></div>
-                <div class="modal-footer"><button type="submit" class="btn-salvar" id="btn-confirmar-ts-hu">Confirmar Expedição</button></div>
+                <div class="modal-header">
+                    <h2>Expedir HU</h2>
+                    <i class="ph ph-x modal-close" id="fechar-ts-hu-btn"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="input-pill">
+                        <span class="input-prefix">TS:</span>
+                        <input type="text" id="input-ts-hu" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-salvar" id="btn-confirmar-ts-hu">Confirmar</button>
+                </div>
             </form>
         </div>
     </div>
@@ -492,12 +699,23 @@
     <div class="modal-overlay" id="modal-agendar-hu">
         <div class="modal-content" style="width: 320px;">
             <form id="form-agendar-hu" style="display: flex; flex-direction: column; height: 100%;">
-                <div class="modal-header"><h2>Agendar Expedição</h2><i class="ph ph-x modal-close" id="fechar-agendar-hu-btn"></i></div>
-                <div class="modal-body">
-                    <div class="input-pill"><span class="input-prefix">Data:</span><input type="date" id="input-data-agend-hu" style="width: 100%;" required></div>
-                    <div class="input-pill"><span class="input-prefix">Hora:</span><input type="time" id="input-hora-agend-hu" style="width: 100%;" required></div>
+                <div class="modal-header">
+                    <h2>Agendar Expedição</h2>
+                    <i class="ph ph-x modal-close" id="fechar-agendar-hu-btn"></i>
                 </div>
-                <div class="modal-footer"><button type="submit" class="btn-salvar" id="btn-confirmar-agendar-hu">Confirmar Agendamento</button></div>
+                <div class="modal-body">
+                    <div class="input-pill">
+                        <span class="input-prefix">Data:</span>
+                        <input type="date" id="input-data-agend-hu" style="width: 100%;" required>
+                    </div>
+                    <div class="input-pill">
+                        <span class="input-prefix">Hora:</span>
+                        <input type="time" id="input-hora-agend-hu" style="width: 100%;" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-salvar" id="btn-confirmar-agendar-hu">Confirmar</button>
+                </div>
             </form>
         </div>
     </div>
@@ -505,7 +723,10 @@
     <!-- MODAL DE DETALHES -->
     <div class="modal-overlay" id="modal-detalhes">
         <div class="modal-content" style="width: 360px;">
-            <div class="modal-header" style="color: #004b87;"><h2 style="font-size: 1rem;">Detalhes do Registro</h2><i class="ph ph-x modal-close" id="fechar-detalhes-btn"></i></div>
+            <div class="modal-header" style="color: #004b87;">
+                <h2 style="font-size: 1rem;">Detalhes do Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-detalhes-btn"></i>
+            </div>
             <div class="modal-body detalhes-body" id="detalhes-conteudo"></div>
         </div>
     </div>
@@ -513,7 +734,10 @@
     <!-- MODAL DE EDIÇÃO -->
     <div class="modal-overlay" id="modal-editar">
         <div class="modal-content">
-            <div class="modal-header"><h2>Editar Registro</h2><i class="ph ph-x modal-close" id="fechar-editar-btn"></i></div>
+            <div class="modal-header">
+                <h2>Editar Registro</h2>
+                <i class="ph ph-x modal-close" id="fechar-editar-btn"></i>
+            </div>
             <div class="modal-body">
                 <div class="input-pill">
                     <span class="input-prefix">Processo:</span>
@@ -527,7 +751,6 @@
                 <div class="input-pill"><span class="input-prefix">IS:</span><input type="text" id="edit-is"></div>
                 <div class="input-pill"><span class="input-prefix">Origem:</span><input type="text" id="edit-origem" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill"><span class="input-prefix">Destino:</span><input type="text" id="edit-destino" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
-                <div class="input-pill" id="container-edit-desvio"><span class="input-prefix">Desvio:</span><input type="text" id="edit-desvio" class="custom-dropdown-input" autocomplete="off"><ul class="custom-dropdown-list" style="width: 100%; left: 0; margin-top: 5px;"></ul></div>
                 <div class="input-pill">
                     <span class="input-prefix">Status:</span>
                     <select id="edit-status">
@@ -535,22 +758,20 @@
                         <option value="HU Criada">HU Criada</option>
                     </select>
                 </div>
-                <div id="edit-mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;"></div>
+                
+                <div id="edit-mu-fields-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+                    <!-- Campos de MU serão injetados aqui na edição -->
+                </div>
                 <button class="btn-add-mu" id="btn-edit-add-mu">+ Adicionar MU</button>
+
             </div>
             <div class="modal-footer"><button class="btn-salvar" id="btn-atualizar-registro">Atualizar</button></div>
         </div>
     </div>
 
-    <!-- SCRIPT COM INTEGRAÇÃO FIRESTORE -->
-    <script type="module">
-        import { app } from './firebase-config.js';
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        const db = getFirestore(app);
-
+    <script>
         // =========================================
-        // LÓGICA DO TEMA E LOCALSTORAGE
+        // LÓGICA DO TEMA
         // =========================================
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
@@ -566,93 +787,29 @@
         document.addEventListener('DOMContentLoaded', () => {
             const cdDisplay = document.getElementById('display-cd');
             const savedCD = localStorage.getItem('userCD');
-            if (savedCD) cdDisplay.textContent = savedCD; else cdDisplay.textContent = 'Admin';
+            if (savedCD) cdDisplay.textContent = savedCD;
+            else cdDisplay.textContent = 'Admin';
 
             const usernameDisplay = document.getElementById('display-username');
             const savedUsername = localStorage.getItem('userName'); 
-            if (savedUsername) usernameDisplay.textContent = savedUsername; else usernameDisplay.textContent = 'Usuário';
+            if (savedUsername) usernameDisplay.textContent = savedUsername;
+            else usernameDisplay.textContent = 'Evelyn';
 
-            carregarRegistros();
+            atualizarKPIs();
         });
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
         if (sidebarToggleBtn && sidebar) sidebarToggleBtn.addEventListener('click', () => sidebar.classList.toggle('expanded'));
 
-        const logoutBtn = document.getElementById('logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function(e) {
-                e.preventDefault(); 
-                localStorage.removeItem('userCD'); localStorage.removeItem('userName');
-                window.location.href = 'index.html'; 
-            });
-        }
-
         // =========================================
-        // CARREGAR REGISTROS DO FIRESTORE
-        // =========================================
-        const tabelaCorpo = document.getElementById('tabela-mu-corpo');
-
-        async function carregarRegistros() {
-            tabelaCorpo.innerHTML = ''; 
-            
-            try {
-                const querySnapshot = await getDocs(collection(db, "mus_pendentes"));
-                
-                querySnapshot.forEach((documento) => {
-                    const dados = documento.data();
-                    const idDoBanco = documento.id; 
-                    
-                    const novaLinha = document.createElement('tr');
-                    novaLinha.setAttribute('data-db-id', idDoBanco); 
-                    novaLinha.setAttribute('data-processo', dados.processo || '');
-                    novaLinha.setAttribute('data-quantidade', dados.quantidade || '0');
-                    novaLinha.setAttribute('data-origem', dados.origem || '');
-                    novaLinha.setAttribute('data-destino', dados.destino || '');
-                    novaLinha.setAttribute('data-desvio', dados.desvio || '');
-                    novaLinha.setAttribute('data-status', dados.status || 'Pendente');
-                    novaLinha.setAttribute('data-hu', dados.hu || '');
-                    novaLinha.setAttribute('data-is', dados.is || '');
-                    novaLinha.setAttribute('data-mus', dados.mus || '');
-                    novaLinha.setAttribute('data-data-reg', dados.dataReg || '');
-                    novaLinha.setAttribute('data-historico', dados.historico || '');
-
-                    let badgeClass = dados.status === 'Pendente' ? 'status-pendente' : 'status-hucriada';
-                    let displayAvancar = dados.status === 'HU Criada' ? 'none' : '';
-
-                    novaLinha.innerHTML = `
-                        <td>${dados.processo}</td>
-                        <td>${dados.quantidade}</td>
-                        <td>${dados.origem}</td>
-                        <td>${dados.destino}</td>
-                        <td>${dados.desvio}</td>
-                        <td><span class="status-badge ${badgeClass}">${dados.status}</span></td>
-                        <td>${dados.hu}</td>
-                        <td>${dados.is}</td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer; display: ${displayAvancar};" title="Avançar Status"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    `;
-                    tabelaCorpo.appendChild(novaLinha);
-                });
-                
-                atualizarKPIs();
-                aplicarFiltros();
-            } catch (error) {
-                console.error("Erro ao carregar registros: ", error);
-            }
-        }
-
-        // =========================================
-        // ATUALIZAR KPIs
+        // ATUALIZAR CARDS (KPIs)
         // =========================================
         function atualizarKPIs() {
             const linhas = document.querySelectorAll('#tabela-mu-corpo tr');
-            let total = linhas.length, pendente = 0, huCriada = 0;
+            let total = linhas.length;
+            let pendente = 0;
+            let huCriada = 0;
 
             linhas.forEach(tr => {
                 const status = tr.getAttribute('data-status');
@@ -666,7 +823,7 @@
         }
 
         // =========================================
-        // FILTROS
+        // LÓGICA DE FILTROS
         // =========================================
         const filtroBusca = document.getElementById('filtro-busca');
         const filtroOrigem = document.getElementById('filtro-origem');
@@ -689,6 +846,7 @@
             } else if (selecionados.length === 1) statusDisplayBtn.textContent = selecionados[0];
             aplicarFiltros();
         });
+
         window.addEventListener('click', (e) => { if (!statusPopup.contains(e.target) && e.target !== statusDisplayBtn) statusPopup.classList.remove('show'); });
 
         document.querySelectorAll('.hu-card').forEach(card => {
@@ -723,6 +881,7 @@
                 tr.style.display = (matchBusca && matchOrigem && matchDestino && matchStatus) ? '' : 'none';
             });
         }
+
         filtroBusca.addEventListener('input', aplicarFiltros);
         filtroOrigem.addEventListener('input', aplicarFiltros);
         filtroDestino.addEventListener('input', aplicarFiltros);
@@ -731,43 +890,72 @@
         // LÓGICA DE MU DINÂMICA
         // =========================================
         const muContainer = document.getElementById('mu-fields-container');
+        const btnAddMu = document.getElementById('btn-add-mu');
         const editMuContainer = document.getElementById('edit-mu-fields-container');
+        const btnEditAddMu = document.getElementById('btn-edit-add-mu');
 
         function adicionarCampoMU(container, valor = '') {
-            if (container.querySelectorAll('.input-pill').length >= 20) { alert("Limite máximo de 20 MU's atingido."); return null; }
-            const wrapper = document.createElement('div'); wrapper.className = 'input-pill';
-            wrapper.innerHTML = `<span class="input-prefix">MU:</span><input type="text" class="input-mu-field" value="${valor}"><button class="btn-remove-mu" tabindex="-1">- Excluir MU</button>`;
+            const currentMUs = container.querySelectorAll('.input-pill').length;
+            if (currentMUs >= 20) {
+                alert("Limite máximo de 20 MU's atingido.");
+                return null;
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-pill';
+            wrapper.innerHTML = `
+                <span class="input-prefix">MU:</span>
+                <input type="text" class="input-mu-field" value="${valor}">
+                <button class="btn-remove-mu" tabindex="-1">- Excluir MU</button>
+            `;
             container.appendChild(wrapper);
+
             const inputElement = wrapper.querySelector('.input-mu-field');
-            wrapper.querySelector('.btn-remove-mu').addEventListener('click', () => wrapper.remove());
+
+            wrapper.querySelector('.btn-remove-mu').addEventListener('click', () => {
+                wrapper.remove();
+            });
+
             return inputElement;
         }
 
-        document.getElementById('btn-add-mu').addEventListener('click', () => { const n = adicionarCampoMU(muContainer); if (n) n.focus(); });
-        document.getElementById('btn-edit-add-mu').addEventListener('click', () => { const n = adicionarCampoMU(editMuContainer); if (n) n.focus(); });
+        btnAddMu.addEventListener('click', () => {
+            const novoInput = adicionarCampoMU(muContainer);
+            if (novoInput) novoInput.focus();
+        });
+
+        btnEditAddMu.addEventListener('click', () => {
+            const novoInput = adicionarCampoMU(editMuContainer);
+            if (novoInput) novoInput.focus();
+        });
 
         function resetarModalNovoRegistro() {
             document.getElementById('input-processo').value = 'Montagem de HU';
             document.getElementById('modal-origem').value = '';
             document.getElementById('modal-destino').value = '';
-            document.getElementById('modal-desvio').value = '';
-            muContainer.innerHTML = ''; adicionarCampoMU(muContainer); 
+            muContainer.innerHTML = '';
+            adicionarCampoMU(muContainer); 
         }
 
         // =========================================
-        // NAVEGAÇÃO COM ENTER (AMBOS OS MODAIS)
+        // LÓGICA DE NAVEGAÇÃO COM ENTER (AMBOS OS MODAIS)
         // =========================================
         document.getElementById('modal-novo-registro').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault(); 
                 const active = document.activeElement;
-                if (active.id === 'input-processo') document.getElementById('modal-origem').focus();
-                else if (active.id === 'modal-origem') document.getElementById('modal-destino').focus();
-                else if (active.id === 'modal-destino') {
-                    if (document.getElementById('container-desvio').style.display === 'flex') document.getElementById('modal-desvio').focus();
-                    else { const p = document.querySelector('#modal-novo-registro .input-mu-field'); if (p) p.focus(); }
-                } else if (active.id === 'modal-desvio') { const p = document.querySelector('#modal-novo-registro .input-mu-field'); if (p) p.focus(); }
-                else if (active.classList.contains('input-mu-field')) { const n = adicionarCampoMU(muContainer); if (n) n.focus(); }
+
+                if (active.id === 'input-processo') {
+                    document.getElementById('modal-origem').focus();
+                } else if (active.id === 'modal-origem') {
+                    document.getElementById('modal-destino').focus();
+                } else if (active.id === 'modal-destino') {
+                    const primeiroMu = document.querySelector('#modal-novo-registro .input-mu-field');
+                    if (primeiroMu) primeiroMu.focus();
+                } else if (active.classList.contains('input-mu-field')) {
+                    const novoInput = adicionarCampoMU(muContainer);
+                    if (novoInput) novoInput.focus();
+                }
             }
         });
 
@@ -775,210 +963,41 @@
             if (e.key === 'Enter') {
                 e.preventDefault(); 
                 const active = document.activeElement;
-                if (active.classList.contains('input-mu-field')) { const n = adicionarCampoMU(editMuContainer); if (n) n.focus(); }
-                else if (active.id === 'edit-desvio') { const p = document.querySelector('#modal-editar .input-mu-field'); if (p) p.focus(); }
-            }
-        });
 
-        // =========================================
-        // CALENDÁRIO & DROPDOWNS 
-        // =========================================
-        const dateDisplayBtn = document.getElementById('date-display-btn');
-        const calendarPopup = document.getElementById('calendar-popup');
-        let currentMonth = 8, currentYear = 2026, selectedDates = new Set();
-        const monthsNames = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
-        
-        function renderCalendar(month, year) {
-            const calGrid = document.getElementById('cal-grid'); calGrid.innerHTML = '';
-            document.getElementById('cal-month-year').textContent = `${monthsNames[month]} de ${year}`;
-            const firstDayIndex = new Date(year, month, 1).getDay(), totalDays = new Date(year, month + 1, 0).getDate(), prevTotalDays = new Date(year, month, 0).getDate();
-            for (let i = firstDayIndex; i > 0; i--) { const div = document.createElement('div'); div.className = 'cal-day other-month'; div.textContent = prevTotalDays - i + 1; calGrid.appendChild(div); }
-            for (let i = 1; i <= totalDays; i++) {
-                const div = document.createElement('div'); div.className = 'cal-day'; div.textContent = i;
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                if (selectedDates.has(dateStr)) div.classList.add('selected');
-                div.addEventListener('click', () => {
-                    if (selectedDates.has(dateStr)) { selectedDates.delete(dateStr); div.classList.remove('selected'); }
-                    else { selectedDates.add(dateStr); div.classList.add('selected'); }
-                });
-                calGrid.appendChild(div);
-            }
-        }
-        dateDisplayBtn.addEventListener('click', (e) => { e.stopPropagation(); calendarPopup.classList.toggle('show'); renderCalendar(currentMonth, currentYear); });
-        document.getElementById('cal-prev').addEventListener('click', (e) => { e.stopPropagation(); currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(currentMonth, currentYear); });
-        document.getElementById('cal-next').addEventListener('click', (e) => { e.stopPropagation(); currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(currentMonth, currentYear); });
-        document.getElementById('cal-clear').addEventListener('click', (e) => { e.stopPropagation(); selectedDates.clear(); renderCalendar(currentMonth, currentYear); dateDisplayBtn.textContent = "Selecionar..."; });
-        document.getElementById('cal-apply').addEventListener('click', (e) => { e.stopPropagation(); calendarPopup.classList.remove('show'); dateDisplayBtn.textContent = selectedDates.size === 0 ? "Selecionar..." : (selectedDates.size === 1 ? Array.from(selectedDates)[0] : `${selectedDates.size} dias`); });
-        window.addEventListener('click', (e) => { if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) calendarPopup.classList.remove('show'); });
-
-        const listaCDs = ["Todos", "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", "BRMG01", "BRMG02", "BRMG03", "BRMG04", "BRMS01", "BRPE01", "BRPR01", "BRPR04", "BRRC01", "BRRC02", "BRRC03", "BRRC04", "BRRC05", "BRRJ01", "BRRJ02", "BRRS01", "BRRS03", "BRRS04", "BRSC02", "BRSP02", "BRSP03", "BRSP04", "BRSP05", "BRSP06", "BRSP09", "BRSP10", "BRSP11", "BRSP14", "BRSP15", "BRSP18", "BRSP19", "BRSP21", "BRSP23", "BRSP24", "BRSP25", "BRSP26", "BRSP27", "BRSP28", "BRSP29", "BRSP30", "BRSP31", "BRSP33", "BRSP34", "BRSP35", "BRSP38", "BRSP51", "BRSP52", "BRSP53", "BRSP55"];
-        document.querySelectorAll('.custom-dropdown-input').forEach(input => {
-            const listElement = input.nextElementSibling;
-            const renderList = (filterText = '') => {
-                listElement.innerHTML = '';
-                const filtrados = listaCDs.filter(cd => cd.toLowerCase().includes(filterText.toLowerCase()));
-                if (filtrados.length === 0) {
-                    listElement.innerHTML = `<li class="custom-dropdown-item" style="pointer-events:none;color:#999;">Não encontrado</li>`;
-                } else {
-                    filtrados.forEach(cd => {
-                        const li = document.createElement('li'); li.textContent = cd; li.className = 'custom-dropdown-item';
-                        li.addEventListener('mousedown', () => { input.value = cd === 'Todos' ? '' : cd; listElement.classList.remove('show'); aplicarFiltros(); });
-                        listElement.appendChild(li);
-                    });
+                if (active.classList.contains('input-mu-field')) {
+                    const novoInput = adicionarCampoMU(editMuContainer);
+                    if (novoInput) novoInput.focus();
                 }
-            };
-            input.addEventListener('focus', () => { renderList(input.value); listElement.classList.add('show'); });
-            input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); aplicarFiltros(); });
-            input.addEventListener('blur', () => setTimeout(() => listElement.classList.remove('show'), 150));
+            }
         });
 
         // =========================================
-        // LÓGICA DE AÇÕES DA TABELA E MODAIS (COM FIRESTORE)
+        // LÓGICA DE AÇÕES DA TABELA (MODAIS)
         // =========================================
         const modalNovoRegistro = document.getElementById('modal-novo-registro');
-        const modalPerguntaDesvio = document.getElementById('modal-pergunta-desvio');
-        const modalAlertaDuplicado = document.getElementById('modal-alerta-duplicado');
-        let dadosPendentesDeSalvamento = null;
-        
-        // Função auxiliar para capturar apenas a data no formato DD/MM/YYYY
-        function obterDataApenas(dataHoraString) {
-            if (!dataHoraString) return '';
-            return dataHoraString.split(' ')[0];
-        }
-
         document.getElementById('btn-novo-registro').addEventListener('click', () => {
-            modalPerguntaDesvio.classList.add('active');
-        });
-
-        document.getElementById('fechar-pergunta-desvio-btn').addEventListener('click', () => modalPerguntaDesvio.classList.remove('active'));
-
-        document.getElementById('btn-desvio-sim').addEventListener('click', () => {
-            modalPerguntaDesvio.classList.remove('active');
-            document.getElementById('container-desvio').style.display = 'flex';
             resetarModalNovoRegistro();
             modalNovoRegistro.classList.add('active');
         });
-
-        document.getElementById('btn-desvio-nao').addEventListener('click', () => {
-            modalPerguntaDesvio.classList.remove('active');
-            document.getElementById('container-desvio').style.display = 'none';
-            document.getElementById('modal-desvio').value = '';
-            resetarModalNovoRegistro();
-            modalNovoRegistro.classList.add('active');
-        });
-
         document.getElementById('fechar-modal-btn').addEventListener('click', () => modalNovoRegistro.classList.remove('active'));
 
-        // FUNÇÃO QUE EXECUTA O SALVAMENTO NO FIRESTORE
-        async function executarSalvamentoRegistro(dados) {
-            try {
-                await addDoc(collection(db, "mus_pendentes"), {
-                    processo: dados.processo,
-                    quantidade: dados.quantidade,
-                    origem: dados.origem,
-                    destino: dados.destino,
-                    desvio: dados.desvio,
-                    status: 'Pendente',
-                    hu: '',
-                    is: '',
-                    mus: dados.musSalvas,
-                    dataReg: dados.dataFormatada,
-                    historico: `Pendente - ${dados.usuarioLogado} (${dados.dataFormatada})`
-                });
-
-                modalNovoRegistro.classList.remove('active');
-                carregarRegistros();
-            } catch (e) {
-                console.error("Erro ao salvar:", e); alert("Erro de conexão.");
-            }
-        }
-
-        // SALVAR NOVO REGISTRO - COM VERIFICAÇÃO DE DUPLICIDADE
-        document.getElementById('btn-salvar-registro').addEventListener('click', () => {
-            const processo = document.getElementById('input-processo').value.trim();
-            const origem = document.getElementById('modal-origem').value.trim();
-            const destino = document.getElementById('modal-destino').value.trim();
-            let desvio = '';
-            if (document.getElementById('container-desvio').style.display === 'flex') {
-                desvio = document.getElementById('modal-desvio').value.trim();
-            }
-
-            if (!processo || !origem || !destino) { alert('Preencha o Processo, Origem e Destino.'); return; }
-            
-            const muInputs = muContainer.querySelectorAll('.input-mu-field');
-            const muValues = Array.from(muInputs).map(input => input.value.trim()).filter(val => val !== '');
-            const quantidade = muValues.length;
-
-            if (quantidade === 0) { alert('Adicione e preencha ao menos uma MU.'); return; }
-
-            const musSalvas = muValues.join(', ');
-            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-            const agora = new Date();
-            const dataHojeStr = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()}`;
-            const dataFormatada = `${dataHojeStr} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-
-            // --- Lógica de Validação de Duplicidade ---
-            let registroDuplicado = false;
-            const linhasTr = document.querySelectorAll('#tabela-mu-corpo tr');
-            
-            linhasTr.forEach(tr => {
-                const trProcesso = tr.getAttribute('data-processo');
-                const trOrigem = tr.getAttribute('data-origem');
-                const trDestino = tr.getAttribute('data-destino');
-                const trQuantidade = parseInt(tr.getAttribute('data-quantidade'), 10) || 0;
-                const trDataReg = obterDataApenas(tr.getAttribute('data-data-reg')); // Captura apenas o dia
-
-                // Verifica se os campos batem e se a data de registro é a mesma de hoje
-                if (trProcesso === processo && 
-                    trOrigem === origem && 
-                    trDestino === destino && 
-                    trQuantidade === quantidade && 
-                    trDataReg === dataHojeStr) {
-                    registroDuplicado = true;
-                }
-            });
-
-            // Estrutura de dados pronta para ser salva
-            const dadosParaSalvar = {
-                processo, quantidade, origem, destino, desvio, musSalvas, usuarioLogado, dataFormatada
-            };
-
-            // Se for duplicado, exibe o aviso. Se não, salva diretamente.
-            if (registroDuplicado) {
-                dadosPendentesDeSalvamento = dadosParaSalvar;
-                modalAlertaDuplicado.classList.add('active');
-            } else {
-                executarSalvamentoRegistro(dadosParaSalvar);
-            }
-        });
-
-        // EVENTOS DO MODAL DE DUPLICIDADE
-        document.getElementById('btn-duplicado-sim').addEventListener('click', () => {
-            modalAlertaDuplicado.classList.remove('active');
-            if (dadosPendentesDeSalvamento) {
-                executarSalvamentoRegistro(dadosPendentesDeSalvamento);
-                dadosPendentesDeSalvamento = null;
-            }
-        });
-
-        document.getElementById('btn-duplicado-nao').addEventListener('click', () => {
-            modalAlertaDuplicado.classList.remove('active');
-            dadosPendentesDeSalvamento = null;
-        });
-
-        // MODAIS SECUNDÁRIOS
         const modalEscolha = document.getElementById('modal-escolha-avancar');
-        const modalAcaoHu = document.getElementById('modal-acao-hu');
-        const modalTsHu = document.getElementById('modal-ts-hu');
-        const modalAgendarHu = document.getElementById('modal-agendar-hu');
-        const modalDetalhes = document.getElementById('modal-detalhes');
-        const modalEditar = document.getElementById('modal-editar');
-
         document.getElementById('fechar-escolha-btn').addEventListener('click', () => modalEscolha.classList.remove('active'));
+
+        const modalAcaoHu = document.getElementById('modal-acao-hu');
         document.getElementById('fechar-acao-hu-btn').addEventListener('click', () => modalAcaoHu.classList.remove('active'));
+
+        const modalTsHu = document.getElementById('modal-ts-hu');
         document.getElementById('fechar-ts-hu-btn').addEventListener('click', () => modalTsHu.classList.remove('active'));
+
+        const modalAgendarHu = document.getElementById('modal-agendar-hu');
         document.getElementById('fechar-agendar-hu-btn').addEventListener('click', () => modalAgendarHu.classList.remove('active'));
+
+        const modalDetalhes = document.getElementById('modal-detalhes');
+        const detalhesConteudo = document.getElementById('detalhes-conteudo');
         document.getElementById('fechar-detalhes-btn').addEventListener('click', () => modalDetalhes.classList.remove('active'));
+
+        const modalEditar = document.getElementById('modal-editar');
         document.getElementById('fechar-editar-btn').addEventListener('click', () => modalEditar.classList.remove('active'));
 
         let linhaEmProcesso = null;
@@ -992,7 +1011,8 @@
                 if (linhaEmProcesso.getAttribute('data-status') === 'Pendente') {
                     document.getElementById('avancar-hu').value = '';
                     document.getElementById('avancar-is').value = '';
-                    tempHuVal = ''; tempIsVal = '';
+                    tempHuVal = '';
+                    tempIsVal = '';
                     modalEscolha.classList.add('active');
                 }
             }
@@ -1008,158 +1028,327 @@
                 if(musSalvas && musSalvas.trim() !== '') {
                     html += `<div>MUs:<div style="font-weight:400; padding-left: 10px;">${musSalvas.split(', ').join('<br>')}</div></div>`;
                 }
+
                 html += `<div>Origem: <span style="font-weight:400;">${tr.getAttribute('data-origem')}</span></div>`;
                 html += `<div>Destino: <span style="font-weight:400;">${tr.getAttribute('data-destino')}</span></div>`;
-                
-                const desvioVal = tr.getAttribute('data-desvio');
-                if (desvioVal && desvioVal.trim() !== '') { html += `<div>Desvio: <span style="font-weight:400;">${desvioVal}</span></div>`; }
                 
                 if (tr.getAttribute('data-hu')) html += `<div>HU: <span style="font-weight:400;">${tr.getAttribute('data-hu')}</span></div>`;
                 if (tr.getAttribute('data-is')) html += `<div>IS: <span style="font-weight:400;">${tr.getAttribute('data-is')}</span></div>`;
                 
                 html += `<div class="historico-box">Histórico:<div class="historico-lista">`;
-                (tr.getAttribute('data-historico')||'').split(' | ').forEach(item => { html += `<div>• ${item}</div>`; });
+                tr.getAttribute('data-historico').split(' | ').forEach(item => { html += `<div>• ${item}</div>`; });
                 html += `</div></div>`;
-                document.getElementById('detalhes-conteudo').innerHTML = html;
+                detalhesConteudo.innerHTML = html;
                 modalDetalhes.classList.add('active');
             }
 
             if (e.target.classList.contains('btn-editar')) {
                 linhaEmEdicao = e.target.closest('tr');
                 document.getElementById('edit-processo').value = linhaEmEdicao.getAttribute('data-processo');
-                document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
-                document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
-                document.getElementById('edit-desvio').value = linhaEmEdicao.getAttribute('data-desvio') || '';
                 document.getElementById('edit-hu').value = linhaEmEdicao.getAttribute('data-hu');
                 document.getElementById('edit-is').value = linhaEmEdicao.getAttribute('data-is');
+                document.getElementById('edit-origem').value = linhaEmEdicao.getAttribute('data-origem');
+                document.getElementById('edit-destino').value = linhaEmEdicao.getAttribute('data-destino');
                 document.getElementById('edit-status').value = linhaEmEdicao.getAttribute('data-status');
                 
+                // Popula os campos de MU salvos
                 editMuContainer.innerHTML = '';
                 const musSalvas = linhaEmEdicao.getAttribute('data-mus');
                 if (musSalvas && musSalvas.trim() !== '') {
-                    musSalvas.split(', ').forEach(mu => adicionarCampoMU(editMuContainer, mu));
-                } else { adicionarCampoMU(editMuContainer); }
+                    musSalvas.split(', ').forEach(mu => {
+                        adicionarCampoMU(editMuContainer, mu);
+                    });
+                } else {
+                    adicionarCampoMU(editMuContainer); 
+                }
 
                 modalEditar.classList.add('active');
             }
         });
 
-        // FLUXO DE AVANÇO
+        // =========================================
+        // FLUXO DE AVANÇAR STATUS -> HU CRIADA
+        // =========================================
         document.getElementById('form-avancar-status').addEventListener('submit', (e) => {
             e.preventDefault(); 
             if (linhaEmProcesso) {
                 const huInput = document.getElementById('avancar-hu');
                 const isInput = document.getElementById('avancar-is');
-                huInput.value = huInput.value.trim(); isInput.value = isInput.value.trim();
+
+                huInput.value = huInput.value.trim();
+                isInput.value = isInput.value.trim();
+
                 if (!huInput.checkValidity()) { huInput.reportValidity(); return; }
                 if (!isInput.checkValidity()) { isInput.reportValidity(); return; }
 
-                tempHuVal = huInput.value; tempIsVal = isInput.value;
-                modalEscolha.classList.remove('active'); modalAcaoHu.classList.add('active');
+                tempHuVal = huInput.value;
+                tempIsVal = isInput.value;
+
+                modalEscolha.classList.remove('active');
+                modalAcaoHu.classList.add('active');
             }
         });
 
-       function finalizarAvancoMU(statusHU, tsOrigem = '', agendamento = '') {
-    linhaEmProcesso.setAttribute('data-hu', tempHuVal);
-    linhaEmProcesso.setAttribute('data-is', tempIsVal);
-    linhaEmProcesso.cells[6].textContent = tempHuVal; // Coluna HU
-    linhaEmProcesso.cells[7].textContent = tempIsVal; // Coluna IS
+        function finalizarAvancoMU(statusHU, tsOrigem = '', agendamento = '') {
+            linhaEmProcesso.setAttribute('data-hu', tempHuVal);
+            linhaEmProcesso.setAttribute('data-is', tempIsVal);
+            linhaEmProcesso.cells[5].textContent = tempHuVal; 
+            linhaEmProcesso.cells[6].textContent = tempIsVal; 
 
-    const desvio = linhaEmProcesso.getAttribute('data-desvio');
-    const origem = linhaEmProcesso.getAttribute('data-origem');
-    const destino = linhaEmProcesso.getAttribute('data-destino');
+            const origem = linhaEmProcesso.getAttribute('data-origem');
+            const destino = linhaEmProcesso.getAttribute('data-destino');
+            const desvio = linhaEmProcesso.getAttribute('data-desvio') || '';
 
-    if (desvio && desvio.trim() !== '') {
-        // Envia para a aba "Desvio de Rota"
-        const filaDesvios = JSON.parse(localStorage.getItem('filaNovasDesvios') || '[]');
-        filaDesvios.push({ 
-            hu: tempHuVal, 
-            is: tempIsVal, 
-            origem: origem, 
-            destino: destino,
-            desvio: desvio,
-            statusDesvio: statusHU,
-            tsOrigem: tsOrigem,
-            agendamento: agendamento
+            // Se houver desvio preenchido, envia para a aba Desvio de Rota com o status correspondente
+            if (desvio && desvio.trim() !== '') {
+                const filaDesvios = JSON.parse(localStorage.getItem('filaNovasDesvios') || '[]');
+                filaDesvios.push({ 
+                    hu: tempHuVal, 
+                    is: tempIsVal, 
+                    origem: origem, 
+                    destino: destino,
+                    desvio: desvio,
+                    statusDesvio: statusHU, // "Aguardando Recusa" se Expedido, ou "Agendado"/"Pendente"
+                    tsOrigem: tsOrigem,
+                    agendamento: agendamento
+                });
+                localStorage.setItem('filaNovasDesvios', JSON.stringify(filaDesvios));
+            } else {
+                // Caso contrário, manda para HU's Pendentes padrão
+                const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
+                filaHUs.push({ 
+                    hu: tempHuVal, 
+                    is: tempIsVal, 
+                    origem: origem, 
+                    destino: destino,
+                    statusHU: statusHU === 'Aguardando Recusa' ? 'Expedido' : statusHU,
+                    tsOrigem: tsOrigem,
+                    agendamento: agendamento
+                });
+                localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
+            }
+
+            atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
+            linhaEmProcesso = null;
+        }
+
+        document.getElementById('btn-acao-pendente').addEventListener('click', () => {
+            modalAcaoHu.classList.remove('active');
+            finalizarAvancoMU('Pendente');
         });
-        localStorage.setItem('filaNovasDesvios', JSON.stringify(filaDesvios));
-    } else {
-        // Envia para a aba "HU's Pendentes" (comportamento padrão sem desvio)[cite: 1]
-        const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
-        filaHUs.push({ 
-            hu: tempHuVal, 
-            is: tempIsVal, 
-            origem: origem, 
-            destino: destino,
-            statusHU: statusHU,
-            tsOrigem: tsOrigem,
-            agendamento: agendamento
+
+        document.getElementById('btn-acao-expedir').addEventListener('click', () => {
+            modalAcaoHu.classList.remove('active');
+            document.getElementById('input-ts-hu').value = '';
+            modalTsHu.classList.add('active');
         });
-        localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
-    }
 
-    atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
-    linhaEmProcesso = null;
-}
-
-        document.getElementById('btn-acao-pendente').addEventListener('click', () => { modalAcaoHu.classList.remove('active'); finalizarAvancoMU('Pendente'); });
-        document.getElementById('btn-acao-expedir').addEventListener('click', () => { modalAcaoHu.classList.remove('active'); document.getElementById('input-ts-hu').value = ''; modalTsHu.classList.add('active'); });
-        document.getElementById('btn-acao-agendar').addEventListener('click', () => { modalAcaoHu.classList.remove('active'); document.getElementById('input-data-agend-hu').value = ''; document.getElementById('input-hora-agend-hu').value = ''; modalAgendarHu.classList.add('active'); });
+        document.getElementById('btn-acao-agendar').addEventListener('click', () => {
+            modalAcaoHu.classList.remove('active');
+            document.getElementById('input-data-agend-hu').value = '';
+            document.getElementById('input-hora-agend-hu').value = '';
+            modalAgendarHu.classList.add('active');
+        });
 
         document.getElementById('form-ts-hu').addEventListener('submit', (e) => {
             e.preventDefault();
-            const tsInput = document.getElementById('input-ts-hu'); tsInput.value = tsInput.value.trim();
+            const tsInput = document.getElementById('input-ts-hu');
+            tsInput.value = tsInput.value.trim();
             if (!tsInput.checkValidity()) { tsInput.reportValidity(); return; }
-            modalTsHu.classList.remove('active'); finalizarAvancoMU('Expedido', tsInput.value, '');
+            
+            modalTsHu.classList.remove('active');
+            // Se clicar em Expedir e tiver desvio, o status gerado na aba desvio deve ser "Aguardando Recusa"
+            finalizarAvancoMU('Aguardando Recusa', tsInput.value, '');
         });
 
         document.getElementById('form-agendar-hu').addEventListener('submit', (e) => {
             e.preventDefault();
-            const dataInput = document.getElementById('input-data-agend-hu'), horaInput = document.getElementById('input-hora-agend-hu');
+            const dataInput = document.getElementById('input-data-agend-hu');
+            const horaInput = document.getElementById('input-hora-agend-hu');
+            
             if (!dataInput.checkValidity()) { dataInput.reportValidity(); return; }
             if (!horaInput.checkValidity()) { horaInput.reportValidity(); return; }
-            const dp = dataInput.value.split('-'); const ag = `${dp[2]}/${dp[1]}/${dp[0]} ${horaInput.value}`;
-            modalAgendarHu.classList.remove('active'); finalizarAvancoMU('Agendado', '', ag);
+            
+            const dParts = dataInput.value.split('-');
+            const agendamentoFormatado = `${dParts[2]}/${dParts[1]}/${dParts[0]} ${horaInput.value}`;
+            
+            modalAgendarHu.classList.remove('active');
+            finalizarAvancoMU('Agendado', '', agendamentoFormatado);
         });
 
-        // EDITAR NO FIRESTORE
-        document.getElementById('btn-atualizar-registro').addEventListener('click', async () => {
+        // BOTÃO ATUALIZAR REGISTRO (EDIÇÃO)
+        document.getElementById('btn-atualizar-registro').addEventListener('click', () => {
             if (!linhaEmEdicao) return;
-            const idBanco = linhaEmEdicao.getAttribute('data-db-id');
+            
             const processo = document.getElementById('edit-processo').value.trim();
             const origem = document.getElementById('edit-origem').value.trim();
             const destino = document.getElementById('edit-destino').value.trim();
-            const desvio = document.getElementById('edit-desvio').value.trim();
 
-            if (!processo || !origem || !destino) { alert('Preencha Processo, Origem e Destino.'); return; }
+            if (!processo || !origem || !destino) {
+                alert('Por favor, preencha o Processo, a Origem e o Destino antes de atualizar.');
+                return;
+            }
 
             const muInputs = editMuContainer.querySelectorAll('.input-mu-field');
             const muValues = Array.from(muInputs).map(input => input.value.trim()).filter(val => val !== '');
             const quantidade = muValues.length;
 
-            if (quantidade === 0) { alert('Adicione ao menos uma MU.'); return; }
+            if (quantidade === 0) {
+                alert('É necessário adicionar e preencher ao menos uma MU para atualizar o registro.');
+                return;
+            }
 
             const musSalvas = muValues.join(', ');
             const novoStatus = document.getElementById('edit-status').value;
             
-            let hist = linhaEmEdicao.getAttribute('data-historico') || '';
-            if (novoStatus !== linhaEmEdicao.getAttribute('data-status')) {
-                const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
-                const agora = new Date();
-                const dForm = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
-                hist += ` | Editado para ${novoStatus} - ${usuarioLogado} (${dForm})`;
+            linhaEmEdicao.setAttribute('data-processo', processo);
+            linhaEmEdicao.setAttribute('data-quantidade', quantidade);
+            linhaEmEdicao.setAttribute('data-hu', document.getElementById('edit-hu').value || '');
+            linhaEmEdicao.setAttribute('data-is', document.getElementById('edit-is').value || '');
+            linhaEmEdicao.setAttribute('data-origem', origem);
+            linhaEmEdicao.setAttribute('data-destino', destino);
+            linhaEmEdicao.setAttribute('data-mus', musSalvas);
+            
+            linhaEmEdicao.cells[0].textContent = processo;
+            linhaEmEdicao.cells[1].textContent = quantidade;
+            linhaEmEdicao.cells[2].textContent = origem;
+            linhaEmEdicao.cells[3].textContent = destino;
+            linhaEmEdicao.cells[5].textContent = document.getElementById('edit-hu').value || '';
+            linhaEmEdicao.cells[6].textContent = document.getElementById('edit-is').value || '';
+            
+            atualizarStatusLinha(linhaEmEdicao, novoStatus);
+            modalEditar.classList.remove('active');
+        });
+
+        // BOTÃO SALVAR NOVO REGISTRO
+        document.getElementById('btn-salvar-registro').addEventListener('click', () => {
+            const processo = document.getElementById('input-processo').value.trim();
+            const origem = document.getElementById('modal-origem').value.trim();
+            const destino = document.getElementById('modal-destino').value.trim();
+
+            if (!processo || !origem || !destino) {
+                alert('Por favor, preencha o Processo, a Origem e o Destino antes de salvar.');
+                return;
+            }
+            
+            const muInputs = muContainer.querySelectorAll('.input-mu-field');
+            const muValues = Array.from(muInputs).map(input => input.value.trim()).filter(val => val !== '');
+            const quantidade = muValues.length;
+
+            if (quantidade === 0) {
+                alert('É necessário adicionar e preencher ao menos uma MU para salvar o registro.');
+                return;
             }
 
-            try {
-                await updateDoc(doc(db, "mus_pendentes", idBanco), {
-                    processo: processo, quantidade: quantidade, origem: origem, destino: destino,
-                    desvio: desvio, status: novoStatus, hu: document.getElementById('edit-hu').value || '',
-                    is: document.getElementById('edit-is').value || '', mus: musSalvas, historico: hist
+            const musSalvas = muValues.join(', ');
+            const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
+            const agora = new Date();
+            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+
+            const novaLinha = document.createElement('tr');
+            novaLinha.setAttribute('data-processo', processo);
+            novaLinha.setAttribute('data-quantidade', quantidade);
+            novaLinha.setAttribute('data-origem', origem);
+            novaLinha.setAttribute('data-destino', destino);
+            novaLinha.setAttribute('data-status', 'Pendente');
+            novaLinha.setAttribute('data-hu', '');
+            novaLinha.setAttribute('data-is', '');
+            novaLinha.setAttribute('data-mus', musSalvas);
+            novaLinha.setAttribute('data-data-reg', dataFormatada);
+            novaLinha.setAttribute('data-historico', `Pendente - ${usuarioLogado} (${dataFormatada})`);
+
+            novaLinha.innerHTML = `
+                <td>${processo}</td><td>${quantidade}</td><td>${origem}</td><td>${destino}</td>
+                <td><span class="status-badge status-pendente">Pendente</span></td>
+                <td></td><td></td>
+                <td>
+                    <div class="table-actions">
+                        <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
+                        <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
+                        <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
+                    </div>
+                </td>
+            `;
+
+            document.getElementById('tabela-mu-corpo').insertBefore(novaLinha, document.getElementById('tabela-mu-corpo').firstChild);
+            modalNovoRegistro.classList.remove('active');
+            atualizarKPIs();
+            aplicarFiltros();
+        });
+
+        function atualizarStatusLinha(tr, novoStatus) {
+            const usuarioLogado = localStorage.getItem('userName') || 'Evelyn';
+            const agora = new Date();
+            const dataFormatada = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+            
+            tr.setAttribute('data-status', novoStatus);
+            let hist = tr.getAttribute('data-historico');
+            tr.setAttribute('data-historico', `${hist} | ${novoStatus} - ${usuarioLogado} (${dataFormatada})`);
+            
+            let badgeClass = novoStatus === 'Pendente' ? 'status-pendente' : 'status-hucriada';
+            tr.cells[4].innerHTML = `<span class="status-badge ${badgeClass}">${novoStatus}</span>`;
+            
+            const btnAvancar = tr.querySelector('.btn-avancar');
+            if (btnAvancar) {
+                btnAvancar.style.display = novoStatus === 'HU Criada' ? 'none' : '';
+            }
+            
+            atualizarKPIs();
+            aplicarFiltros();
+        }
+
+        // =========================================
+        // CALENDÁRIO & DROPDOWNS 
+        // =========================================
+        const dateDisplayBtn = document.getElementById('date-display-btn');
+        const calendarPopup = document.getElementById('calendar-popup');
+        let currentMonth = 8, currentYear = 2026, selectedDates = new Set();
+        const monthsNames = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+        
+        function renderCalendar(month, year) {
+            const calGrid = document.getElementById('cal-grid');
+            calGrid.innerHTML = '';
+            document.getElementById('cal-month-year').textContent = `${monthsNames[month]} de ${year}`;
+            const firstDayIndex = new Date(year, month, 1).getDay(), totalDays = new Date(year, month + 1, 0).getDate(), prevTotalDays = new Date(year, month, 0).getDate();
+            for (let i = firstDayIndex; i > 0; i--) { const div = document.createElement('div'); div.className = 'cal-day other-month'; div.textContent = prevTotalDays - i + 1; calGrid.appendChild(div); }
+            for (let i = 1; i <= totalDays; i++) {
+                const div = document.createElement('div'); div.className = 'cal-day'; div.textContent = i;
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                if (selectedDates.has(dateStr)) div.classList.add('selected');
+                div.addEventListener('click', () => {
+                    if (selectedDates.has(dateStr)) { selectedDates.delete(dateStr); div.classList.remove('selected'); }
+                    else { selectedDates.add(dateStr); div.classList.add('selected'); }
                 });
-                modalEditar.classList.remove('active');
-                linhaEmEdicao = null;
-                carregarRegistros();
-            } catch (e) { console.error("Erro ao editar:", e); alert("Erro ao editar o registro."); }
+                calGrid.appendChild(div);
+            }
+        }
+        
+        dateDisplayBtn.addEventListener('click', (e) => { e.stopPropagation(); calendarPopup.classList.toggle('show'); renderCalendar(currentMonth, currentYear); });
+        document.getElementById('cal-prev').addEventListener('click', (e) => { e.stopPropagation(); currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(currentMonth, currentYear); });
+        document.getElementById('cal-next').addEventListener('click', (e) => { e.stopPropagation(); currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(currentMonth, currentYear); });
+        document.getElementById('cal-clear').addEventListener('click', (e) => { e.stopPropagation(); selectedDates.clear(); renderCalendar(currentMonth, currentYear); dateDisplayBtn.textContent = "Selecionar..."; });
+        document.getElementById('cal-apply').addEventListener('click', (e) => { e.stopPropagation(); calendarPopup.classList.remove('show'); dateDisplayBtn.textContent = selectedDates.size === 0 ? "Selecionar..." : (selectedDates.size === 1 ? Array.from(selectedDates)[0] : `${selectedDates.size} dias`); });
+        window.addEventListener('click', (e) => { if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) calendarPopup.classList.remove('show'); });
+
+        const listaCDs = ["BRBA01", "BRSC02", "BRSP15", "BRPR06", "BRRJ10", "BRMG01", "BRDF01"];
+        document.querySelectorAll('.custom-dropdown-input').forEach(input => {
+            const listElement = input.nextElementSibling;
+            const renderList = (filterText = '') => {
+                listElement.innerHTML = '';
+                const filtrados = listaCDs.filter(cd => cd.toLowerCase().includes(filterText.toLowerCase()));
+                if (filtrados.length === 0) {
+                    const li = document.createElement('li'); li.textContent = 'Não encontrado'; li.className = 'custom-dropdown-item'; li.style.pointerEvents = 'none'; li.style.color = '#999'; listElement.appendChild(li);
+                } else {
+                    filtrados.forEach(cd => {
+                        const li = document.createElement('li'); li.textContent = cd; li.className = 'custom-dropdown-item';
+                        li.addEventListener('mousedown', () => { input.value = cd; listElement.classList.remove('show'); aplicarFiltros(); });
+                        listElement.appendChild(li);
+                    });
+                }
+            };
+            input.addEventListener('focus', () => { renderList(input.value); listElement.classList.add('show'); });
+            input.addEventListener('input', (e) => { renderList(e.target.value); listElement.classList.add('show'); aplicarFiltros(); });
+            input.addEventListener('blur', () => setTimeout(() => listElement.classList.remove('show'), 150));
         });
     </script>
 </body>
