@@ -309,7 +309,6 @@
         .dark-theme .btn-apply-small { color: #60a5fa; }
         .btn-apply-small:hover { background: rgba(0,75,135,0.15); }
 
-
         /* =========================================
            CALENDÁRIO CUSTOMIZADO MULTI-SELEÇÃO
            ========================================= */
@@ -448,7 +447,6 @@
         .dark-theme .cal-btn-apply { color: #60a5fa; }
         .cal-btn-apply:hover { background: rgba(0,75,135,0.15); }
 
-
         /* CONTAINER DA TABELA E LINHAS DIVISÓRIAS */
         .hu-table-container {
             background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
@@ -496,6 +494,70 @@
         .dark-theme .table-actions i { color: #8ca4c0; }
         .table-actions i { cursor: pointer; transition: transform 0.2s; }
         .table-actions i:hover { transform: scale(1.1); }
+
+        /* =========================================
+           PAGINAÇÃO
+           ========================================= */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--bg-body);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-top: -20px; /* Para colar no fundo da tabela */
+            margin-bottom: 20px;
+            border: 1px solid transparent; 
+        }
+
+        .dark-theme .pagination-container {
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
+            border-top: none;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-page {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .btn-page:hover:not(:disabled) {
+            background-color: #e2e8f0;
+        }
+
+        .btn-page:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .dark-theme .btn-page {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+
+        .dark-theme .btn-page:hover:not(:disabled) {
+            background-color: #334155;
+        }
+
+        .pagination-page-info {
+            font-weight: 700;
+        }
 
         /* =========================================
            MODAIS
@@ -860,6 +922,16 @@
                     <!-- Registros serão carregados aqui via Firestore -->
                 </tbody>
             </table>
+        </div>
+        
+        <!-- COMPONENTE DE PAGINAÇÃO -->
+        <div class="pagination-container" id="pagination-container">
+            <span class="pagination-info" id="pagination-info">Exibindo 0 - 0 de 0 registros</span>
+            <div class="pagination-controls">
+                <button id="btn-prev-page" class="btn-page">&lt; Anterior</button>
+                <span class="pagination-page-info" id="pagination-page-info">Página 1 de 1</span>
+                <button id="btn-next-page" class="btn-page">Próximo &gt;</button>
+            </div>
         </div>
 
     </main>
@@ -1328,6 +1400,11 @@
             });
         });
 
+        // VARIÁVEIS DE PAGINAÇÃO
+        const registrosPorPagina = 20;
+        let paginaAtual = 1;
+        let linhasFiltradas = [];
+
         function aplicarFiltros() {
             const textoBusca = filtroBusca.value.toLowerCase();
             const origemBusca = filtroOrigem.value.toLowerCase();
@@ -1338,7 +1415,8 @@
                 if (cb.checked) statusSelecionados.push(cb.value);
             });
 
-            const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
+            const linhas = Array.from(document.querySelectorAll('#tabela-hu-corpo tr'));
+            linhasFiltradas = []; // Reseta o array a cada novo filtro
 
             linhas.forEach(tr => {
                 const hu = tr.getAttribute('data-hu').toLowerCase();
@@ -1353,13 +1431,68 @@
                 const matchStatus = statusSelecionados.length === 0 || statusSelecionados.length === statusCheckboxes.length || statusSelecionados.includes(status);
 
                 if (matchBusca && matchOrigem && matchDestino && matchStatus) {
+                    linhasFiltradas.push(tr);
+                }
+                tr.style.display = 'none'; // Oculta todas as linhas inicialmente
+            });
+
+            // Se o filtro reduziu os resultados a ponto de a página atual não existir mais, volta pra 1
+            const totalPaginas = Math.ceil(linhasFiltradas.length / registrosPorPagina) || 1;
+            if (paginaAtual > totalPaginas) {
+                paginaAtual = 1;
+            }
+
+            renderizarPagina();
+            verificarSelecaoLinhas();
+        }
+
+        function renderizarPagina() {
+            const totalRegistros = linhasFiltradas.length;
+            const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina) || 1;
+            
+            // Calcula o índice de início e fim
+            const inicio = (paginaAtual - 1) * registrosPorPagina;
+            const fim = Math.min(inicio + registrosPorPagina, totalRegistros);
+
+            // Exibe apenas as linhas correspondentes à página atual
+            linhasFiltradas.forEach((tr, index) => {
+                if (index >= inicio && index < fim) {
                     tr.style.display = '';
                 } else {
                     tr.style.display = 'none';
                 }
             });
-            verificarSelecaoLinhas();
+
+            // Atualiza os textos (igual à imagem de referência)
+            const infoText = totalRegistros > 0 
+                ? `Exibindo ${inicio + 1} - ${fim} de ${totalRegistros} registros` 
+                : 'Nenhum registro encontrado';
+                
+            document.getElementById('pagination-info').textContent = infoText;
+            document.getElementById('pagination-page-info').textContent = `Página ${paginaAtual} de ${totalPaginas}`;
+
+            // Habilita ou desabilita os botões de Anterior/Próximo
+            document.getElementById('btn-prev-page').disabled = (paginaAtual === 1);
+            document.getElementById('btn-next-page').disabled = (paginaAtual === totalPaginas || totalPaginas === 0);
         }
+
+        // Eventos de clique para os botões de paginação
+        document.getElementById('btn-prev-page').addEventListener('click', () => {
+            if (paginaAtual > 1) {
+                paginaAtual--;
+                renderizarPagina();
+                verificarSelecaoLinhas(); // Revalida o botão "Tratar em Grupo"
+            }
+        });
+
+        document.getElementById('btn-next-page').addEventListener('click', () => {
+            const totalPaginas = Math.ceil(linhasFiltradas.length / registrosPorPagina);
+            if (paginaAtual < totalPaginas) {
+                paginaAtual++;
+                renderizarPagina();
+                verificarSelecaoLinhas(); // Revalida o botão "Tratar em Grupo"
+            }
+        });
 
         filtroBusca.addEventListener('input', aplicarFiltros);
         filtroOrigem.addEventListener('input', aplicarFiltros);
