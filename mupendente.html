@@ -1059,48 +1059,36 @@
             }
         });
 
-       function finalizarAvancoMU(statusHU, tsOrigem = '', agendamento = '') {
-    linhaEmProcesso.setAttribute('data-hu', tempHuVal);
-    linhaEmProcesso.setAttribute('data-is', tempIsVal);
-    linhaEmProcesso.cells[6].textContent = tempHuVal; // Coluna HU
-    linhaEmProcesso.cells[7].textContent = tempIsVal; // Coluna IS
+        async function finalizarAvancoMU(statusHU, ts = '', agendamento = '') {
+            const idBanco = linhaEmProcesso.getAttribute('data-db-id');
+            const desvio = linhaEmProcesso.getAttribute('data-desvio');
+            const origem = linhaEmProcesso.getAttribute('data-origem');
+            const destino = linhaEmProcesso.getAttribute('data-destino');
 
-    const desvio = linhaEmProcesso.getAttribute('data-desvio');
-    const origem = linhaEmProcesso.getAttribute('data-origem');
-    const destino = linhaEmProcesso.getAttribute('data-destino');
+            // Se não houver desvio, adiciona à fila do localStorage para a aba HU puxar depois
+            if (!desvio || desvio.trim() === '') {
+                const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
+                filaHUs.push({ hu: tempHuVal, is: tempIsVal, origem: origem, destino: destino, statusHU: statusHU, ts: ts, agendamento: agendamento });
+                localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
+            }
 
-    if (desvio && desvio.trim() !== '') {
-        // Envia para a aba "Desvio de Rota"
-        const filaDesvios = JSON.parse(localStorage.getItem('filaNovasDesvios') || '[]');
-        filaDesvios.push({ 
-            hu: tempHuVal, 
-            is: tempIsVal, 
-            origem: origem, 
-            destino: destino,
-            desvio: desvio,
-            statusDesvio: statusHU,
-            tsOrigem: tsOrigem,
-            agendamento: agendamento
-        });
-        localStorage.setItem('filaNovasDesvios', JSON.stringify(filaDesvios));
-    } else {
-        // Envia para a aba "HU's Pendentes" (comportamento padrão sem desvio)[cite: 1]
-        const filaHUs = JSON.parse(localStorage.getItem('filaNovasHUs') || '[]');
-        filaHUs.push({ 
-            hu: tempHuVal, 
-            is: tempIsVal, 
-            origem: origem, 
-            destino: destino,
-            statusHU: statusHU,
-            tsOrigem: tsOrigem,
-            agendamento: agendamento
-        });
-        localStorage.setItem('filaNovasHUs', JSON.stringify(filaHUs));
-    }
+            // Atualiza status local para HU Criada
+            const usuarioLogado = localStorage.getItem('userName') || 'Usuário';
+            const agora = new Date();
+            const dForm = `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}/${agora.getFullYear()} ${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+            
+            let hist = linhaEmProcesso.getAttribute('data-historico') || '';
+            hist += ` | HU Criada - ${usuarioLogado} (${dForm})`;
 
-    atualizarStatusLinha(linhaEmProcesso, 'HU Criada');
-    linhaEmProcesso = null;
-}
+            try {
+                await updateDoc(doc(db, "mus_pendentes", idBanco), {
+                    status: 'HU Criada', hu: tempHuVal, is: tempIsVal, historico: hist
+                });
+                carregarRegistros();
+            } catch (e) { console.error(e); alert("Erro ao atualizar status."); }
+            
+            linhaEmProcesso = null;
+        }
 
         document.getElementById('btn-acao-pendente').addEventListener('click', () => { modalAcaoHu.classList.remove('active'); finalizarAvancoMU('Pendente'); });
         document.getElementById('btn-acao-expedir').addEventListener('click', () => { modalAcaoHu.classList.remove('active'); document.getElementById('input-ts-hu').value = ''; modalTsHu.classList.add('active'); });
