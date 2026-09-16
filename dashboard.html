@@ -137,9 +137,10 @@
         .dark-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
         .dark-chart-area { display: flex; align-items: flex-end; height: 75%; border-left: 1px solid #777; border-bottom: 1px solid #777; padding-left: 10px; gap: 30px; position: relative; margin-left: 45px; margin-bottom: 25px; }
         .y-axis { position: absolute; left: -45px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.6rem; color: #aaa; width: 40px; text-align: right; padding-right: 5px; }
-        .month-group { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 2px; position: relative; height: 100%;}
+        .month-group { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 2px; position: relative; height: 100%; transition: transform 0.2s;}
+        .month-group:hover { transform: scaleY(1.02); }
         .month-label { position: absolute; bottom: -22px; font-size: 0.7rem; color: #aaa; }
-        .bar-sm { width: 15px; }
+        .bar-sm { width: 15px; border-radius: 2px 2px 0 0; }
         .c-blue1 { background-color: #8ce1f8; }
         .c-pink { background-color: #f7558f; }
         .c-blue2 { background-color: #4b8df8; }
@@ -295,13 +296,7 @@
             </div>
             
             <div class="dark-chart-area">
-                <div class="y-axis"><span>7.000</span><span>6.000</span><span>5.000</span><span>4.000</span><span>3.000</span><span>2.000</span><span>1.000</span><span>0</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 70%;"></div><div class="bar-sm c-pink" style="height: 45%;"></div><div class="bar-sm c-blue2" style="height: 45%;"></div><span class="month-label">Jan</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 55%;"></div><div class="bar-sm c-pink" style="height: 25%;"></div><div class="bar-sm c-blue2" style="height: 38%;"></div><span class="month-label">Fev</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 40%;"></div><div class="bar-sm c-pink" style="height: 20%;"></div><div class="bar-sm c-blue2" style="height: 20%;"></div><span class="month-label">Mar</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 30%;"></div><div class="bar-sm c-pink" style="height: 70%;"></div><div class="bar-sm c-blue2" style="height: 35%;"></div><span class="month-label">Abr</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 60%;"></div><div class="bar-sm c-pink" style="height: 15%;"></div><div class="bar-sm c-blue2" style="height: 25%;"></div><span class="month-label">Mai</span></div>
-                <div class="month-group"><div class="bar-sm c-blue1" style="height: 15%;"></div><div class="bar-sm c-pink" style="height: 35%;"></div><div class="bar-sm c-blue2" style="height: 95%;"></div><span class="month-label">Jun</span></div>
+                <!-- O gráfico será gerado dinamicamente aqui -->
             </div>
         </div>
 
@@ -394,8 +389,21 @@
                 let countDesvio = 0;
                 let countMu = 0;
                 
+                // Estrutura de dados para o gráfico de barras mensal (0 = Janeiro, 11 = Dezembro)
+                const dadosMeses = Array.from({length: 12}, () => ({ hu: 0, desvio: 0, mu: 0 }));
+
+                // Função auxiliar para achar qual é o mês do registro analisando a primeira data no histórico
+                const extrairMesDoHistorico = (historicoStr) => {
+                    if (!historicoStr) return -1;
+                    const match = historicoStr.match(/\((\d{2})\/(\d{2})\/(\d{4})/);
+                    if (match) {
+                        return parseInt(match[2], 10) - 1; // Subtrai 1 porque Janeiro no array é 0
+                    }
+                    return -1;
+                };
+                
                 const ofensoresCount = {};
-                const cadTemposRespostas = {}; // Guarda { cad: { tempoTotalMinutos, quantidade } }
+                const cadTemposRespostas = {};
 
                 const registrarOrigem = (origem) => {
                     if (origem && typeof origem === 'string') {
@@ -416,16 +424,15 @@
                     cadTemposRespostas[nomeCad].totalAtendimentos += 1;
                 };
 
-                // Parser inteligente do histórico para calcular o SLA por CAD com base nas suas regras
+                // Parser inteligente do histórico para calcular o SLA
                 const processarHistoricoEAtribuirTempos = (data, tipoAba) => {
                     const historicoStr = data.historico || '';
                     const origem = data.origem;
                     const destino = data.destino;
-                    const desvio = data.desvio || data.origemDesvio || ''; // Caso haja campo de desvio de rota
+                    const desvio = data.desvio || data.origemDesvio || '';
 
                     if (!historicoStr.includes('(')) return;
 
-                    // Divide o histórico pelos separadores ' | '
                     const eventos = historicoStr.split(' | ').map(ev => {
                         const matchStatus = ev.match(/^([^-]+)-/);
                         const matchData = ev.match(/\(([^)]+)\)$/);
@@ -440,7 +447,6 @@
 
                     if (eventos.length < 2) return;
 
-                    // Lógica para HU'S PENDENTES
                     if (tipoAba === 'hus') {
                         let tempoOrigem = 0;
                         let tempoDestino = 0;
@@ -454,7 +460,6 @@
                             if (atual.status === 'Pendente') {
                                 tempoOrigem += minutos;
                             } else if (atual.status === 'Agendado') {
-                                // Pausado até a data e hora do agendamento
                                 dataFimAgendado = parseDataPtBr(data.agendamento);
                                 if (dataFimAgendado && proximo.data >= dataFimAgendado) {
                                     const minutosUteis = calcularDiferencaMinutos(dataFimAgendado, proximo.data);
@@ -468,7 +473,6 @@
                         registrarTempoCad(destino, tempoDestino);
                     }
 
-                    // Lógica para DESVIO DE ROTA
                     else if (tipoAba === 'desvio') {
                         let tempoOrigem = 0;
                         let tempoDestino = 0;
@@ -492,7 +496,6 @@
                         registrarTempoCad(desvio, tempoDesvio);
                     }
 
-                    // Lógica para MU'S PENDENTES
                     else if (tipoAba === 'mus') {
                         let tempoOrigem = 0;
                         for (let i = 0; i < eventos.length - 1; i++) {
@@ -517,10 +520,14 @@
                         if (status === 'Pendente' || status === 'Agendado') pendentes++;
                         else if (status === 'Finalizado') finalizados++;
                         
-                        // Incrementa para o gráfico de pizza caso a frase NÃO esteja no histórico
-                        const historicoTexto = data.historico || "";
-                        if (!historicoTexto.includes("Gerado via MU Pendente")) {
-                            countHu++;
+                        const historicoTexto = (data.historico || "").toLowerCase();
+                        const mesIndex = extrairMesDoHistorico(data.historico);
+
+                        if (!historicoTexto.includes("gerado via mu pendente")) {
+                            countHu++; // Para o gráfico de Pizza
+                            if (mesIndex >= 0 && mesIndex <= 11) {
+                                dadosMeses[mesIndex].hu++; // Para o gráfico de Barras
+                            }
                         }
                         
                         registrarOrigem(data.origem);
@@ -537,10 +544,14 @@
                         if (status === 'Pendente' || status === 'Agendado' || status === 'Aguardando Recusa') pendentes++;
                         else if (status === 'Finalizado') finalizados++;
                         
-                        // Incrementa para o gráfico de pizza caso a frase NÃO esteja no histórico
-                        const historicoTexto = data.historico || "";
-                        if (!historicoTexto.includes("Gerado via MU Pendente")) {
-                            countDesvio++;
+                        const historicoTexto = (data.historico || "").toLowerCase();
+                        const mesIndex = extrairMesDoHistorico(data.historico);
+
+                        if (!historicoTexto.includes("gerado via mu pendente")) {
+                            countDesvio++; // Para o gráfico de Pizza
+                            if (mesIndex >= 0 && mesIndex <= 11) {
+                                dadosMeses[mesIndex].desvio++; // Para o gráfico de Barras
+                            }
                         }
 
                         registrarOrigem(data.origem);
@@ -556,8 +567,13 @@
                         const status = data.status || '';
                         if (status === 'Pendente') pendentes++;
                         
-                        // MUs sempre vão para o gráfico de pizza
+                        const mesIndex = extrairMesDoHistorico(data.historico);
+
+                        // MUs sempre vão para os dois gráficos
                         countMu++;
+                        if (mesIndex >= 0 && mesIndex <= 11) {
+                            dadosMeses[mesIndex].mu++; 
+                        }
 
                         registrarOrigem(data.origem);
                         processarHistoricoEAtribuirTempos(data, 'mus');
@@ -574,7 +590,7 @@
                 const rankingArray = Object.entries(cadTemposRespostas).map(([cad, info]) => {
                     const mediaMinutos = Math.round(info.somaMinutos / info.totalAtendimentos);
                     return { cad, mediaMinutos };
-                }).sort((a, b) => a.mediaMinutos - b.mediaMinutos); // Menor tempo primeiro (mais rápido)
+                }).sort((a, b) => a.mediaMinutos - b.mediaMinutos);
 
                 const rankingListaEl = document.getElementById('ranking-resolucao-lista');
                 rankingListaEl.innerHTML = '';
@@ -583,7 +599,6 @@
                     const pos = i + 1;
                     if (rankingArray[i]) {
                         const item = rankingArray[i];
-                        // Formata o tempo de forma amigável
                         let tempoFormatado = `${item.mediaMinutos} min`;
                         if (item.mediaMinutos >= 60) {
                             const horas = (item.mediaMinutos / 60).toFixed(1);
@@ -674,36 +689,26 @@
                     const fimHu = percHu;
                     const fimDesvio = percHu + percDesvio;
                     
-                    // Colore o gráfico
                     pieElement.style.background = `conic-gradient(
                         #8cbaf6 0% ${fimHu}%, 
                         #ea5c85 ${fimHu}% ${fimDesvio}%, 
                         #3e84f4 ${fimDesvio}% 100%
                     )`;
                     
-                    // Limpa números anteriores para não duplicar se recarregar
                     pieElement.innerHTML = '';
 
-                    // Função auxiliar para desenhar o número e a porcentagem bem no meio da fatia
                     const addNumberToSlice = (count, percValue, startPerc, endPerc) => {
-                        if (count <= 0) return; // Não mostra nada se for 0
+                        if (count <= 0) return; 
                         
-                        // Formata a porcentagem no padrão brasileiro (ex: 57,9%)
                         const formatPerc = percValue.toFixed(1).replace('.', ',') + '%';
-
-                        // Acha o centro da fatia (em porcentagem)
                         const midPerc = startPerc + (endPerc - startPerc) / 2;
-                        // Converte para radianos para usar na matemática
                         const angleRad = (midPerc * 3.6) * (Math.PI / 180);
                         
-                        // Distância do centro do gráfico (raio ajustado para o novo tamanho de 100px)
                         const radius = 28; 
                         
-                        // Calcula X e Y
                         const x = Math.sin(angleRad) * radius;
                         const y = -Math.cos(angleRad) * radius;
                         
-                        // Cria a etiqueta com o número e a porcentagem
                         const label = document.createElement('div');
                         label.innerHTML = `${count}<br><span style="font-size: 0.55rem; font-weight: 600;">${formatPerc}</span>`;
                         label.style.position = 'absolute';
@@ -711,7 +716,7 @@
                         label.style.top = `calc(50% + ${y}px)`;
                         label.style.transform = 'translate(-50%, -50%)';
                         label.style.color = '#ffffff';
-                        label.style.fontSize = '0.7rem'; // Número principal um pouco menor
+                        label.style.fontSize = '0.7rem'; 
                         label.style.fontWeight = '900';
                         label.style.textAlign = 'center';
                         label.style.lineHeight = '1.1';
@@ -721,15 +726,72 @@
                         pieElement.appendChild(label);
                     };
 
-                    // Adiciona os números em cada fatia passando a porcentagem correspondente
                     addNumberToSlice(countHu, percHu, 0, fimHu);
                     addNumberToSlice(countDesvio, percDesvio, fimHu, fimDesvio);
                     addNumberToSlice(countMu, percMu, fimDesvio, 100);
 
                 } else if (pieElement) {
-                    // Estado vazio caso não tenha nenhum dado
                     pieElement.style.background = '#e2e8f0'; 
                     pieElement.innerHTML = '';
+                }
+
+                // ==============================================
+                // RENDERIZAR GRÁFICO DE BARRAS ESCURO (MENSAL)
+                // ==============================================
+                const mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                
+                // Encontra o mês mais alto preenchido no sistema para fechar a janela do gráfico lá
+                let ultimoMesComDados = 5; // Caso não tenha dados reais, ele vai mostrar até Junho por padrão
+                let maxValBarras = 0;
+                
+                for (let i = 0; i < 12; i++) {
+                    maxValBarras = Math.max(maxValBarras, dadosMeses[i].hu, dadosMeses[i].desvio, dadosMeses[i].mu);
+                    if (dadosMeses[i].hu > 0 || dadosMeses[i].desvio > 0 || dadosMeses[i].mu > 0) {
+                        ultimoMesComDados = Math.max(ultimoMesComDados, i);
+                    }
+                }
+                
+                // Calcula o teto (eixo Y) do gráfico para deixar proporcional e arredondado (ex: 7000 ao invés de 6852)
+                let maxYBarras = 10;
+                if (maxValBarras > 0) {
+                    const ordem = Math.pow(10, Math.floor(Math.log10(maxValBarras)));
+                    maxYBarras = Math.ceil(maxValBarras / ordem) * ordem;
+                    if (maxYBarras === maxValBarras) maxYBarras += ordem; 
+                }
+
+                const darkChartArea = document.querySelector('.dark-chart-area');
+                if (darkChartArea) {
+                    // Escreve os números no eixo esquerdo (y-axis)
+                    darkChartArea.innerHTML = `
+                        <div class="y-axis">
+                            <span>${maxYBarras}</span>
+                            <span>${Math.round(maxYBarras * 0.75)}</span>
+                            <span>${Math.round(maxYBarras * 0.5)}</span>
+                            <span>${Math.round(maxYBarras * 0.25)}</span>
+                            <span>0</span>
+                        </div>
+                    `;
+                    
+                    // Vai mostrar sempre uma janela de 6 meses (terminando no último mês que teve registro)
+                    let mesInicial = Math.max(0, ultimoMesComDados - 5);
+                    
+                    for (let i = mesInicial; i <= ultimoMesComDados; i++) {
+                        const d = dadosMeses[i];
+                        
+                        // Descobre a % de altura que a barra deve ter baseado no valor Teto (maxYBarras)
+                        const heightHu = maxYBarras > 0 ? (d.hu / maxYBarras) * 100 : 0;
+                        const heightDesvio = maxYBarras > 0 ? (d.desvio / maxYBarras) * 100 : 0;
+                        const heightMu = maxYBarras > 0 ? (d.mu / maxYBarras) * 100 : 0;
+                        
+                        darkChartArea.innerHTML += `
+                            <div class="month-group">
+                                <div class="bar-sm c-blue1" style="height: ${heightHu}%;" title="HU Pendente: ${d.hu}"></div>
+                                <div class="bar-sm c-pink" style="height: ${heightDesvio}%;" title="Desvio: ${d.desvio}"></div>
+                                <div class="bar-sm c-blue2" style="height: ${heightMu}%;" title="MU Pendente: ${d.mu}"></div>
+                                <span class="month-label">${mesesNomes[i]}</span>
+                            </div>
+                        `;
+                    }
                 }
 
             } catch (error) {
