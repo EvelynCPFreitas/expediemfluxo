@@ -740,18 +740,25 @@
                 // ==============================================
                 const mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
                 
-                // Encontra o mês mais alto preenchido no sistema para fechar a janela do gráfico lá
-                let ultimoMesComDados = 5; // Caso não tenha dados reais, ele vai mostrar até Junho por padrão
+                let primeiroMesComDados = -1;
                 let maxValBarras = 0;
                 
+                // Encontra o teto máximo de valor e também descobre o primeiro mês que tem algum dado
                 for (let i = 0; i < 12; i++) {
                     maxValBarras = Math.max(maxValBarras, dadosMeses[i].hu, dadosMeses[i].desvio, dadosMeses[i].mu);
                     if (dadosMeses[i].hu > 0 || dadosMeses[i].desvio > 0 || dadosMeses[i].mu > 0) {
-                        ultimoMesComDados = Math.max(ultimoMesComDados, i);
+                        if (primeiroMesComDados === -1) {
+                            primeiroMesComDados = i;
+                        }
                     }
                 }
                 
-                // Calcula o teto (eixo Y) do gráfico para deixar proporcional e arredondado (ex: 7000 ao invés de 6852)
+                // Se não houver nenhum dado no banco ainda, usa o mês atual do sistema
+                if (primeiroMesComDados === -1) {
+                    primeiroMesComDados = new Date().getMonth();
+                }
+
+                // Calcula o teto (eixo Y) do gráfico para deixar proporcional e arredondado (ex: 30)
                 let maxYBarras = 10;
                 if (maxValBarras > 0) {
                     const ordem = Math.pow(10, Math.floor(Math.log10(maxValBarras)));
@@ -772,10 +779,13 @@
                         </div>
                     `;
                     
-                    // Vai mostrar sempre uma janela de 6 meses (terminando no último mês que teve registro)
-                    let mesInicial = Math.max(0, ultimoMesComDados - 5);
+                    // O mês inicial agora será o primeiro mês que teve algum registro
+                    let mesInicial = primeiroMesComDados;
                     
-                    for (let i = mesInicial; i <= ultimoMesComDados; i++) {
+                    // Vai exibir do primeiro mês com dados até fechar uma janela de 6 meses (se possível)
+                    let mesFinal = Math.min(11, mesInicial + 5);
+                    
+                    for (let i = mesInicial; i <= mesFinal; i++) {
                         const d = dadosMeses[i];
                         
                         // Descobre a % de altura que a barra deve ter baseado no valor Teto (maxYBarras)
