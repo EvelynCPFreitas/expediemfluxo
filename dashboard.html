@@ -137,13 +137,44 @@
         .dark-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
         .dark-chart-area { display: flex; align-items: flex-end; height: 75%; border-left: 1px solid #777; border-bottom: 1px solid #777; padding-left: 10px; gap: 30px; position: relative; margin-left: 45px; margin-bottom: 25px; }
         .y-axis { position: absolute; left: -45px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.6rem; color: #aaa; width: 40px; text-align: right; padding-right: 5px; }
-        .month-group { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 2px; position: relative; height: 100%; transition: transform 0.2s;}
+        .month-group { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 2px; position: relative; height: 100%; transition: transform 0.2s; cursor: pointer; }
         .month-group:hover { transform: scaleY(1.02); }
         .month-label { position: absolute; bottom: -22px; font-size: 0.7rem; color: #aaa; }
         .bar-sm { width: 15px; border-radius: 2px 2px 0 0; }
         .c-blue1 { background-color: #8ce1f8; }
         .c-pink { background-color: #f7558f; }
         .c-blue2 { background-color: #4b8df8; }
+
+        /* =========================================
+           TOOLTIP DO GRÁFICO ESCURO
+           ========================================= */
+        .chart-tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.85); /* Fundo escuro com leve transparência */
+            backdrop-filter: blur(5px);
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s;
+            z-index: 9999;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .chart-tooltip.active { opacity: 1; visibility: visible; }
+        .tooltip-title {
+            font-weight: 900; font-size: 1rem; text-align: center;
+            margin-bottom: 4px; padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .tooltip-row { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .tooltip-box { width: 14px; height: 14px; border-radius: 3px; }
 
         /* =========================================
            MODAL CADS OFENSORES
@@ -302,6 +333,9 @@
 
     </main>
 
+    <!-- CONTAINER DO TOOLTIP SUSPENSO -->
+    <div id="bar-chart-tooltip" class="chart-tooltip"></div>
+
     <!-- MODAL EXPANDIDO DE OFENSORES -->
     <div class="modal-overlay" id="modal-ofensores">
         <div class="modal-ofensores-content">
@@ -363,7 +397,6 @@
         const db = getFirestore(app);
         console.log("Firebase conectado ao Dashboard com sucesso!");
 
-        // Função para converter string de data "DD/MM/YYYY HH:mm" em objeto Date do JS
         function parseDataPtBr(dataStr) {
             if (!dataStr || typeof dataStr !== 'string' || !dataStr.includes(' ')) return null;
             const [dataPart, horaPart] = dataStr.split(' ');
@@ -372,11 +405,10 @@
             return new Date(ano, mes - 1, dia, hora, min);
         }
 
-        // Função auxiliar para calcular tempo em minutos entre duas datas
         function calcularDiferencaMinutos(inicio, fim) {
             if (!inicio || !fim || isNaN(inicio) || isNaN(fim)) return 0;
             const diffMs = fim - inicio;
-            return Math.max(0, Math.floor(diffMs / 60000)); // retorna em minutos
+            return Math.max(0, Math.floor(diffMs / 60000));
         }
 
         async function atualizarDashboard() {
@@ -384,20 +416,17 @@
                 let pendentes = 0;
                 let finalizados = 0;
                 
-                // Variáveis para contar os registros para o gráfico de pizza
                 let countHu = 0;
                 let countDesvio = 0;
                 let countMu = 0;
                 
-                // Estrutura de dados para o gráfico de barras mensal (0 = Janeiro, 11 = Dezembro)
                 const dadosMeses = Array.from({length: 12}, () => ({ hu: 0, desvio: 0, mu: 0 }));
 
-                // Função auxiliar para achar qual é o mês do registro analisando a primeira data no histórico
                 const extrairMesDoHistorico = (historicoStr) => {
                     if (!historicoStr) return -1;
                     const match = historicoStr.match(/\((\d{2})\/(\d{2})\/(\d{4})/);
                     if (match) {
-                        return parseInt(match[2], 10) - 1; // Subtrai 1 porque Janeiro no array é 0
+                        return parseInt(match[2], 10) - 1; 
                     }
                     return -1;
                 };
@@ -424,7 +453,6 @@
                     cadTemposRespostas[nomeCad].totalAtendimentos += 1;
                 };
 
-                // Parser inteligente do histórico para calcular o SLA
                 const processarHistoricoEAtribuirTempos = (data, tipoAba) => {
                     const historicoStr = data.historico || '';
                     const origem = data.origem;
@@ -524,9 +552,9 @@
                         const mesIndex = extrairMesDoHistorico(data.historico);
 
                         if (!historicoTexto.includes("gerado via mu pendente")) {
-                            countHu++; // Para o gráfico de Pizza
+                            countHu++; 
                             if (mesIndex >= 0 && mesIndex <= 11) {
-                                dadosMeses[mesIndex].hu++; // Para o gráfico de Barras
+                                dadosMeses[mesIndex].hu++; 
                             }
                         }
                         
@@ -548,9 +576,9 @@
                         const mesIndex = extrairMesDoHistorico(data.historico);
 
                         if (!historicoTexto.includes("gerado via mu pendente")) {
-                            countDesvio++; // Para o gráfico de Pizza
+                            countDesvio++; 
                             if (mesIndex >= 0 && mesIndex <= 11) {
-                                dadosMeses[mesIndex].desvio++; // Para o gráfico de Barras
+                                dadosMeses[mesIndex].desvio++; 
                             }
                         }
 
@@ -569,7 +597,6 @@
                         
                         const mesIndex = extrairMesDoHistorico(data.historico);
 
-                        // MUs sempre vão para os dois gráficos
                         countMu++;
                         if (mesIndex >= 0 && mesIndex <= 11) {
                             dadosMeses[mesIndex].mu++; 
@@ -580,13 +607,11 @@
                     });
                 } catch(e) { console.warn("mus_pendentes vazia", e); }
 
-                // Atualiza cards de totais
+                // Atualiza cards
                 document.getElementById('dash-total-pendentes').textContent = pendentes;
                 document.getElementById('dash-total-finalizados').textContent = finalizados;
 
-                // ==============================================
-                // MONTAR RANKING DE RESOLUÇÃO (TOP 3 MAIS RÁPIDOS)
-                // ==============================================
+                // RANKING
                 const rankingArray = Object.entries(cadTemposRespostas).map(([cad, info]) => {
                     const mediaMinutos = Math.round(info.somaMinutos / info.totalAtendimentos);
                     return { cad, mediaMinutos };
@@ -620,9 +645,7 @@
                     }
                 }
 
-                // ==============================================
-                // RENDERIZAR GRÁFICOS DE OFENSORES
-                // ==============================================
+                // OFENSORES
                 const ofensoresArray = Object.entries(ofensoresCount)
                     .map(([cad, count]) => ({ cad, count }))
                     .sort((a, b) => b.count - a.count);
@@ -675,9 +698,7 @@
                     });
                 }
                 
-                // ==============================================
-                // RENDERIZAR GRÁFICO DE PIZZA (CATEGORIAS)
-                // ==============================================
+                // PIZZA CATEGORIAS
                 const totalCategorias = countHu + countDesvio + countMu;
                 const pieElement = document.querySelector('.pie');
                 
@@ -736,14 +757,13 @@
                 }
 
                 // ==============================================
-                // RENDERIZAR GRÁFICO DE BARRAS ESCURO (MENSAL)
+                // RENDERIZAR GRÁFICO DE BARRAS ESCURO (MENSAL) COM TOOLTIP
                 // ==============================================
                 const mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
                 
                 let primeiroMesComDados = -1;
                 let maxValBarras = 0;
                 
-                // Encontra o teto máximo de valor e também descobre o primeiro mês que tem algum dado
                 for (let i = 0; i < 12; i++) {
                     maxValBarras = Math.max(maxValBarras, dadosMeses[i].hu, dadosMeses[i].desvio, dadosMeses[i].mu);
                     if (dadosMeses[i].hu > 0 || dadosMeses[i].desvio > 0 || dadosMeses[i].mu > 0) {
@@ -753,12 +773,10 @@
                     }
                 }
                 
-                // Se não houver nenhum dado no banco ainda, usa o mês atual do sistema
                 if (primeiroMesComDados === -1) {
                     primeiroMesComDados = new Date().getMonth();
                 }
 
-                // Calcula o teto (eixo Y) do gráfico para deixar proporcional e arredondado (ex: 30)
                 let maxYBarras = 10;
                 if (maxValBarras > 0) {
                     const ordem = Math.pow(10, Math.floor(Math.log10(maxValBarras)));
@@ -768,7 +786,6 @@
 
                 const darkChartArea = document.querySelector('.dark-chart-area');
                 if (darkChartArea) {
-                    // Escreve os números no eixo esquerdo (y-axis)
                     darkChartArea.innerHTML = `
                         <div class="y-axis">
                             <span>${maxYBarras}</span>
@@ -779,29 +796,64 @@
                         </div>
                     `;
                     
-                    // O mês inicial agora será o primeiro mês que teve algum registro
                     let mesInicial = primeiroMesComDados;
-                    
-                    // Vai exibir do primeiro mês com dados até fechar uma janela de 6 meses (se possível)
                     let mesFinal = Math.min(11, mesInicial + 5);
                     
                     for (let i = mesInicial; i <= mesFinal; i++) {
                         const d = dadosMeses[i];
                         
-                        // Descobre a % de altura que a barra deve ter baseado no valor Teto (maxYBarras)
                         const heightHu = maxYBarras > 0 ? (d.hu / maxYBarras) * 100 : 0;
                         const heightDesvio = maxYBarras > 0 ? (d.desvio / maxYBarras) * 100 : 0;
                         const heightMu = maxYBarras > 0 ? (d.mu / maxYBarras) * 100 : 0;
                         
+                        // Adicionando "data-*" attributes para o tooltip ler os valores
                         darkChartArea.innerHTML += `
-                            <div class="month-group">
-                                <div class="bar-sm c-blue1" style="height: ${heightHu}%;" title="HU Pendente: ${d.hu}"></div>
-                                <div class="bar-sm c-pink" style="height: ${heightDesvio}%;" title="Desvio: ${d.desvio}"></div>
-                                <div class="bar-sm c-blue2" style="height: ${heightMu}%;" title="MU Pendente: ${d.mu}"></div>
+                            <div class="month-group" 
+                                 data-mes="${mesesNomes[i]}" 
+                                 data-hu="${d.hu}" 
+                                 data-desvio="${d.desvio}" 
+                                 data-mu="${d.mu}">
+                                <div class="bar-sm c-blue1" style="height: ${heightHu}%;"></div>
+                                <div class="bar-sm c-pink" style="height: ${heightDesvio}%;"></div>
+                                <div class="bar-sm c-blue2" style="height: ${heightMu}%;"></div>
                                 <span class="month-label">${mesesNomes[i]}</span>
                             </div>
                         `;
                     }
+                    
+                    // ===========================================
+                    // EVENTOS DO TOOLTIP
+                    // ===========================================
+                    const tooltipEl = document.getElementById('bar-chart-tooltip');
+                    const blocks = darkChartArea.querySelectorAll('.month-group');
+                    
+                    blocks.forEach(block => {
+                        block.addEventListener('mouseenter', () => {
+                            const m = block.getAttribute('data-mes');
+                            const valHu = block.getAttribute('data-hu');
+                            const valDesv = block.getAttribute('data-desvio');
+                            const valMu = block.getAttribute('data-mu');
+                            
+                            // Desenha o conteúdo dentro da janelinha do Tooltip
+                            tooltipEl.innerHTML = `
+                                <div class="tooltip-title">${m}</div>
+                                <div class="tooltip-row"><div class="tooltip-box c-blue1"></div> <span>${valHu}</span></div>
+                                <div class="tooltip-row"><div class="tooltip-box c-pink"></div> <span>${valDesv}</span></div>
+                                <div class="tooltip-row"><div class="tooltip-box c-blue2"></div> <span>${valMu}</span></div>
+                            `;
+                            tooltipEl.classList.add('active');
+                        });
+                        
+                        block.addEventListener('mousemove', (e) => {
+                            // Faz a janelinha acompanhar o mouse (com 15px de distância para o ponteiro não cobrir)
+                            tooltipEl.style.left = (e.pageX + 15) + 'px';
+                            tooltipEl.style.top = (e.pageY - 15) + 'px';
+                        });
+                        
+                        block.addEventListener('mouseleave', () => {
+                            tooltipEl.classList.remove('active');
+                        });
+                    });
                 }
 
             } catch (error) {
