@@ -139,26 +139,42 @@
         .legend-color { width: 10px; height: 10px; border-radius: 2px; }
         .pie { width: 100px; height: 100px; border-radius: 50%; background: #e2e8f0; position: relative; transition: background 0.5s ease;}
         
-        .card-dark { background: #334155; grid-column: 1 / -1; grid-row: 3; margin-top: 25px; height: 300px; padding: 15px; justify-content: flex-end; }
+        /* CARD ESCURO - Trocado hidden para visible para não cortar os Dropdowns */
+        .card-dark { background: #334155; grid-column: 1 / -1; grid-row: 3; margin-top: 25px; height: 300px; padding: 15px; justify-content: flex-end; overflow: visible; }
         .dark-theme .card-dark { background: #1e293b; border: 1px solid var(--border-sidebar); }
         .dark-chart-header { display: flex; justify-content: center; align-items: center; font-size: 0.7rem; color: #ddd; margin-bottom: 15px; position: relative; min-height: 25px;}
         .dark-legend-container { display: flex; justify-content: center; gap: 20px; width: 100%; }
         .dark-legend { display: flex; align-items: center; gap: 5px; }
         .dark-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
         
-        /* FILTROS DO GRÁFICO (CAD E ANO) */
+        /* FILTROS DO GRÁFICO (CAD E ANO) CUSTOMIZADOS */
         .chart-filter-container { position: absolute; right: 10px; display: flex; align-items: center; gap: 15px; }
         .filter-group { display: flex; align-items: center; gap: 6px; }
         .filter-group label { font-weight: 700; font-size: 0.85rem; color: #fff; }
-        .filter-group select { 
+        
+        .custom-dropdown { position: relative; user-select: none; }
+        .dropdown-btn {
             background: rgba(255, 255, 255, 0.1); color: #fff; 
             border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; 
             padding: 4px 10px; font-size: 0.85rem; font-weight: 700; 
-            outline: none; cursor: pointer; transition: background 0.2s;
-            color-scheme: dark; /* Força scrollbar escura no menu de opções */
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            gap: 10px; transition: background 0.2s;
         }
-        .filter-group select:hover { background: rgba(255, 255, 255, 0.2); }
-        .filter-group select option { background: #0f172a; color: #fff; padding: 5px; }
+        .dropdown-btn:hover { background: rgba(255, 255, 255, 0.2); }
+        
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 4px); left: 0; width: 100%;
+            background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px; z-index: 1000;
+            max-height: 160px; /* Mostra no máximo ~5 itens (aproximadamente 32px cada) */
+            overflow-y: auto; list-style: none; padding: 0; margin: 0;
+            display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .dropdown-menu.active { display: block; }
+        .dropdown-menu li {
+            padding: 8px 10px; color: #fff; font-size: 0.85rem; cursor: pointer; transition: background 0.2s;
+        }
+        .dropdown-menu li:hover { background: rgba(255, 255, 255, 0.1); color: var(--btn-theme-color); }
 
         .dark-chart-area { display: flex; align-items: flex-end; height: 75%; border-left: 1px solid #777; border-bottom: 1px solid #777; padding-left: 10px; gap: 30px; position: relative; margin-left: 45px; margin-bottom: 25px; }
         .y-axis { position: absolute; left: -45px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.6rem; color: #aaa; width: 40px; text-align: right; padding-right: 5px; }
@@ -352,12 +368,18 @@
                 <!-- FILTROS (CAD E ANO) -->
                 <div class="chart-filter-container">
                     <div class="filter-group">
-                        <label for="filtro-cad">CAD:</label>
-                        <select id="filtro-cad"></select>
+                        <label>CAD:</label>
+                        <div class="custom-dropdown" id="dropdown-cad" style="min-width: 100px;">
+                            <div class="dropdown-btn" id="btn-cad"><span id="cad-selected-text">Todos</span> <i class="ph ph-caret-down"></i></div>
+                            <ul class="dropdown-menu" id="cad-list"></ul>
+                        </div>
                     </div>
                     <div class="filter-group">
-                        <label for="filtro-ano">Ano:</label>
-                        <select id="filtro-ano"></select>
+                        <label>Ano:</label>
+                        <div class="custom-dropdown" id="dropdown-ano" style="min-width: 80px;">
+                            <div class="dropdown-btn" id="btn-ano"><span id="ano-selected-text">2026</span> <i class="ph ph-caret-down"></i></div>
+                            <ul class="dropdown-menu" id="ano-list"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -464,7 +486,7 @@
                     const match = historicoStr.match(/\((\d{2})\/(\d{2})\/(\d{4})/);
                     if (match) {
                         return {
-                            mes: parseInt(match[2], 10) - 1, // 0 = Jan, 11 = Dez
+                            mes: parseInt(match[2], 10) - 1,
                             ano: parseInt(match[3], 10)
                         };
                     }
@@ -800,41 +822,72 @@
                 }
 
                 // ==============================================
-                // RENDERIZAR GRÁFICO DE BARRAS ESCURO (MENSAL) DINÂMICO (COM FILTRO DE CAD E ANO)
+                // RENDERIZAR GRÁFICO DE BARRAS ESCURO (MENSAL) DINÂMICO (COM DROPDOWNS CUSTOMIZADOS)
                 // ==============================================
                 const mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
                 
-                // Preenche o Filtro de Ano
-                const anoAtual = new Date().getFullYear();
-                const anosFiltro = [anoAtual - 2, anoAtual - 1, anoAtual]; 
+                // Variáveis para guardar o estado atual dos filtros
+                let estadoAtualAno = new Date().getFullYear();
+                let estadoAtualCad = 'Todos';
+
+                // ================= PREENCHE FILTRO: ANO =================
+                const anosFiltro = [estadoAtualAno - 2, estadoAtualAno - 1, estadoAtualAno]; 
+                const anoList = document.getElementById('ano-list');
+                const anoSelectedText = document.getElementById('ano-selected-text');
                 
-                const selectAno = document.getElementById('filtro-ano');
-                selectAno.innerHTML = '';
+                anoSelectedText.textContent = estadoAtualAno;
                 anosFiltro.forEach(a => {
-                    const opt = document.createElement('option');
-                    opt.value = a;
-                    opt.textContent = a;
-                    if (a === anoAtual) opt.selected = true; 
-                    selectAno.appendChild(opt);
+                    const li = document.createElement('li');
+                    li.textContent = a;
+                    li.addEventListener('click', () => {
+                        estadoAtualAno = a;
+                        anoSelectedText.textContent = a;
+                        anoList.classList.remove('active');
+                        renderizarGraficoBarras(estadoAtualAno, estadoAtualCad);
+                    });
+                    anoList.appendChild(li);
                 });
 
-                // Preenche o Filtro de CADs com a sua Lista Estática fornecida
+                // ================= PREENCHE FILTRO: CAD =================
                 const listaCDs = ["Todos", "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", "BRMG01", "BRMG02", "BRMG03", "BRMG04", "BRMS01", "BRPE01", "BRPR01", "BRPR04", "BRRC01", "BRRC02", "BRRC03", "BRRC04", "BRRC05", "BRRJ01", "BRRJ02", "BRRS01", "BRRS03", "BRRS04", "BRSC02", "BRSP02", "BRSP03", "BRSP04", "BRSP05", "BRSP06", "BRSP09", "BRSP10", "BRSP11", "BRSP14", "BRSP15", "BRSP18", "BRSP19", "BRSP21", "BRSP23", "BRSP24", "BRSP25", "BRSP26", "BRSP27", "BRSP28", "BRSP29", "BRSP30", "BRSP31", "BRSP33", "BRSP34", "BRSP35", "BRSP38", "BRSP51", "BRSP52", "BRSP53", "BRSP55"];
-                const selectCad = document.getElementById('filtro-cad');
-                selectCad.innerHTML = '';
+                const cadList = document.getElementById('cad-list');
+                const cadSelectedText = document.getElementById('cad-selected-text');
+
+                cadSelectedText.textContent = 'Todos';
                 listaCDs.forEach(cad => {
-                    const opt = document.createElement('option');
-                    opt.value = cad;
-                    opt.textContent = cad;
-                    selectCad.appendChild(opt);
+                    const li = document.createElement('li');
+                    li.textContent = cad;
+                    li.addEventListener('click', () => {
+                        estadoAtualCad = cad;
+                        cadSelectedText.textContent = cad;
+                        cadList.classList.remove('active');
+                        renderizarGraficoBarras(estadoAtualAno, estadoAtualCad);
+                    });
+                    cadList.appendChild(li);
                 });
 
-                // Função para desenhar o gráfico filtrando pela memória
+                // ================= LÓGICA DE ABRIR/FECHAR DROPDOWNS =================
+                document.getElementById('btn-ano').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    anoList.classList.toggle('active');
+                    cadList.classList.remove('active');
+                });
+                
+                document.getElementById('btn-cad').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    cadList.classList.toggle('active');
+                    anoList.classList.remove('active');
+                });
+
+                document.addEventListener('click', () => {
+                    anoList.classList.remove('active');
+                    cadList.classList.remove('active');
+                });
+
+                // ================= FUNÇÃO DE RENDERIZAR GRÁFICO =================
                 function renderizarGraficoBarras(anoSelecionado, cadSelecionado) {
-                    // Prepara o array zerado do ano
                     const dadosFiltrados = Array.from({length: 12}, () => ({ hu: 0, desvio: 0, mu: 0 }));
                     
-                    // Varre a memória global e soma apenas o que bater com o filtro
                     registrosGraficoBarras.forEach(r => {
                         if (r.ano === anoSelecionado && (cadSelecionado === 'Todos' || r.cad === cadSelecionado)) {
                             dadosFiltrados[r.mes][r.tipo]++;
@@ -854,7 +907,7 @@
                     }
                     
                     if (primeiroMesComDados === -1) {
-                        primeiroMesComDados = (anoSelecionado === anoAtual) ? new Date().getMonth() : 0;
+                        primeiroMesComDados = (anoSelecionado === new Date().getFullYear()) ? new Date().getMonth() : 0;
                     }
 
                     let maxYBarras = 10;
@@ -936,18 +989,8 @@
                     });
                 }
 
-                // Renderiza inicialmente com o ano atual e todos os cads
-                renderizarGraficoBarras(anoAtual, 'Todos');
-
-                // Re-desenha ao mudar Ano
-                selectAno.addEventListener('change', () => {
-                    renderizarGraficoBarras(parseInt(selectAno.value, 10), selectCad.value);
-                });
-
-                // Re-desenha ao mudar CAD
-                selectCad.addEventListener('change', () => {
-                    renderizarGraficoBarras(parseInt(selectAno.value, 10), selectCad.value);
-                });
+                // Renderiza inicialmente
+                renderizarGraficoBarras(estadoAtualAno, estadoAtualCad);
 
             } catch (error) {
                 console.error("Erro geral ao processar o Dashboard: ", error);
