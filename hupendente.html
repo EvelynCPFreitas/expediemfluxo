@@ -1251,10 +1251,13 @@
                     novaLinha.setAttribute('data-data-reg', dados.dataReg || '');
                     novaLinha.setAttribute('data-historico', dados.historico || '');
 
-                    let badgeClass = 'status-pendente';
+                   let badgeClass = 'status-pendente';
                     if (dados.status === 'Agendado') badgeClass = 'status-agendado';
                     if (dados.status === 'Expedido') badgeClass = 'status-expedido';
                     if (dados.status === 'Finalizado') badgeClass = 'status-finalizado';
+
+                    // Lógica para esconder o botão de avançar se estiver finalizado
+                    let displayAvancar = dados.status === 'Finalizado' ? 'none' : '';
 
                     novaLinha.innerHTML = `
                         <td><input type="checkbox" class="row-checkbox"></td>
@@ -1267,7 +1270,7 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" style="cursor: pointer;" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer;" title="Avançar Status"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="cursor: pointer; display: ${displayAvancar};" title="Avançar Status"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" style="cursor: pointer;" title="Detalhes"></i>
                             </div>
                         </td>
