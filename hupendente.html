@@ -1251,7 +1251,7 @@
                     let displayAvancar = dados.status === 'Finalizado' ? 'none' : '';
 
                     novaLinha.innerHTML = `
-                        <td>${dados.dataReg || ''}</td>
+                       <td>${dados.dataReg ? dados.dataReg.split(' ')[0] : ''}</td>
                         <td>${dados.hu}</td>
                         <td>${dados.is}</td>
                         <td>${dados.origem}</td>
