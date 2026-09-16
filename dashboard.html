@@ -137,17 +137,18 @@
         .dark-legend { display: flex; align-items: center; gap: 5px; }
         .dark-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
         
-        /* FILTRO DE ANO */
-        .chart-filter-container { position: absolute; right: 10px; display: flex; align-items: center; gap: 8px; }
-        .chart-filter-container label { font-weight: 700; font-size: 0.85rem; color: #fff; }
-        .chart-filter-container select { 
+        /* FILTROS DO GRÁFICO (CAD E ANO) */
+        .chart-filter-container { position: absolute; right: 10px; display: flex; align-items: center; gap: 15px; }
+        .filter-group { display: flex; align-items: center; gap: 6px; }
+        .filter-group label { font-weight: 700; font-size: 0.85rem; color: #fff; }
+        .filter-group select { 
             background: rgba(255, 255, 255, 0.1); color: #fff; 
             border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; 
             padding: 4px 10px; font-size: 0.85rem; font-weight: 700; 
             outline: none; cursor: pointer; transition: background 0.2s;
         }
-        .chart-filter-container select:hover { background: rgba(255, 255, 255, 0.2); }
-        .chart-filter-container select option { background: #1e293b; color: #fff; }
+        .filter-group select:hover { background: rgba(255, 255, 255, 0.2); }
+        .filter-group select option { background: #0f172a; color: #fff; padding: 5px; }
 
         .dark-chart-area { display: flex; align-items: flex-end; height: 75%; border-left: 1px solid #777; border-bottom: 1px solid #777; padding-left: 10px; gap: 30px; position: relative; margin-left: 45px; margin-bottom: 25px; }
         .y-axis { position: absolute; left: -45px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.6rem; color: #aaa; width: 40px; text-align: right; padding-right: 5px; }
@@ -338,10 +339,16 @@
                     <div class="dark-legend"><div class="dark-legend-dot c-blue2"></div> MU Pendentes</div>
                 </div>
 
-                <!-- FILTRO DE ANO NO CANTO DIREITO -->
+                <!-- FILTROS (CAD E ANO) -->
                 <div class="chart-filter-container">
-                    <label for="filtro-ano">Ano:</label>
-                    <select id="filtro-ano"></select>
+                    <div class="filter-group">
+                        <label for="filtro-cad">CAD:</label>
+                        <select id="filtro-cad"></select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtro-ano">Ano:</label>
+                        <select id="filtro-ano"></select>
+                    </div>
                 </div>
             </div>
             
@@ -431,6 +438,9 @@
         }
 
         async function atualizarDashboard() {
+            // ARRAY GLOBAL PARA GUARDAR TODOS OS DADOS DO GRÁFICO DE BARRAS NA MEMÓRIA
+            const registrosGraficoBarras = [];
+            
             try {
                 let pendentes = 0;
                 let finalizados = 0;
@@ -438,16 +448,6 @@
                 let countHu = 0;
                 let countDesvio = 0;
                 let countMu = 0;
-                
-                // Objeto para organizar as contagens dos meses divididas pelo respectivo ANO
-                const dadosPorAno = {};
-                
-                const getDadosMeses = (ano) => {
-                    if (!dadosPorAno[ano]) {
-                        dadosPorAno[ano] = Array.from({length: 12}, () => ({ hu: 0, desvio: 0, mu: 0 }));
-                    }
-                    return dadosPorAno[ano];
-                };
 
                 const extrairMesEAnoDoHistorico = (historicoStr) => {
                     if (!historicoStr) return null;
@@ -580,11 +580,12 @@
                         
                         const historicoTexto = (data.historico || "").toLowerCase();
                         const dataExt = extrairMesEAnoDoHistorico(data.historico);
+                        const cadNormalizado = (data.origem || '').trim().toUpperCase();
 
                         if (!historicoTexto.includes("gerado via mu pendente")) {
                             countHu++; 
                             if (dataExt) {
-                                getDadosMeses(dataExt.ano)[dataExt.mes].hu++; 
+                                registrosGraficoBarras.push({ tipo: 'hu', mes: dataExt.mes, ano: dataExt.ano, cad: cadNormalizado });
                             }
                         }
                         
@@ -604,11 +605,12 @@
                         
                         const historicoTexto = (data.historico || "").toLowerCase();
                         const dataExt = extrairMesEAnoDoHistorico(data.historico);
+                        const cadNormalizado = (data.origem || '').trim().toUpperCase();
 
                         if (!historicoTexto.includes("gerado via mu pendente")) {
                             countDesvio++; 
                             if (dataExt) {
-                                getDadosMeses(dataExt.ano)[dataExt.mes].desvio++; 
+                                registrosGraficoBarras.push({ tipo: 'desvio', mes: dataExt.mes, ano: dataExt.ano, cad: cadNormalizado });
                             }
                         }
 
@@ -626,10 +628,11 @@
                         if (status === 'Pendente') pendentes++;
                         
                         const dataExt = extrairMesEAnoDoHistorico(data.historico);
+                        const cadNormalizado = (data.origem || '').trim().toUpperCase();
 
                         countMu++;
                         if (dataExt) {
-                            getDadosMeses(dataExt.ano)[dataExt.mes].mu++; 
+                            registrosGraficoBarras.push({ tipo: 'mu', mes: dataExt.mes, ano: dataExt.ano, cad: cadNormalizado });
                         }
 
                         registrarOrigem(data.origem);
@@ -637,7 +640,7 @@
                     });
                 } catch(e) { console.warn("mus_pendentes vazia", e); }
 
-                // Atualiza cards
+                // Atualiza cards globais
                 document.getElementById('dash-total-pendentes').textContent = pendentes;
                 document.getElementById('dash-total-finalizados').textContent = finalizados;
 
@@ -787,13 +790,13 @@
                 }
 
                 // ==============================================
-                // RENDERIZAR GRÁFICO DE BARRAS ESCURO (MENSAL) DINÂMICO
+                // RENDERIZAR GRÁFICO DE BARRAS ESCURO (MENSAL) DINÂMICO (COM FILTRO DE CAD E ANO)
                 // ==============================================
                 const mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
                 
-                // Cria dinamicamente as opções de ano no filtro
+                // Preenche o Filtro de Ano
                 const anoAtual = new Date().getFullYear();
-                const anosFiltro = [anoAtual - 2, anoAtual - 1, anoAtual]; // Janela de 3 anos finalizando no ano atual
+                const anosFiltro = [anoAtual - 2, anoAtual - 1, anoAtual]; 
                 
                 const selectAno = document.getElementById('filtro-ano');
                 selectAno.innerHTML = '';
@@ -801,20 +804,40 @@
                     const opt = document.createElement('option');
                     opt.value = a;
                     opt.textContent = a;
-                    if (a === anoAtual) opt.selected = true; // Ano atual vem selecionado por padrão
+                    if (a === anoAtual) opt.selected = true; 
                     selectAno.appendChild(opt);
                 });
 
-                // Função interna para desenhar o gráfico baseado no ano escolhido
-                function renderizarGraficoBarras(anoSelecionado) {
-                    const dadosMeses = getDadosMeses(anoSelecionado);
+                // Preenche o Filtro de CADs com os CADs unicos encontrados no Ofensores
+                const selectCad = document.getElementById('filtro-cad');
+                selectCad.innerHTML = '<option value="Todos">Todos</option>';
+                Object.keys(ofensoresCount).sort().forEach(cad => {
+                    if (cad) {
+                        const opt = document.createElement('option');
+                        opt.value = cad;
+                        opt.textContent = cad;
+                        selectCad.appendChild(opt);
+                    }
+                });
+
+                // Função para desenhar o gráfico filtrando pela memória
+                function renderizarGraficoBarras(anoSelecionado, cadSelecionado) {
+                    // Prepara o array zerado do ano
+                    const dadosFiltrados = Array.from({length: 12}, () => ({ hu: 0, desvio: 0, mu: 0 }));
+                    
+                    // Varre a memória global e soma apenas o que bater com o filtro
+                    registrosGraficoBarras.forEach(r => {
+                        if (r.ano === anoSelecionado && (cadSelecionado === 'Todos' || r.cad === cadSelecionado)) {
+                            dadosFiltrados[r.mes][r.tipo]++;
+                        }
+                    });
                     
                     let primeiroMesComDados = -1;
                     let maxValBarras = 0;
                     
                     for (let i = 0; i < 12; i++) {
-                        maxValBarras = Math.max(maxValBarras, dadosMeses[i].hu, dadosMeses[i].desvio, dadosMeses[i].mu);
-                        if (dadosMeses[i].hu > 0 || dadosMeses[i].desvio > 0 || dadosMeses[i].mu > 0) {
+                        maxValBarras = Math.max(maxValBarras, dadosFiltrados[i].hu, dadosFiltrados[i].desvio, dadosFiltrados[i].mu);
+                        if (dadosFiltrados[i].hu > 0 || dadosFiltrados[i].desvio > 0 || dadosFiltrados[i].mu > 0) {
                             if (primeiroMesComDados === -1) {
                                 primeiroMesComDados = i;
                             }
@@ -849,7 +872,7 @@
                     let mesFinal = Math.min(11, mesInicial + 5);
                     
                     for (let i = mesInicial; i <= mesFinal; i++) {
-                        const d = dadosMeses[i];
+                        const d = dadosFiltrados[i];
                         
                         const heightHu = maxYBarras > 0 ? (d.hu / maxYBarras) * 100 : 0;
                         const heightDesvio = maxYBarras > 0 ? (d.desvio / maxYBarras) * 100 : 0;
@@ -872,7 +895,6 @@
                     vincularEventosTooltip();
                 }
 
-                // Vincula os eventos do mouse para o tooltip aparecer
                 function vincularEventosTooltip() {
                     const tooltipEl = document.getElementById('bar-chart-tooltip');
                     const darkChartArea = document.querySelector('.dark-chart-area');
@@ -885,7 +907,6 @@
                             const valDesv = block.getAttribute('data-desvio');
                             const valMu = block.getAttribute('data-mu');
                             
-                            // Adicionando os textos correspondentes a cada cor
                             tooltipEl.innerHTML = `
                                 <div class="tooltip-title">${m}</div>
                                 <div class="tooltip-row"><div class="tooltip-box c-blue1"></div> <span>HU Pendentes: ${valHu}</span></div>
@@ -906,13 +927,17 @@
                     });
                 }
 
-                // Renderiza inicialmente com o ano atual
-                renderizarGraficoBarras(anoAtual);
+                // Renderiza inicialmente com o ano atual e todos os cads
+                renderizarGraficoBarras(anoAtual, 'Todos');
 
-                // Evento para re-desenhar o gráfico quando o usuário trocar o filtro de Ano
-                selectAno.addEventListener('change', (e) => {
-                    const anoEscolhido = parseInt(e.target.value, 10);
-                    renderizarGraficoBarras(anoEscolhido);
+                // Re-desenha ao mudar Ano
+                selectAno.addEventListener('change', () => {
+                    renderizarGraficoBarras(parseInt(selectAno.value, 10), selectCad.value);
+                });
+
+                // Re-desenha ao mudar CAD
+                selectCad.addEventListener('change', () => {
+                    renderizarGraficoBarras(parseInt(selectAno.value, 10), selectCad.value);
                 });
 
             } catch (error) {
