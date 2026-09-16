@@ -41,6 +41,15 @@
 
         body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-primary); transition: background-color 0.3s ease, color 0.3s ease; }
 
+        /* Customização global de Scrollbar para combinar com o tema */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.5); }
+        .dark-theme ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark-theme ::-webkit-scrollbar-thumb { background: #334155; }
+        .dark-theme ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
         /* =========================================
            BOTÃO DE TEMA E SIDEBAR
            ========================================= */
@@ -146,6 +155,7 @@
             border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; 
             padding: 4px 10px; font-size: 0.85rem; font-weight: 700; 
             outline: none; cursor: pointer; transition: background 0.2s;
+            color-scheme: dark; /* Força scrollbar escura no menu de opções */
         }
         .filter-group select:hover { background: rgba(255, 255, 255, 0.2); }
         .filter-group select option { background: #0f172a; color: #fff; padding: 5px; }
@@ -808,16 +818,15 @@
                     selectAno.appendChild(opt);
                 });
 
-                // Preenche o Filtro de CADs com os CADs unicos encontrados no Ofensores
+                // Preenche o Filtro de CADs com a sua Lista Estática fornecida
+                const listaCDs = ["Todos", "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", "BRMG01", "BRMG02", "BRMG03", "BRMG04", "BRMS01", "BRPE01", "BRPR01", "BRPR04", "BRRC01", "BRRC02", "BRRC03", "BRRC04", "BRRC05", "BRRJ01", "BRRJ02", "BRRS01", "BRRS03", "BRRS04", "BRSC02", "BRSP02", "BRSP03", "BRSP04", "BRSP05", "BRSP06", "BRSP09", "BRSP10", "BRSP11", "BRSP14", "BRSP15", "BRSP18", "BRSP19", "BRSP21", "BRSP23", "BRSP24", "BRSP25", "BRSP26", "BRSP27", "BRSP28", "BRSP29", "BRSP30", "BRSP31", "BRSP33", "BRSP34", "BRSP35", "BRSP38", "BRSP51", "BRSP52", "BRSP53", "BRSP55"];
                 const selectCad = document.getElementById('filtro-cad');
-                selectCad.innerHTML = '<option value="Todos">Todos</option>';
-                Object.keys(ofensoresCount).sort().forEach(cad => {
-                    if (cad) {
-                        const opt = document.createElement('option');
-                        opt.value = cad;
-                        opt.textContent = cad;
-                        selectCad.appendChild(opt);
-                    }
+                selectCad.innerHTML = '';
+                listaCDs.forEach(cad => {
+                    const opt = document.createElement('option');
+                    opt.value = cad;
+                    opt.textContent = cad;
+                    selectCad.appendChild(opt);
                 });
 
                 // Função para desenhar o gráfico filtrando pela memória
