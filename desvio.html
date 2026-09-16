@@ -636,6 +636,9 @@
                     if (dados.status === 'Recusado') badgeClass = 'status-recusado';
                     if (dados.status === 'Finalizado') badgeClass = 'status-finalizado';
 
+                    // Lógica para esconder o botão de avançar se estiver finalizado
+                    let displayAvancar = dados.status === 'Finalizado' ? 'none' : '';
+
                     novaLinha.innerHTML = `
                         <td><input type="checkbox" class="row-checkbox"></td>
                         <td>${dados.hu}</td>
@@ -648,7 +651,7 @@
                         <td>
                             <div class="table-actions">
                                 <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" title="Avançar Status"></i>
+                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="display: ${displayAvancar}; cursor: pointer;" title="Avançar Status"></i>
                                 <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
                             </div>
                         </td>
