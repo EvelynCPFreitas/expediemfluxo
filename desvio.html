@@ -185,8 +185,10 @@
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
         .hu-table th:first-child { border-top-left-radius: 8px; }
         .hu-table th:last-child { border-top-right-radius: 8px; }
-        .hu-table th, .hu-table td { padding: 12px 10px; border-bottom: 1px solid #c0c8d1; transition: border-color 0.3s; }
-        .hu-table td { color: #444; }
+        
+        /* Remoção da borda inferior do cabeçalho */
+        .hu-table th { padding: 12px 10px; border-bottom: none !important; }
+        .hu-table td { padding: 12px 10px; border-bottom: 1px solid #c0c8d1; transition: border-color 0.3s; color: #444; }
         .dark-theme .hu-table td { color: #cbd5e1; border-color: #1e293b; }
         
         .status-badge { padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; display: inline-block; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
