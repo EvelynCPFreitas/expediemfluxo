@@ -27,6 +27,7 @@
             --btn-theme-bg: rgba(0,0,0,0.05);
             --btn-theme-color: #004b87;
             --table-border: #cbd5e1;
+            --bg-notif-box: rgba(0, 75, 135, 0.08);
         }
 
         .dark-theme {
@@ -41,6 +42,7 @@
             --btn-theme-bg: rgba(255,255,255,0.1);
             --btn-theme-color: #fcd34d;
             --table-border: #1e293b;
+            --bg-notif-box: rgba(255, 255, 255, 0.05);
         }
 
         * {
@@ -96,6 +98,8 @@
             padding-bottom: 20px;
             transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
             z-index: 50;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
         .sidebar.expanded { width: 250px; }
         .logo-container {
@@ -108,11 +112,12 @@
         .logo-text { display: none; }
         .sidebar.expanded .logo-text { display: block; }
 
-        .nav-menu { flex: 1; margin-top: 30px; }
+        .nav-menu { flex: 1; margin-top: 10px; }
         .nav-item {
             display: flex; align-items: center; justify-content: center; gap: 15px;
             padding: 15px; color: var(--text-sidebar); font-weight: 700; font-size: 1.05rem;
             text-decoration: none; white-space: nowrap; transition: background 0.2s, padding 0.3s ease, justify-content 0.3s ease;
+            cursor: pointer;
         }
         .sidebar.expanded .nav-item { justify-content: flex-start; padding: 15px 25px; }
         .nav-text { display: none; }
@@ -120,9 +125,39 @@
         .nav-item:hover, .nav-item.active { background-color: var(--bg-hover); }
         .nav-item i, .nav-item svg { font-size: 1.5rem; flex-shrink: 0; }
 
+        /* Estilos do Bloco de Notificações */
+        .notification-item {
+            cursor: default;
+        }
+        .notifications-box {
+            display: none;
+            background-color: var(--bg-notif-box);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 5px 15px 15px 15px;
+            font-size: 0.85rem;
+            color: var(--text-sidebar);
+            border: 1px solid var(--border-sidebar);
+        }
+        .sidebar.expanded .notifications-box {
+            display: block;
+        }
+        .notifications-box-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .notifications-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-weight: 600;
+        }
+
         .sidebar-footer {
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             gap: 20px; color: var(--text-sidebar); transition: flex-direction 0.3s ease, padding 0.3s ease;
+            margin-top: auto;
         }
         .sidebar.expanded .sidebar-footer { flex-direction: row; justify-content: space-between; padding: 0 25px; }
         .user-info { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 700; }
@@ -805,6 +840,18 @@
                 <i class="ph ph-package"></i> 
                 <span class="nav-text">MU's Pendentes</span>
             </a>
+            <div class="nav-item notification-item">
+                <i class="ph ph-bell"></i> 
+                <span class="nav-text">Notificações</span>
+            </div>
+            <div class="notifications-box">
+                <div class="notifications-box-title">Seu CAD tem pendencias em:</div>
+                <ul class="notifications-list">
+                    <li>HU's Pendentes - <span id="notif-hu-count">0</span></li>
+                    <li>Desvio de Rota - <span id="notif-desvio-count">0</span></li>
+                    <li>MU's Pendentes - <span id="notif-mu-count">0</span></li>
+                </ul>
+            </div>
         </nav>
 
         <div class="sidebar-footer">
@@ -1167,7 +1214,84 @@
 
             carregarRegistros();
             processarHUsTransferidas();
+            carregarNotificacoes();
         });
+
+        // =========================================
+        // FUNÇÃO DE CÁLCULO DE NOTIFICAÇÕES POR CAD
+        // =========================================
+        async function carregarNotificacoes() {
+            const userCD = localStorage.getItem('userCD') || 'Admin';
+            const agora = new Date();
+
+            let countHU = 0;
+            let countDesvio = 0;
+            let countMU = 0;
+
+            const parseAgendamento = (agendStr) => {
+                if (!agendStr) return null;
+                const partes = agendStr.split(' ');
+                if (partes.length < 2) return null;
+                const [dia, mes, ano] = partes[0].split('/');
+                const [h, m] = partes[1].split(':');
+                return new Date(`${ano}-${mes}-${dia}T${h}:${m}:00`);
+            };
+
+            try {
+                // 1. Notificações de HU's Pendentes
+                const snapHU = await getDocs(collection(db, "hus_pendentes"));
+                snapHU.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.origem === userCD) {
+                        if (data.status === 'Pendente') {
+                            countHU++;
+                        } else if (data.status === 'Agendado') {
+                            const dtAgend = parseAgendamento(data.agendamento);
+                            if (dtAgend && dtAgend < agora) countHU++;
+                        }
+                    }
+                    if (data.destino === userCD && data.status === 'Expedido') {
+                        countHU++;
+                    }
+                });
+
+                // 2. Notificações de Desvio de Rota
+                const snapDesvio = await getDocs(collection(db, "desvios_rota"));
+                snapDesvio.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.origem === userCD) {
+                        if (data.status === 'Pendente') {
+                            countDesvio++;
+                        } else if (data.status === 'Agendado') {
+                            const dtAgend = parseAgendamento(data.agendamento);
+                            if (dtAgend && dtAgend < agora) countDesvio++;
+                        }
+                    }
+                    if (data.destino === userCD && data.status === 'Aguardando Recusa') {
+                        countDesvio++;
+                    }
+                    if (data.desvio === userCD && data.status === 'Recusado') {
+                        countDesvio++;
+                    }
+                });
+
+                // 3. Notificações de MU's Pendentes
+                const snapMU = await getDocs(collection(db, "mus_pendentes"));
+                snapMU.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.origem === userCD && data.status === 'Pendente') {
+                        countMU++;
+                    }
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar contagem de notificações:", error);
+            }
+
+            document.getElementById('notif-hu-count').textContent = countHU;
+            document.getElementById('notif-desvio-count').textContent = countDesvio;
+            document.getElementById('notif-mu-count').textContent = countMU;
+        }
 
         // =========================================
         // FUNÇÃO AUXILIAR PARA CÁLCULO DE SLA COM DOT E CORES (CONGELA NO FINALIZADO)
@@ -1342,6 +1466,7 @@
                 
                 atualizarKPIs();
                 aplicarFiltros();
+                carregarNotificacoes();
             } catch (error) {
                 console.error("Erro ao carregar registros: ", error);
             }
