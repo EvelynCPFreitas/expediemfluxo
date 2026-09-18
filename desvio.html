@@ -590,7 +590,6 @@
             const dataInicio = parseData(dataRegStr);
             let dataFim = new Date();
 
-            // Se o registro já foi finalizado ou recusado, busca a data de término no histórico
             if ((status === 'Finalizado' || status === 'Recusado') && historico) {
                 const historicoArray = historico.split(' | ');
                 const itemFinal = historicoArray.find(item => item.includes(status));
@@ -673,7 +672,6 @@
             try {
                 const querySnapshot = await getDocs(collection(db, "desvios_rota"));
                 
-                // 1. Extrair os dados para um array
                 let registros = [];
                 querySnapshot.forEach((documento) => {
                     let dados = documento.data();
@@ -681,7 +679,6 @@
                     registros.push(dados);
                 });
 
-                // 2. Ordenar o array pela dataReg (mais recente primeiro)
                 registros.sort((a, b) => {
                     const parseData = (dataStr) => {
                         if (!dataStr) return 0;
@@ -691,10 +688,9 @@
                         const [h, m] = partes[1].split(':');
                         return new Date(`${ano}-${mes}-${dia}T${h}:${m}:00`).getTime();
                     };
-                    return parseData(b.dataReg) - parseData(a.dataReg); // Ordem decrescente
+                    return parseData(b.dataReg) - parseData(a.dataReg);
                 });
 
-                // 3. Renderizar na tabela já ordenado
                 registros.forEach((dados) => {
                     const novaLinha = document.createElement('tr');
                     novaLinha.setAttribute('data-db-id', dados.idDoBanco); 
@@ -715,7 +711,6 @@
                     if (dados.status === 'Recusado') badgeClass = 'status-recusado';
                     if (dados.status === 'Finalizado') badgeClass = 'status-finalizado';
 
-                    // Lógica para esconder o botão de avançar se estiver finalizado
                     let displayAvancar = dados.status === 'Finalizado' ? 'none' : '';
                     let slaValor = calcularSLA(dados.dataReg, dados.status, dados.historico);
 
@@ -788,7 +783,13 @@
                 document.querySelectorAll('.chk-status:checked').forEach(chk => statusSelecionados.push(chk.value));
             }
 
-            const datasSelecionadas = Array.from(selectedDates);
+            // Converter datas selecionadas (YYYY-MM-DD) para formato DD/MM/YYYY
+            const datasFormatadasSet = new Set(
+                Array.from(selectedDates).map(dateIso => {
+                    const [ano, mes, dia] = dateIso.split('-');
+                    return `${dia.padStart(2, '0')}/${mes.padStart(2, '0')}/${ano}`;
+                })
+            );
 
             const linhas = Array.from(document.querySelectorAll('#tabela-hu-corpo tr'));
             linhasFiltradas = [];
@@ -810,17 +811,22 @@
                 let atendeStatus = chkTodos.checked || statusSelecionados.includes(status) || (statusSelecionados.includes('Pendente') && status === 'Agendado');
 
                 let atendeData = true;
-                if (datasSelecionadas.length > 0 && dataReg) {
-                    const dataApenas = dataReg.split(' ')[0]; // DD/MM/YYYY
-                    const [dia, mes, ano] = dataApenas.split('/');
-                    const dataFormatadaISO = `${ano}-${mes}-${dia}`; // YYYY-MM-DD
-                    atendeData = datasSelecionadas.includes(dataFormatadaISO);
+                if (datasFormatadasSet.size > 0) {
+                    if (!dataReg) {
+                        atendeData = false;
+                    } else {
+                        const dataLinhaApenas = dataReg.split(' ')[0].trim(); // Extrai DD/MM/YYYY
+                        // Normalização com padStart para garantir formato DD/MM/YYYY com zeros
+                        const partesData = dataLinhaApenas.split('/');
+                        const dataLinhaFormatada = `${partesData[0].padStart(2, '0')}/${partesData[1].padStart(2, '0')}/${partesData[2]}`;
+                        atendeData = datasFormatadasSet.has(dataLinhaFormatada);
+                    }
                 }
 
                 if (atendeBusca && atendeOrigem && atendeDestino && atendeDesvio && atendeStatus && atendeData) {
                     linhasFiltradas.push(tr);
                 }
-                tr.style.display = 'none'; // Oculta todas inicialmente
+                tr.style.display = 'none';
             });
 
             const totalPaginas = Math.ceil(linhasFiltradas.length / registrosPorPagina) || 1;
@@ -857,7 +863,6 @@
             document.getElementById('btn-next-page').disabled = (paginaAtual === totalPaginas || totalPaginas === 0);
         }
 
-        // Eventos de clique para os botões de paginação
         document.getElementById('btn-prev-page').addEventListener('click', () => {
             if (paginaAtual > 1) {
                 paginaAtual--;
@@ -949,7 +954,8 @@
         const calendarPopup = document.getElementById('calendar-popup');
         const calGrid = document.getElementById('cal-grid');
         const calMonthYear = document.getElementById('cal-month-year');
-        let currentMonth = 8, currentYear = 2026, selectedDates = new Set();
+        const hoje = new Date();
+        let currentMonth = hoje.getMonth(), currentYear = hoje.getFullYear(), selectedDates = new Set();
         const monthsNames = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
         function renderCalendar(month, year) {
@@ -973,11 +979,20 @@
         dateDisplayBtn.addEventListener('click', (e) => { e.stopPropagation(); calendarPopup.classList.toggle('show'); renderCalendar(currentMonth, currentYear); });
         document.getElementById('cal-prev').addEventListener('click', (e) => { e.stopPropagation(); currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(currentMonth, currentYear); });
         document.getElementById('cal-next').addEventListener('click', (e) => { e.stopPropagation(); currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(currentMonth, currentYear); });
-        document.getElementById('cal-clear').addEventListener('click', (e) => { e.stopPropagation(); selectedDates.clear(); renderCalendar(currentMonth, currentYear); dateDisplayBtn.textContent = "Selecionar..."; filtrarTabela(); });
+        document.getElementById('cal-clear').addEventListener('click', (e) => { 
+            e.stopPropagation(); 
+            selectedDates.clear(); 
+            renderCalendar(currentMonth, currentYear); 
+            dateDisplayBtn.textContent = "Selecionar..."; 
+            filtrarTabela(); 
+        });
         document.getElementById('cal-apply').addEventListener('click', (e) => {
             e.stopPropagation();
             if (selectedDates.size === 0) dateDisplayBtn.textContent = "Selecionar...";
-            else if (selectedDates.size === 1) dateDisplayBtn.textContent = Array.from(selectedDates)[0];
+            else if (selectedDates.size === 1) {
+                const [y, m, d] = Array.from(selectedDates)[0].split('-');
+                dateDisplayBtn.textContent = `${d}/${m}/${y}`;
+            }
             else dateDisplayBtn.textContent = `${selectedDates.size} dias selecionados`;
             calendarPopup.classList.remove('show');
             filtrarTabela();
@@ -1047,7 +1062,6 @@
         document.getElementById('btn-confirmar-nao').addEventListener('click', () => modalConfirmacao.classList.remove('active'));
 
         document.addEventListener('click', (e) => {
-            // DETALHES
             if (e.target.classList.contains('btn-detalhes')) {
                 const tr = e.target.closest('tr');
                 let html = `<div>Status: <span style="font-weight:400;">${tr.getAttribute('data-status')}</span></div>
@@ -1072,7 +1086,6 @@
                 modalDetalhes.classList.add('active');
             }
 
-            // AVANÇAR STATUS
             if (e.target.classList.contains('btn-avancar')) {
                 linhaProcesso = e.target.closest('tr');
                 const sAtual = linhaProcesso.getAttribute('data-status');
@@ -1091,7 +1104,6 @@
                 }
             }
 
-            // EDITAR (Abrir)
             if (e.target.classList.contains('btn-editar')) {
                 linhaProcesso = e.target.closest('tr');
                 document.getElementById('edit-hu').value = linhaProcesso.getAttribute('data-hu');
@@ -1110,7 +1122,7 @@
                     if(ag && ag.includes(' ')) {
                         const [d, h] = ag.split(' ');
                         const [dia, mes, ano] = d.split('/');
-                        document.getElementById('edit-data-agend').value = `${ano}-${mes}-${dia}`;
+                        document.getElementById('edit-data-agend').value = `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
                         document.getElementById('edit-hora-agend').value = h;
                     }
                 } else {
