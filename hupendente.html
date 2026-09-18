@@ -125,33 +125,30 @@
         .nav-item:hover, .nav-item.active { background-color: var(--bg-hover); }
         .nav-item i, .nav-item svg { font-size: 1.5rem; flex-shrink: 0; }
 
-        /* Estilos do Bloco de Notificações */
-        .notification-item {
-            cursor: default;
-        }
+        /* Estilos do Bloco de Notificações Detalhado */
+        .notification-item { cursor: default; }
         .notifications-box {
             display: none;
             background-color: var(--bg-notif-box);
             border-radius: 8px;
             padding: 12px;
             margin: 5px 15px 15px 15px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-sidebar);
             border: 1px solid var(--border-sidebar);
         }
-        .sidebar.expanded .notifications-box {
-            display: block;
-        }
-        .notifications-box-title {
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .notifications-list {
+        .sidebar.expanded .notifications-box { display: block; }
+        .notifications-box-title { font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; }
+        
+        .notif-category { font-weight: 700; margin-top: 6px; }
+        .notif-sublist {
             list-style: none;
+            padding-left: 10px;
+            margin-top: 2px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            font-weight: 600;
+            gap: 3px;
+            font-weight: 500;
         }
 
         .sidebar-footer {
@@ -241,237 +238,77 @@
         .small-input { width: 85px; }
 
         /* ESTILOS DOS DROPDOWNS CUSTOMIZADOS (ORIGEM E DESTINO) */
-        .custom-dropdown-container {
-            position: relative;
-            display: inline-block;
-        }
+        .custom-dropdown-container { position: relative; display: inline-block; }
         .custom-dropdown-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            min-width: 140px;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            margin-top: 5px;
-            padding: 5px 0;
-            list-style: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            display: none;
-            z-index: 1000;
+            position: absolute; top: 100%; left: 0; min-width: 140px; background: #ffffff; border: 1px solid #cbd5e1;
+            border-radius: 8px; max-height: 200px; overflow-y: auto; margin-top: 5px; padding: 5px 0; list-style: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: none; z-index: 1000;
         }
         .custom-dropdown-list.show { display: block; }
-        
         .custom-dropdown-list::-webkit-scrollbar { width: 6px; }
         .custom-dropdown-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        
-        .custom-dropdown-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            color: #555;
-            font-weight: 600;
-            transition: background-color 0.1s, color 0.1s;
-        }
-        .custom-dropdown-item:hover {
-            background-color: #004b87; 
-            color: #ffffff;
-        }
+        .custom-dropdown-item { padding: 8px 12px; cursor: pointer; color: #555; font-weight: 600; transition: background-color 0.1s, color 0.1s; }
+        .custom-dropdown-item:hover { background-color: #004b87; color: #ffffff; }
 
-        .dark-theme .custom-dropdown-list {
-            background: #0f172a;
-            border-color: #334155;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-        }
+        .dark-theme .custom-dropdown-list { background: #0f172a; border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
         .dark-theme .custom-dropdown-list::-webkit-scrollbar-thumb { background: #334155; }
         .dark-theme .custom-dropdown-item { color: #cbd5e1; }
-        .dark-theme .custom-dropdown-item:hover {
-            background-color: #1e293b;
-            color: #fcd34d;
-        }
+        .dark-theme .custom-dropdown-item:hover { background-color: #1e293b; color: #fcd34d; }
 
         /* Popups Multi-Seleção (Status e Data) */
         .multi-select-popup {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 160px;
-            padding: 10px;
-            display: none;
-            z-index: 2000;
-            margin-top: 5px;
+            position: absolute; top: 100%; left: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 160px; padding: 10px; display: none; z-index: 2000; margin-top: 5px;
         }
         .multi-select-popup.show { display: block; }
-        .dark-theme .multi-select-popup {
-            background: #1e293b;
-            border-color: #334155;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-        }
-        .multi-select-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: #333;
-            border-radius: 4px;
-        }
+        .dark-theme .multi-select-popup { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+        .multi-select-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: #333; border-radius: 4px; }
         .dark-theme .multi-select-item { color: #f1f5f9; }
         .multi-select-item:hover { background: rgba(0,75,135,0.1); }
         
-        .multi-select-footer {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 8px;
-            border-top: 1px solid #cbd5e1;
-            padding-top: 6px;
-        }
+        .multi-select-footer { display: flex; justify-content: flex-end; margin-top: 8px; border-top: 1px solid #cbd5e1; padding-top: 6px; }
         .dark-theme .multi-select-footer { border-color: #334155; }
-        .btn-apply-small {
-            background: none; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; color: #004b87; padding: 2px 6px; border-radius: 4px;
-        }
+        .btn-apply-small { background: none; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; color: #004b87; padding: 2px 6px; border-radius: 4px; }
         .dark-theme .btn-apply-small { color: #60a5fa; }
         .btn-apply-small:hover { background: rgba(0,75,135,0.15); }
 
-        /* =========================================
-           CALENDÁRIO CUSTOMIZADO MULTI-SELEÇÃO
-           ========================================= */
-        .date-picker-wrapper {
-            position: relative;
-            display: inline-block;
-        }
+        /* CALENDÁRIO CUSTOMIZADO */
+        .date-picker-wrapper { position: relative; display: inline-block; }
         .date-input-display {
-            background: white;
-            border: 1px solid #004b87;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 0.85rem;
-            color: #333;
-            cursor: pointer;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 140px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            background: white; border: 1px solid #004b87; border-radius: 4px; padding: 4px 8px; font-size: 0.85rem;
+            color: #333; cursor: pointer; height: 24px; display: flex; align-items: center; justify-content: space-between;
+            width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .dark-theme .date-input-display {
-            background: #0f172a;
-            border-color: #334155;
-            color: #f1f5f9;
-        }
+        .dark-theme .date-input-display { background: #0f172a; border-color: #334155; color: #f1f5f9; }
 
         .calendar-popup {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 280px;
-            padding: 15px;
-            display: none;
-            z-index: 2000;
-            margin-top: 5px;
+            position: absolute; top: 100%; left: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 280px; padding: 15px; display: none; z-index: 2000; margin-top: 5px;
         }
         .calendar-popup.show { display: block; }
-        .dark-theme .calendar-popup {
-            background: #1e293b;
-            border-color: #334155;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-        }
+        .dark-theme .calendar-popup { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
 
-        .cal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 700;
-            color: #004b87;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-        }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 700; color: #004b87; margin-bottom: 12px; font-size: 0.95rem; }
         .dark-theme .cal-header { color: #8ca4c0; }
-        .cal-header button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            color: #004b87;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
+        .cal-header button { background: none; border: none; cursor: pointer; font-size: 1rem; color: #004b87; padding: 2px 8px; border-radius: 4px; }
         .cal-header button:hover { background: rgba(0,75,135,0.1); }
         .dark-theme .cal-header button { color: #8ca4c0; }
 
-        .cal-weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            text-align: center;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #666;
-            margin-bottom: 8px;
-        }
+        .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.75rem; font-weight: 700; color: #666; margin-bottom: 8px; }
         .dark-theme .cal-weekdays { color: #94a3b8; }
 
-        .cal-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            text-align: center;
-        }
-        .cal-day {
-            padding: 6px 0;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 50%;
-            color: #333;
-            transition: background 0.2s, color 0.2s;
-            user-select: none;
-        }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+        .cal-day { padding: 6px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer; border-radius: 50%; color: #333; transition: background 0.2s, color 0.2s; user-select: none; }
         .dark-theme .cal-day { color: #f1f5f9; }
         .cal-day:hover { background: rgba(0,75,135,0.15); }
         .cal-day.other-month { color: #aaa; }
         .dark-theme .cal-day.other-month { color: #475569; }
-        
-        .cal-day.selected {
-            background-color: #004b87;
-            color: #ffffff !important;
-        }
-        .dark-theme .cal-day.selected {
-            background-color: #3b82f6;
-        }
+        .cal-day.selected { background-color: #004b87; color: #ffffff !important; }
+        .dark-theme .cal-day.selected { background-color: #3b82f6; }
 
-        .cal-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            border-top: 1px solid #cbd5e1;
-            padding-top: 10px;
-        }
+        .cal-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid #cbd5e1; padding-top: 10px; }
         .dark-theme .cal-footer { border-color: #334155; }
-
-        .cal-footer button {
-            background: none;
-            border: none;
-            font-weight: 700;
-            font-size: 0.8rem;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
+        .cal-footer button { background: none; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
         .cal-btn-clear { color: #ef4444; }
         .cal-btn-clear:hover { background: rgba(239, 68, 68, 0.1); }
         .cal-btn-apply { color: #004b87; }
@@ -479,33 +316,16 @@
         .cal-btn-apply:hover { background: rgba(0,75,135,0.15); }
 
         /* CONTAINER DA TABELA E LINHAS DIVISÓRIAS */
-        .hu-table-container {
-            background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto;
-            transition: background-color 0.3s, border-color 0.3s;
-            border: 1px solid transparent; 
-        }
-        .dark-theme .hu-table-container { 
-            background-color: #0f172a; 
-            border: 1px solid #1e293b; 
-        }
-
+        .hu-table-container { background-color: #d1d9e2; border-radius: 8px; padding-bottom: 20px; min-height: 250px; overflow-x: auto; transition: background-color 0.3s, border-color 0.3s; border: 1px solid transparent; }
+        .dark-theme .hu-table-container { background-color: #0f172a; border: 1px solid #1e293b; }
         .hu-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.85rem; }
-        
         .hu-table thead { background-color: #004b87; color: #d1d9e2; transition: background-color 0.3s; }
         .dark-theme .hu-table thead { background-color: #1e293b; color: #8ca4c0; }
-        
         .hu-table th:first-child { border-top-left-radius: 8px; }
         .hu-table th:last-child { border-top-right-radius: 8px; }
-        
         .hu-table th, .hu-table td { padding: 12px 10px; }
-        
-        .hu-table tbody tr {
-            border-bottom: 1px solid var(--table-border);
-        }
-        .hu-table tbody tr:last-child {
-            border-bottom: none;
-        }
-
+        .hu-table tbody tr { border-bottom: 1px solid var(--table-border); }
+        .hu-table tbody tr:last-child { border-bottom: none; }
         .hu-table td { color: #444; }
         .dark-theme .hu-table td { color: #cbd5e1; }
         .hu-table th { font-weight: 700; }
@@ -521,34 +341,13 @@
         .dark-theme .status-expedido { background-color: rgba(232, 141, 0, 0.2); }
         .dark-theme .status-finalizado { background-color: rgba(0, 255, 0, 0.2); color: #33ffad; }
 
-        /* =========================================
-           ESTILOS DO SLA COM DOT (PONTO COLORIDO)
-           ========================================= */
-        .sla-container {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            font-weight: 600;
-        }
-
-        .sla-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            flex-shrink: 0;
-        }
-
-        /* 🟢 SLA Verde (< 20h) */
+        /* SLA COM DOT */
+        .sla-container { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; }
+        .sla-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
         .sla-ok { color: #22c55e; }
         .sla-ok .sla-dot { background-color: #22c55e; }
-
-        /* 🟡 SLA Amarelo (20h a 24h) */
         .sla-warning { color: #eab308; }
         .sla-warning .sla-dot { background-color: #eab308; }
-
-        /* 🔴 SLA Vermelho (> 24h) */
         .sla-danger { color: #ef4444; }
         .sla-danger .sla-dot { background-color: #ef4444; }
 
@@ -557,234 +356,58 @@
         .table-actions i { cursor: pointer; transition: transform 0.2s; }
         .table-actions i:hover { transform: scale(1.1); }
 
-        /* =========================================
-           PAGINAÇÃO
-           ========================================= */
+        /* PAGINAÇÃO */
         .pagination-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background-color: var(--bg-body);
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            margin-top: -20px; /* Para colar no fundo da tabela */
-            margin-bottom: 20px;
-            border: 1px solid transparent; 
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;
+            background-color: var(--bg-body); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
+            font-size: 0.9rem; color: var(--text-primary); margin-top: -20px; margin-bottom: 20px; border: 1px solid transparent; 
         }
+        .dark-theme .pagination-container { background-color: #0f172a; border: 1px solid #1e293b; border-top: none; }
+        .pagination-controls { display: flex; align-items: center; gap: 15px; }
+        .btn-page { background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; color: #475569; transition: all 0.2s; }
+        .btn-page:hover:not(:disabled) { background-color: #e2e8f0; }
+        .btn-page:disabled { opacity: 0.5; cursor: not-allowed; }
+        .dark-theme .btn-page { background-color: #1e293b; border-color: #334155; color: #f1f5f9; }
+        .dark-theme .btn-page:hover:not(:disabled) { background-color: #334155; }
+        .pagination-page-info { font-weight: 700; }
 
-        .dark-theme .pagination-container {
-            background-color: #0f172a;
-            border: 1px solid #1e293b;
-            border-top: none;
-        }
-
-        .pagination-controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-page {
-            background-color: #f8fafc;
-            border: 1px solid #cbd5e1;
-            padding: 6px 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            color: #475569;
-            transition: all 0.2s;
-        }
-
-        .btn-page:hover:not(:disabled) {
-            background-color: #e2e8f0;
-        }
-
-        .btn-page:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .dark-theme .btn-page {
-            background-color: #1e293b;
-            border-color: #334155;
-            color: #f1f5f9;
-        }
-
-        .dark-theme .btn-page:hover:not(:disabled) {
-            background-color: #334155;
-        }
-
-        .pagination-page-info {
-            font-weight: 700;
-        }
-
-        /* =========================================
-           MODAIS
-           ========================================= */
+        /* MODAIS */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
+        .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-content {
-            background-color: #d1d9e2; 
-            border-radius: 20px;
-            padding: 25px 30px;
-            width: 360px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 1px solid #aebac9;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s;
+            background-color: #d1d9e2; border-radius: 20px; padding: 25px 30px; width: 360px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid #aebac9; transform: translateY(-20px); transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s;
         }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .dark-theme .modal-content {
-            background-color: #1e293b;
-            border-color: #334155;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            color: #004b87;
-        }
-
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .dark-theme .modal-content { background-color: #1e293b; border-color: #334155; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #004b87; }
         .dark-theme .modal-header { color: #8ca4c0; }
-
-        .modal-header h2 {
-            font-size: 1.1rem;
-            font-weight: 900;
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: 24px; 
-        }
-
-        .modal-close {
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
+        .modal-header h2 { font-size: 1.1rem; font-weight: 900; margin-left: auto; margin-right: auto; padding-left: 24px; }
+        .modal-close { cursor: pointer; font-size: 1.2rem; font-weight: bold; transition: opacity 0.2s; }
         .modal-close:hover { opacity: 0.6; }
-
-        .modal-body {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .input-pill {
-            display: flex;
-            align-items: center;
-            border: 1px solid #004b87;
-            border-radius: 20px;
-            padding: 6px 15px;
-            background-color: transparent;
-            transition: border-color 0.3s;
-            position: relative; 
-            overflow: visible;
-        }
-
+        .modal-body { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .input-pill { display: flex; align-items: center; border: 1px solid #004b87; border-radius: 20px; padding: 6px 15px; background-color: transparent; transition: border-color 0.3s; position: relative; overflow: visible; }
         .dark-theme .input-pill { border-color: #8ca4c0; }
-
-        .input-prefix {
-            font-weight: 900;
-            color: #004b87;
-            margin-right: 5px;
-            font-size: 0.95rem;
-            white-space: nowrap;
-        }
-
+        .input-prefix { font-weight: 900; color: #004b87; margin-right: 5px; font-size: 0.95rem; white-space: nowrap; }
         .dark-theme .input-prefix { color: #8ca4c0; }
-
-        .input-pill input, .input-pill select {
-            border: none;
-            background: transparent;
-            outline: none;
-            flex: 1;
-            color: #333;
-            font-weight: 600;
-            font-size: 0.95rem;
-            width: 100%;
-            font-family: 'Inter', sans-serif;
-        }
-
+        .input-pill input, .input-pill select { border: none; background: transparent; outline: none; flex: 1; color: #333; font-weight: 600; font-size: 0.95rem; width: 100%; font-family: 'Inter', sans-serif; }
         .dark-theme .input-pill input, .dark-theme .input-pill select { color: #f1f5f9; }
         .dark-theme .input-pill select option { background-color: #1e293b; color: #f1f5f9; }
-
-        .modal-footer {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .btn-salvar {
-            background-color: #004b87;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 8px 30px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: filter 0.2s, background-color 0.3s;
-        }
-
+        .modal-footer { display: flex; justify-content: center; gap: 10px; }
+        .btn-salvar { background-color: #004b87; color: white; border: none; border-radius: 20px; padding: 8px 30px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: filter 0.2s, background-color 0.3s; }
         .btn-salvar:hover { filter: brightness(1.2); }
         .dark-theme .btn-salvar { background: linear-gradient(to bottom, #475569, #334155); border: 1px solid #1e293b; color: #f1f5f9; }
 
-        .detalhes-body {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #004b87;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .detalhes-body { font-size: 0.9rem; font-weight: 700; color: #004b87; display: flex; flex-direction: column; gap: 8px; }
         .dark-theme .detalhes-body { color: #8ca4c0; }
         .detalhes-body span { font-weight: 400; color: #333; }
         .dark-theme .detalhes-body span { color: #f1f5f9; }
-        .historico-box {
-            margin-top: 10px;
-            border-top: 1px solid #aebac9;
-            padding-top: 8px;
-        }
+        .historico-box { margin-top: 10px; border-top: 1px solid #aebac9; padding-top: 8px; }
         .dark-theme .historico-box { border-color: #334155; }
-        .historico-lista {
-            font-size: 0.8rem;
-            font-weight: 400;
-            margin-top: 5px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            max-height: 100px;
-            overflow-y: auto;
-        }
-
+        .historico-lista { font-size: 0.8rem; font-weight: 400; margin-top: 5px; display: flex; flex-direction: column; gap: 4px; max-height: 100px; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -844,12 +467,27 @@
                 <i class="ph ph-bell"></i> 
                 <span class="nav-text">Notificações</span>
             </div>
+            
+            <!-- QUADRO DE NOTIFICAÇÕES COM DETALHAMENTO DE STATUS -->
             <div class="notifications-box">
                 <div class="notifications-box-title">Seu CAD tem pendencias em:</div>
-                <ul class="notifications-list">
-                    <li>HU's Pendentes - <span id="notif-hu-count">0</span></li>
-                    <li>Desvio de Rota - <span id="notif-desvio-count">0</span></li>
-                    <li>MU's Pendentes - <span id="notif-mu-count">0</span></li>
+                
+                <div class="notif-category">HU's Pendentes:</div>
+                <ul class="notif-sublist">
+                    <li>Pendente/Agend. Vencido - <span id="notif-hu-pendente">0</span></li>
+                    <li>Expedido - <span id="notif-hu-expedido">0</span></li>
+                </ul>
+
+                <div class="notif-category">Desvio de Rota:</div>
+                <ul class="notif-sublist">
+                    <li>Pendente/Agend. Vencido - <span id="notif-desvio-pendente">0</span></li>
+                    <li>Aguardando Recusa - <span id="notif-desvio-aguardando">0</span></li>
+                    <li>Recusado - <span id="notif-desvio-recusado">0</span></li>
+                </ul>
+
+                <div class="notif-category">MU's Pendentes:</div>
+                <ul class="notif-sublist">
+                    <li>Pendente - <span id="notif-mu-pendente">0</span></li>
                 </ul>
             </div>
         </nav>
@@ -1218,15 +856,20 @@
         });
 
         // =========================================
-        // FUNÇÃO DE CÁLCULO DE NOTIFICAÇÕES POR CAD
+        // FUNÇÃO DE CÁLCULO DETALHADO DE NOTIFICAÇÕES POR STATUS
         // =========================================
         async function carregarNotificacoes() {
             const userCD = localStorage.getItem('userCD') || 'Admin';
             const agora = new Date();
 
-            let countHU = 0;
-            let countDesvio = 0;
-            let countMU = 0;
+            let huPendente = 0;
+            let huExpedido = 0;
+
+            let desvioPendente = 0;
+            let desvioAguardando = 0;
+            let desvioRecusado = 0;
+
+            let muPendente = 0;
 
             const parseAgendamento = (agendStr) => {
                 if (!agendStr) return null;
@@ -1238,63 +881,69 @@
             };
 
             try {
-                // 1. Notificações de HU's Pendentes
+                // 1. Notificações HU's Pendentes
                 const snapHU = await getDocs(collection(db, "hus_pendentes"));
                 snapHU.forEach(docSnap => {
                     const data = docSnap.data();
                     if (data.origem === userCD) {
                         if (data.status === 'Pendente') {
-                            countHU++;
+                            huPendente++;
                         } else if (data.status === 'Agendado') {
                             const dtAgend = parseAgendamento(data.agendamento);
-                            if (dtAgend && dtAgend < agora) countHU++;
+                            if (dtAgend && dtAgend < agora) huPendente++;
                         }
                     }
                     if (data.destino === userCD && data.status === 'Expedido') {
-                        countHU++;
+                        huExpedido++;
                     }
                 });
 
-                // 2. Notificações de Desvio de Rota
+                // 2. Notificações Desvio de Rota
                 const snapDesvio = await getDocs(collection(db, "desvios_rota"));
                 snapDesvio.forEach(docSnap => {
                     const data = docSnap.data();
                     if (data.origem === userCD) {
                         if (data.status === 'Pendente') {
-                            countDesvio++;
+                            desvioPendente++;
                         } else if (data.status === 'Agendado') {
                             const dtAgend = parseAgendamento(data.agendamento);
-                            if (dtAgend && dtAgend < agora) countDesvio++;
+                            if (dtAgend && dtAgend < agora) desvioPendente++;
                         }
                     }
                     if (data.destino === userCD && data.status === 'Aguardando Recusa') {
-                        countDesvio++;
+                        desvioAguardando++;
                     }
                     if (data.desvio === userCD && data.status === 'Recusado') {
-                        countDesvio++;
+                        desvioRecusado++;
                     }
                 });
 
-                // 3. Notificações de MU's Pendentes
+                // 3. Notificações MU's Pendentes
                 const snapMU = await getDocs(collection(db, "mus_pendentes"));
                 snapMU.forEach(docSnap => {
                     const data = docSnap.data();
                     if (data.origem === userCD && data.status === 'Pendente') {
-                        countMU++;
+                        muPendente++;
                     }
                 });
 
             } catch (error) {
-                console.error("Erro ao carregar contagem de notificações:", error);
+                console.error("Erro ao carregar contagem detalhada de notificações:", error);
             }
 
-            document.getElementById('notif-hu-count').textContent = countHU;
-            document.getElementById('notif-desvio-count').textContent = countDesvio;
-            document.getElementById('notif-mu-count').textContent = countMU;
+            // Atualiza os contadores no DOM
+            document.getElementById('notif-hu-pendente').textContent = huPendente;
+            document.getElementById('notif-hu-expedido').textContent = huExpedido;
+
+            document.getElementById('notif-desvio-pendente').textContent = desvioPendente;
+            document.getElementById('notif-desvio-aguardando').textContent = desvioAguardando;
+            document.getElementById('notif-desvio-recusado').textContent = desvioRecusado;
+
+            document.getElementById('notif-mu-pendente').textContent = muPendente;
         }
 
         // =========================================
-        // FUNÇÃO AUXILIAR PARA CÁLCULO DE SLA COM DOT E CORES (CONGELA NO FINALIZADO)
+        // FUNÇÃO AUXILIAR PARA CÁLCULO DE SLA COM DOT E CORES
         // =========================================
         function calcularSLA(dataRegStr, status, historico) {
             if (!dataRegStr) return '<div class="sla-container sla-ok"><span class="sla-dot"></span> 0h</div>';
@@ -1308,9 +957,8 @@
             };
 
             const dataInicio = parseData(dataRegStr);
-            let dataFim = new Date(); // Por padrão, utiliza a hora atual
+            let dataFim = new Date();
 
-            // Se finalizado, recupera o timestamp do histórico correspondente à ação "Finalizado"
             if (status === 'Finalizado' && historico) {
                 const historicoArray = historico.split(' | ');
                 const itemFinal = historicoArray.slice().reverse().find(item => item.includes('Finalizado'));
@@ -1326,12 +974,11 @@
             let horas = Math.floor(diferencaMs / (1000 * 60 * 60));
             if (horas < 0) horas = 0;
 
-            // Determina a classe de cor conforme o valor de horas
-            let slaClass = 'sla-ok'; // Verde (< 20h)
+            let slaClass = 'sla-ok';
             if (horas >= 20 && horas <= 24) {
-                slaClass = 'sla-warning'; // Amarelo (20h a 24h)
+                slaClass = 'sla-warning';
             } else if (horas > 24) {
-                slaClass = 'sla-danger'; // Vermelho (> 24h)
+                slaClass = 'sla-danger';
             }
 
             return `<div class="sla-container ${slaClass}"><span class="sla-dot"></span> ${horas}h</div>`;
@@ -1473,7 +1120,7 @@
         }
 
         // =========================================
-        // FUNÇÃO DE ATUALIZAÇÃO DOS CARDS (KPIs)
+        // ATUALIZAÇÃO DOS CARDS (KPIs)
         // =========================================
         function atualizarKPIs() {
             const linhas = document.querySelectorAll('#tabela-hu-corpo tr');
@@ -1496,7 +1143,7 @@
         }
 
         // =========================================
-        // LÓGICA DE FILTROS (BUSCA, ORIGEM, DESTINO, STATUS E DATA)
+        // FILTROS
         // =========================================
         const filtroBusca = document.getElementById('filtro-busca');
         const filtroOrigem = document.getElementById('filtro-origem');
@@ -1513,9 +1160,7 @@
         });
 
         statusTodosCheckbox.addEventListener('change', () => {
-            statusCheckboxes.forEach(cb => {
-                cb.checked = statusTodosCheckbox.checked;
-            });
+            statusCheckboxes.forEach(cb => { cb.checked = statusTodosCheckbox.checked; });
         });
 
         statusCheckboxes.forEach(cb => {
@@ -1528,11 +1173,8 @@
         statusApplyBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             statusPopup.classList.remove('show');
-            
             const selecionados = [];
-            statusCheckboxes.forEach(cb => {
-                if (cb.checked) selecionados.push(cb.value);
-            });
+            statusCheckboxes.forEach(cb => { if (cb.checked) selecionados.push(cb.value); });
 
             if (selecionados.length === 0 || selecionados.length === statusCheckboxes.length) {
                 statusDisplayBtn.textContent = "Todos";
@@ -1542,7 +1184,6 @@
             } else {
                 statusDisplayBtn.textContent = `${selecionados.length} selecionados`;
             }
-
             aplicarFiltros();
         });
 
@@ -1555,32 +1196,22 @@
         document.querySelectorAll('.hu-card').forEach(card => {
             card.addEventListener('click', () => {
                 const tipoCard = card.getAttribute('data-filtro-card');
-                
                 statusCheckboxes.forEach(cb => {
-                    if (tipoCard === 'Total') {
-                        cb.checked = true;
-                    } else if (tipoCard === 'Pendente') {
-                        cb.checked = (cb.value === 'Pendente' || cb.value === 'Agendado');
-                    } else {
-                        cb.checked = (cb.value === tipoCard);
-                    }
+                    if (tipoCard === 'Total') cb.checked = true;
+                    else if (tipoCard === 'Pendente') cb.checked = (cb.value === 'Pendente' || cb.value === 'Agendado');
+                    else cb.checked = (cb.value === tipoCard);
                 });
 
                 statusTodosCheckbox.checked = Array.from(statusCheckboxes).every(item => item.checked);
 
-                if (tipoCard === 'Total') {
-                    statusDisplayBtn.textContent = "Todos";
-                } else if (tipoCard === 'Pendente') {
-                    statusDisplayBtn.textContent = "2 selecionados";
-                } else {
-                    statusDisplayBtn.textContent = tipoCard;
-                }
+                if (tipoCard === 'Total') statusDisplayBtn.textContent = "Todos";
+                else if (tipoCard === 'Pendente') statusDisplayBtn.textContent = "2 selecionados";
+                else statusDisplayBtn.textContent = tipoCard;
 
                 aplicarFiltros();
             });
         });
 
-        // VARIÁVEIS DE PAGINAÇÃO
         const registrosPorPagina = 20;
         let paginaAtual = 1;
         let linhasFiltradas = [];
@@ -1591,11 +1222,8 @@
             const destinoBusca = filtroDestino.value.toLowerCase();
             
             const statusSelecionados = [];
-            statusCheckboxes.forEach(cb => {
-                if (cb.checked) statusSelecionados.push(cb.value);
-            });
+            statusCheckboxes.forEach(cb => { if (cb.checked) statusSelecionados.push(cb.value); });
 
-            // Converte as datas selecionadas (YYYY-MM-DD) para formato DD/MM/YYYY
             const datasFormatadasSet = new Set(
                 Array.from(selectedDates).map(dateIso => {
                     const [ano, mes, dia] = dateIso.split('-');
@@ -1638,9 +1266,7 @@
             });
 
             const totalPaginas = Math.ceil(linhasFiltradas.length / registrosPorPagina) || 1;
-            if (paginaAtual > totalPaginas) {
-                paginaAtual = 1;
-            }
+            if (paginaAtual > totalPaginas) paginaAtual = 1;
 
             renderizarPagina();
         }
@@ -1653,11 +1279,8 @@
             const fim = Math.min(inicio + registrosPorPagina, totalRegistros);
 
             linhasFiltradas.forEach((tr, index) => {
-                if (index >= inicio && index < fim) {
-                    tr.style.display = '';
-                } else {
-                    tr.style.display = 'none';
-                }
+                if (index >= inicio && index < fim) tr.style.display = '';
+                else tr.style.display = 'none';
             });
 
             const infoText = totalRegistros > 0 
@@ -1672,18 +1295,12 @@
         }
 
         document.getElementById('btn-prev-page').addEventListener('click', () => {
-            if (paginaAtual > 1) {
-                paginaAtual--;
-                renderizarPagina();
-            }
+            if (paginaAtual > 1) { paginaAtual--; renderizarPagina(); }
         });
 
         document.getElementById('btn-next-page').addEventListener('click', () => {
             const totalPaginas = Math.ceil(linhasFiltradas.length / registrosPorPagina);
-            if (paginaAtual < totalPaginas) {
-                paginaAtual++;
-                renderizarPagina();
-            }
+            if (paginaAtual < totalPaginas) { paginaAtual++; renderizarPagina(); }
         });
 
         filtroBusca.addEventListener('input', aplicarFiltros);
@@ -1693,7 +1310,7 @@
         filtroDestino.addEventListener('change', aplicarFiltros);
 
         // =========================================
-        // LÓGICA DOS MODAIS E FLUXO DE AVANÇAR STATUS
+        // MODAIS E AVANÇAR STATUS
         // =========================================
         const btnAbrirModal = document.querySelector('.btn-novo-registro');
         const modalOverlay = document.getElementById('modal-novo-registro');
@@ -1725,13 +1342,9 @@
                 linhaEmProcesso = e.target.closest('tr');
                 const statusAtual = linhaEmProcesso.getAttribute('data-status');
 
-                if (statusAtual === 'Pendente') {
-                    modalEscolha.classList.add('active');
-                } else if (statusAtual === 'Agendado') {
-                    modalTs.classList.add('active');
-                } else if (statusAtual === 'Expedido') {
-                    modalFinalizar.classList.add('active');
-                }
+                if (statusAtual === 'Pendente') modalEscolha.classList.add('active');
+                else if (statusAtual === 'Agendado') modalTs.classList.add('active');
+                else if (statusAtual === 'Expedido') modalFinalizar.classList.add('active');
             }
 
             if (e.target.id === 'btn-escolha-agendar') {
@@ -1812,7 +1425,7 @@
         }
 
         // =========================================
-        // SALVAR NOVO REGISTRO (FIRESTORE)
+        // SALVAR NOVO REGISTRO
         // =========================================
         btnSalvarRegistro.addEventListener('click', async () => {
             const hu = document.getElementById('input-hu').value.trim();
@@ -1856,7 +1469,7 @@
         });
 
         // =========================================
-        // LÓGICA DE DETALHES E EDIÇÃO (FIRESTORE)
+        // DETALHES E EDIÇÃO
         // =========================================
         const modalDetalhes = document.getElementById('modal-detalhes');
         const btnFecharDetalhes = document.getElementById('fechar-detalhes-btn');
@@ -1869,11 +1482,8 @@
         let linhaEmEdicao = null;
 
         editStatusSelect.addEventListener('change', () => {
-            if (editStatusSelect.value === 'Agendado') {
-                containerEditAgendamento.style.display = 'flex';
-            } else {
-                containerEditAgendamento.style.display = 'none';
-            }
+            if (editStatusSelect.value === 'Agendado') containerEditAgendamento.style.display = 'flex';
+            else containerEditAgendamento.style.display = 'none';
         });
 
         document.addEventListener('click', (e) => {
@@ -1997,7 +1607,7 @@
         });
 
         // =========================================
-        // LÓGICA DO CALENDÁRIO MULTI-SELEÇÃO
+        // CALENDÁRIO MULTI-SELEÇÃO
         // =========================================
         const dateDisplayBtn = document.getElementById('date-display-btn');
         const calendarPopup = document.getElementById('calendar-popup');
@@ -2069,7 +1679,7 @@
         window.addEventListener('click', (e) => { if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) calendarPopup.classList.remove('show'); });
 
         // =========================================
-        // LÓGICA DOS DROPDOWNS CUSTOMIZADOS (CDs)
+        // DROPDOWNS CUSTOMIZADOS (CDs)
         // =========================================
         const listaCDs = [
             "BRBA01", "BRBA02", "BRCE01", "BRDF01", "BRDF02", "BRES01", 
