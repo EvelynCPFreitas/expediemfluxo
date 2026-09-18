@@ -118,12 +118,24 @@
             padding: 15px; color: var(--text-sidebar); font-weight: 700; font-size: 1.05rem;
             text-decoration: none; white-space: nowrap; transition: background 0.2s, padding 0.3s ease, justify-content 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
         .sidebar.expanded .nav-item { justify-content: flex-start; padding: 15px 25px; }
         .nav-text { display: none; }
         .sidebar.expanded .nav-text { display: block; }
         .nav-item:hover, .nav-item.active { background-color: var(--bg-hover); }
         .nav-item i, .nav-item svg { font-size: 1.5rem; flex-shrink: 0; }
+
+        /* Estilos da Bolinha (Pop-up Amarela) no Menu Notificações */
+        .notif-badge {
+            width: 10px;
+            height: 10px;
+            background-color: #ffde59;
+            border-radius: 50%;
+            display: none; /* Escondido por padrão, exibido dinamicamente via JS */
+            flex-shrink: 0;
+            box-shadow: 0 0 5px rgba(255, 222, 89, 0.8);
+        }
 
         /* Estilos do Bloco de Notificações Detalhado */
         .notification-item { cursor: default; }
@@ -466,9 +478,10 @@
             <div class="nav-item notification-item">
                 <i class="ph ph-bell"></i> 
                 <span class="nav-text">Notificações</span>
+                <span class="notif-badge" id="notif-badge"></span>
             </div>
             
-            <!-- QUADRO DE NOTIFICAÇÕES COM NOME ATUALIZADO PARA AGUARDANDO FINALIZAR -->
+            <!-- QUADRO DE NOTIFICAÇÕES -->
             <div class="notifications-box">
                 <div class="notifications-box-title">Seu CAD tem pendencias em:</div>
                 
@@ -867,7 +880,7 @@
 
             let desvioPendente = 0;
             let desvioAguardando = 0;
-            let desvioRecusado = 0; // Puxa registros com status "Recusado" para "Aguardando Finalizar"
+            let desvioRecusado = 0;
 
             let muPendente = 0;
 
@@ -913,7 +926,6 @@
                     if (data.destino === userCD && data.status === 'Aguardando Recusa') {
                         desvioAguardando++;
                     }
-                    // Mantém a busca pelo status "Recusado" do banco
                     if (data.desvio === userCD && data.status === 'Recusado') {
                         desvioRecusado++;
                     }
@@ -941,6 +953,16 @@
             document.getElementById('notif-desvio-recusado').textContent = desvioRecusado;
 
             document.getElementById('notif-mu-pendente').textContent = muPendente;
+
+            // Calcula o total geral de pendências para exibir ou esconder a bolinha amarela
+            const totalGeralPendencias = huPendente + huExpedido + desvioPendente + desvioAguardando + desvioRecusado + muPendente;
+            const badge = document.getElementById('notif-badge');
+            
+            if (totalGeralPendencias > 0) {
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
         }
 
         // =========================================
