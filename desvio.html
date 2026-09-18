@@ -484,6 +484,23 @@
         </div>
     </div>
 
+    <!-- MODAL DE ESCOLHA (AGENDAR OU EXPEDIR) -->
+    <div class="modal-overlay" id="modal-escolha-avancar">
+        <div class="modal-content" style="width: 320px; text-align: center;">
+            <div class="modal-header">
+                <h2>Avançar Status</h2>
+                <i class="ph ph-x modal-close" id="fechar-escolha-btn"></i>
+            </div>
+            <div class="modal-body" style="gap: 15px;">
+                <p style="font-weight: 600; font-size: 0.95rem;">Selecione a próxima ação:</p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn-salvar" id="btn-escolha-agendar" style="padding: 8px 20px;">Agendar</button>
+                    <button class="btn-salvar" id="btn-escolha-expedir" style="padding: 8px 20px;">Expedir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modal-detalhes">
         <div class="modal-content" style="width: 360px;">
             <div class="modal-header" style="color: #004b87;"><h2 style="font-size: 1rem;">Detalhes do Desvio</h2><i class="ph ph-x modal-close" id="fechar-detalhes-btn"></i></div>
@@ -1059,12 +1076,14 @@
         // =========================================
         // ATUALIZAR STATUS E EDITAR NO FIRESTORE
         // =========================================
+        const modalEscolha = document.getElementById('modal-escolha-avancar');
         const modalConfirmacao = document.getElementById('modal-confirmacao-avancar');
         const modalAgendamento = document.getElementById('modal-input-agendamento');
         const modalDetalhes = document.getElementById('modal-detalhes');
         const modalEditar = document.getElementById('modal-editar');
         let linhaProcesso = null, statusAlvo = '';
 
+        document.getElementById('fechar-escolha-btn').addEventListener('click', () => modalEscolha.classList.remove('active'));
         document.getElementById('fechar-confirmacao-btn').addEventListener('click', () => modalConfirmacao.classList.remove('active'));
         document.getElementById('fechar-modal-agendamento-btn').addEventListener('click', () => modalAgendamento.classList.remove('active'));
         document.getElementById('fechar-detalhes-btn').addEventListener('click', () => modalDetalhes.classList.remove('active'));
@@ -1100,19 +1119,34 @@
             if (e.target.classList.contains('btn-avancar')) {
                 linhaProcesso = e.target.closest('tr');
                 const sAtual = linhaProcesso.getAttribute('data-status');
-                if (sAtual === 'Pendente') statusAlvo = 'Agendado';
-                else if (sAtual === 'Agendado') statusAlvo = 'Aguardando Recusa';
-                else if (sAtual === 'Aguardando Recusa') statusAlvo = 'Recusado';
-                else if (sAtual === 'Recusado') statusAlvo = 'Finalizado';
-                else statusAlvo = '';
 
-                if (statusAlvo) {
-                    if (statusAlvo === 'Agendado') modalAgendamento.classList.add('active');
-                    else {
+                if (sAtual === 'Pendente') {
+                    modalEscolha.classList.add('active');
+                } else {
+                    if (sAtual === 'Agendado') statusAlvo = 'Aguardando Recusa';
+                    else if (sAtual === 'Aguardando Recusa') statusAlvo = 'Recusado';
+                    else if (sAtual === 'Recusado') statusAlvo = 'Finalizado';
+                    else statusAlvo = '';
+
+                    if (statusAlvo) {
                         document.getElementById('texto-confirmacao-avancar').textContent = `Deseja avançar o Status para ${statusAlvo}?`;
                         modalConfirmacao.classList.add('active');
                     }
                 }
+            }
+
+            // Opção "Agendado" dentro do Modal de Escolha
+            if (e.target.id === 'btn-escolha-agendar') {
+                modalEscolha.classList.remove('active');
+                modalAgendamento.classList.add('active');
+            }
+
+            // Opção "Expedir" dentro do Modal de Escolha (Avança diretamente)
+            if (e.target.id === 'btn-escolha-expedir') {
+                modalEscolha.classList.remove('active');
+                statusAlvo = 'Aguardando Recusa';
+                document.getElementById('texto-confirmacao-avancar').textContent = `Deseja avançar o Status para ${statusAlvo}?`;
+                modalConfirmacao.classList.add('active');
             }
 
             if (e.target.classList.contains('btn-editar')) {
