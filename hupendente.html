@@ -126,15 +126,33 @@
         .nav-item:hover, .nav-item.active { background-color: var(--bg-hover); }
         .nav-item i, .nav-item svg { font-size: 1.5rem; flex-shrink: 0; }
 
-        /* Estilos da Bolinha (Pop-up Amarela) no Menu Notificações */
+        /* Estilos da Bolinha (Pop-up Amarela) com ajuste de alinhamento */
+        .notif-icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .notif-badge {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background-color: #ffde59;
             border-radius: 50%;
-            display: none; /* Escondido por padrão, exibido dinamicamente via JS */
+            display: none; /* Exibido via JS se houver pendências */
             flex-shrink: 0;
             box-shadow: 0 0 5px rgba(255, 222, 89, 0.8);
+            
+            /* Posição quando o menu está RECOLHIDO (sobre o sino) */
+            position: absolute;
+            top: -2px;
+            right: -2px;
+        }
+
+        /* Posição da bolinha quando o menu está EXPANDIDO (ao lado do texto) */
+        .sidebar.expanded .notif-badge {
+            position: static;
+            margin-left: auto;
         }
 
         /* Estilos do Bloco de Notificações Detalhado */
@@ -476,9 +494,11 @@
                 <span class="nav-text">MU's Pendentes</span>
             </a>
             <div class="nav-item notification-item">
-                <i class="ph ph-bell"></i> 
+                <div class="notif-icon-wrapper">
+                    <i class="ph ph-bell"></i>
+                    <span class="notif-badge" id="notif-badge"></span>
+                </div>
                 <span class="nav-text">Notificações</span>
-                <span class="notif-badge" id="notif-badge"></span>
             </div>
             
             <!-- QUADRO DE NOTIFICAÇÕES -->
@@ -959,7 +979,7 @@
             const badge = document.getElementById('notif-badge');
             
             if (totalGeralPendencias > 0) {
-                badge.style.display = 'inline-block';
+                badge.style.display = 'block';
             } else {
                 badge.style.display = 'none';
             }
