@@ -788,6 +788,8 @@
                 document.querySelectorAll('.chk-status:checked').forEach(chk => statusSelecionados.push(chk.value));
             }
 
+            const datasSelecionadas = Array.from(selectedDates);
+
             const linhas = Array.from(document.querySelectorAll('#tabela-hu-corpo tr'));
             linhasFiltradas = [];
 
@@ -798,6 +800,7 @@
                 const destino = tr.getAttribute('data-destino').toLowerCase();
                 const desvio = tr.getAttribute('data-desvio').toLowerCase();
                 const status = tr.getAttribute('data-status');
+                const dataReg = tr.getAttribute('data-data-reg');
 
                 const atendeBusca = !termoBusca || hu.includes(termoBusca) || is.includes(termoBusca) || origem.includes(termoBusca) || destino.includes(termoBusca) || desvio.includes(termoBusca);
                 const atendeOrigem = !fOrigem || fOrigem === 'todos' || origem === fOrigem;
@@ -806,7 +809,15 @@
                 
                 let atendeStatus = chkTodos.checked || statusSelecionados.includes(status) || (statusSelecionados.includes('Pendente') && status === 'Agendado');
 
-                if (atendeBusca && atendeOrigem && atendeDestino && atendeDesvio && atendeStatus) {
+                let atendeData = true;
+                if (datasSelecionadas.length > 0 && dataReg) {
+                    const dataApenas = dataReg.split(' ')[0]; // DD/MM/YYYY
+                    const [dia, mes, ano] = dataApenas.split('/');
+                    const dataFormatadaISO = `${ano}-${mes}-${dia}`; // YYYY-MM-DD
+                    atendeData = datasSelecionadas.includes(dataFormatadaISO);
+                }
+
+                if (atendeBusca && atendeOrigem && atendeDestino && atendeDesvio && atendeStatus && atendeData) {
                     linhasFiltradas.push(tr);
                 }
                 tr.style.display = 'none'; // Oculta todas inicialmente
@@ -962,13 +973,14 @@
         dateDisplayBtn.addEventListener('click', (e) => { e.stopPropagation(); calendarPopup.classList.toggle('show'); renderCalendar(currentMonth, currentYear); });
         document.getElementById('cal-prev').addEventListener('click', (e) => { e.stopPropagation(); currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(currentMonth, currentYear); });
         document.getElementById('cal-next').addEventListener('click', (e) => { e.stopPropagation(); currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(currentMonth, currentYear); });
-        document.getElementById('cal-clear').addEventListener('click', (e) => { e.stopPropagation(); selectedDates.clear(); renderCalendar(currentMonth, currentYear); dateDisplayBtn.textContent = "Selecionar..."; });
+        document.getElementById('cal-clear').addEventListener('click', (e) => { e.stopPropagation(); selectedDates.clear(); renderCalendar(currentMonth, currentYear); dateDisplayBtn.textContent = "Selecionar..."; filtrarTabela(); });
         document.getElementById('cal-apply').addEventListener('click', (e) => {
             e.stopPropagation();
             if (selectedDates.size === 0) dateDisplayBtn.textContent = "Selecionar...";
             else if (selectedDates.size === 1) dateDisplayBtn.textContent = Array.from(selectedDates)[0];
             else dateDisplayBtn.textContent = `${selectedDates.size} dias selecionados`;
             calendarPopup.classList.remove('show');
+            filtrarTabela();
         });
         window.addEventListener('click', (e) => { if (!calendarPopup.contains(e.target) && e.target !== dateDisplayBtn) calendarPopup.classList.remove('show'); });
 
@@ -1158,7 +1170,7 @@
                 const hv = document.getElementById('edit-hora-agend').value;
                 if (!dv || !hv) { alert('Preencha data e hora.'); return; }
                 const dp = dv.split('-');
-                ag = `${dp[2]}/${dp[1]}/${dp0} ${hv}`;
+                ag = `${dp[2]}/${dp[1]}/${dp[0]} ${hv}`;
             } else { ag = ''; }
 
             let hist = linhaProcesso.getAttribute('data-historico');
