@@ -468,7 +468,7 @@
                 <span class="nav-text">Notificações</span>
             </div>
             
-            <!-- QUADRO DE NOTIFICAÇÕES COM DETALHAMENTO DE STATUS -->
+            <!-- QUADRO DE NOTIFICAÇÕES COM NOME ATUALIZADO PARA AGUARDANDO FINALIZAR -->
             <div class="notifications-box">
                 <div class="notifications-box-title">Seu CAD tem pendencias em:</div>
                 
@@ -482,7 +482,7 @@
                 <ul class="notif-sublist">
                     <li>Pendente/Agend. Vencido - <span id="notif-desvio-pendente">0</span></li>
                     <li>Aguardando Recusa - <span id="notif-desvio-aguardando">0</span></li>
-                    <li>Recusado - <span id="notif-desvio-recusado">0</span></li>
+                    <li>Aguardando Finalizar - <span id="notif-desvio-recusado">0</span></li>
                 </ul>
 
                 <div class="notif-category">MU's Pendentes:</div>
@@ -867,7 +867,7 @@
 
             let desvioPendente = 0;
             let desvioAguardando = 0;
-            let desvioRecusado = 0;
+            let desvioRecusado = 0; // Puxa registros com status "Recusado" para "Aguardando Finalizar"
 
             let muPendente = 0;
 
@@ -913,6 +913,7 @@
                     if (data.destino === userCD && data.status === 'Aguardando Recusa') {
                         desvioAguardando++;
                     }
+                    // Mantém a busca pelo status "Recusado" do banco
                     if (data.desvio === userCD && data.status === 'Recusado') {
                         desvioRecusado++;
                     }
