@@ -652,10 +652,11 @@
         </div>
     </div>
 
-    <!-- SCRIPT COM INTEGRAÇÃO FIRESTORE -->
+    <!-- SCRIPT COM INTEGRAÇÃO FIRESTORE E ONSNAPSHOT -->
     <script type="module">
         import { app } from './firebase-config.js';
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        // AQUI ADICIONAMOS O onSnapshot E O query PARA OUVIR EM TEMPO REAL
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const db = getFirestore(app);
 
@@ -852,7 +853,7 @@
                 }
 
                 localStorage.removeItem('filaNovosDesvios');
-                carregarRegistros();
+                // O onSnapshot carregará automaticamente
             }
         }
 
@@ -871,84 +872,90 @@
         }
 
         // =========================================
-        // CARREGAR REGISTROS DO FIRESTORE (COM ORDENAÇÃO)
+        // CARREGAR REGISTROS DO FIRESTORE (TEMPO REAL COM onSnapshot)
         // =========================================
         const tabelaCorpo = document.getElementById('tabela-hu-corpo');
 
-        async function carregarRegistros() {
-            tabelaCorpo.innerHTML = ''; 
-            
+        function carregarRegistros() {
             try {
-                const querySnapshot = await getDocs(collection(db, "desvios_rota"));
+                // Aqui criamos o ouvinte do Firestore para Desvios de Rota
+                const q = query(collection(db, "desvios_rota"));
                 
-                let registros = [];
-                querySnapshot.forEach((documento) => {
-                    let dados = documento.data();
-                    dados.idDoBanco = documento.id;
-                    registros.push(dados);
+                onSnapshot(q, (querySnapshot) => {
+                    tabelaCorpo.innerHTML = ''; 
+                    
+                    let registros = [];
+                    querySnapshot.forEach((documento) => {
+                        let dados = documento.data();
+                        dados.idDoBanco = documento.id;
+                        registros.push(dados);
+                    });
+
+                    // Ordena pela data/hora no código
+                    registros.sort((a, b) => {
+                        const parseData = (dataStr) => {
+                            if (!dataStr) return 0;
+                            const partes = dataStr.split(' ');
+                            if (partes.length < 2) return 0;
+                            const [dia, mes, ano] = partes[0].split('/');
+                            const [h, m] = partes[1].split(':');
+                            return new Date(`${ano}-${mes}-${dia}T${h}:${m}:00`).getTime();
+                        };
+                        return parseData(b.dataReg) - parseData(a.dataReg);
+                    });
+
+                    registros.forEach((dados) => {
+                        const novaLinha = document.createElement('tr');
+                        novaLinha.setAttribute('data-db-id', dados.idDoBanco); 
+                        novaLinha.setAttribute('data-hu', dados.hu || '');
+                        novaLinha.setAttribute('data-is', dados.is || '');
+                        novaLinha.setAttribute('data-origem', dados.origem || '');
+                        novaLinha.setAttribute('data-destino', dados.destino || '');
+                        novaLinha.setAttribute('data-desvio', dados.desvio || '');
+                        novaLinha.setAttribute('data-status', dados.status || 'Pendente');
+                        novaLinha.setAttribute('data-agendamento', dados.agendamento || '');
+                        novaLinha.setAttribute('data-ts', dados.ts || ''); 
+                        novaLinha.setAttribute('data-data-reg', dados.dataReg || '');
+                        novaLinha.setAttribute('data-historico', dados.historico || '');
+
+                        let badgeClass = 'status-pendente';
+                        if (dados.status === 'Agendado') badgeClass = 'status-agendado';
+                        if (dados.status === 'Aguardando Recusa') badgeClass = 'status-aguardando';
+                        if (dados.status === 'Recusado') badgeClass = 'status-recusado';
+                        if (dados.status === 'Finalizado') badgeClass = 'status-finalizado';
+
+                        let displayAvancar = dados.status === 'Finalizado' ? 'none' : '';
+                        let slaValor = calcularSLA(dados.dataReg, dados.status, dados.historico);
+
+                        novaLinha.innerHTML = `
+                            <td>${dados.dataReg ? dados.dataReg.split(' ')[0] : ''}</td>
+                            <td>${dados.hu}</td>
+                            <td>${dados.is}</td>
+                            <td>${dados.origem}</td>
+                            <td>${dados.destino}</td>
+                            <td>${dados.desvio}</td>
+                            <td><span class="status-badge ${badgeClass}">${dados.status}</span></td>
+                            <td>${slaValor}</td>
+                            <td>${dados.agendamento}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
+                                    <i class="ph-fill ph-arrow-circle-right btn-avancar" style="display: ${displayAvancar}; cursor: pointer;" title="Avançar Status"></i>
+                                    <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
+                                </div>
+                            </td>
+                        `;
+                        tabelaCorpo.appendChild(novaLinha);
+                    });
+                    
+                    atualizarKPIs();
+                    filtrarTabela();
+                    carregarNotificacoes();
+                }, (error) => {
+                    console.error("Erro no onSnapshot: ", error);
                 });
-
-                registros.sort((a, b) => {
-                    const parseData = (dataStr) => {
-                        if (!dataStr) return 0;
-                        const partes = dataStr.split(' ');
-                        if (partes.length < 2) return 0;
-                        const [dia, mes, ano] = partes[0].split('/');
-                        const [h, m] = partes[1].split(':');
-                        return new Date(`${ano}-${mes}-${dia}T${h}:${m}:00`).getTime();
-                    };
-                    return parseData(b.dataReg) - parseData(a.dataReg);
-                });
-
-                registros.forEach((dados) => {
-                    const novaLinha = document.createElement('tr');
-                    novaLinha.setAttribute('data-db-id', dados.idDoBanco); 
-                    novaLinha.setAttribute('data-hu', dados.hu || '');
-                    novaLinha.setAttribute('data-is', dados.is || '');
-                    novaLinha.setAttribute('data-origem', dados.origem || '');
-                    novaLinha.setAttribute('data-destino', dados.destino || '');
-                    novaLinha.setAttribute('data-desvio', dados.desvio || '');
-                    novaLinha.setAttribute('data-status', dados.status || 'Pendente');
-                    novaLinha.setAttribute('data-agendamento', dados.agendamento || '');
-                    novaLinha.setAttribute('data-ts', dados.ts || ''); 
-                    novaLinha.setAttribute('data-data-reg', dados.dataReg || '');
-                    novaLinha.setAttribute('data-historico', dados.historico || '');
-
-                    let badgeClass = 'status-pendente';
-                    if (dados.status === 'Agendado') badgeClass = 'status-agendado';
-                    if (dados.status === 'Aguardando Recusa') badgeClass = 'status-aguardando';
-                    if (dados.status === 'Recusado') badgeClass = 'status-recusado';
-                    if (dados.status === 'Finalizado') badgeClass = 'status-finalizado';
-
-                    let displayAvancar = dados.status === 'Finalizado' ? 'none' : '';
-                    let slaValor = calcularSLA(dados.dataReg, dados.status, dados.historico);
-
-                    novaLinha.innerHTML = `
-                        <td>${dados.dataReg ? dados.dataReg.split(' ')[0] : ''}</td>
-                        <td>${dados.hu}</td>
-                        <td>${dados.is}</td>
-                        <td>${dados.origem}</td>
-                        <td>${dados.destino}</td>
-                        <td>${dados.desvio}</td>
-                        <td><span class="status-badge ${badgeClass}">${dados.status}</span></td>
-                        <td>${slaValor}</td>
-                        <td>${dados.agendamento}</td>
-                        <td>
-                            <div class="table-actions">
-                                <i class="ph-fill ph-pencil btn-editar" title="Editar"></i>
-                                <i class="ph-fill ph-arrow-circle-right btn-avancar" style="display: ${displayAvancar}; cursor: pointer;" title="Avançar Status"></i>
-                                <i class="ph-fill ph-eye btn-detalhes" title="Detalhes"></i>
-                            </div>
-                        </td>
-                    `;
-                    tabelaCorpo.appendChild(novaLinha);
-                });
-                
-                atualizarKPIs();
-                filtrarTabela();
-                carregarNotificacoes();
             } catch (error) {
-                console.error("Erro ao carregar registros: ", error);
+                console.error("Erro ao configurar ouvinte de registros: ", error);
             }
         }
 
@@ -1247,7 +1254,9 @@
                 document.getElementById('modal-origem').value = '';
                 document.getElementById('modal-destino').value = '';
                 document.getElementById('modal-desvio').value = '';
-                carregarRegistros();
+                
+                // O onSnapshot tratará da atualização
+
             } catch (e) {
                 console.error("Erro ao salvar:", e); alert("Erro de conexão.");
             }
@@ -1386,7 +1395,8 @@
 
                 modalExpedirTs.classList.remove('active');
                 linhaProcesso = null;
-                carregarRegistros();
+                // O onSnapshot tratará da atualização
+
             } catch (e) {
                 console.error("Erro ao expedir registro:", e);
                 alert("Erro ao salvar a expedição.");
@@ -1411,7 +1421,8 @@
                 await updateDoc(doc(db, "desvios_rota", idBanco), {
                     status: novoStatus, agendamento: agendamento, historico: hist
                 });
-                carregarRegistros();
+                // O onSnapshot tratará da atualização
+
             } catch (e) { console.error(e); alert("Erro ao atualizar status."); }
             linhaProcesso = null;
         }
@@ -1465,7 +1476,9 @@
                 });
                 modalEditar.classList.remove('active');
                 linhaProcesso = null;
-                carregarRegistros();
+                
+                // O onSnapshot tratará da atualização
+
             } catch (e) { console.error(e); alert("Erro ao editar."); }
         });
     </script>
