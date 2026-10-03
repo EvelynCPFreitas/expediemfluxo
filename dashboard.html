@@ -87,9 +87,10 @@
         .sidebar.expanded .notif-badge { position: static; margin-left: auto; }
 
         /* Estilos do Bloco de Notificações */
-        .notification-item { cursor: default; }
+        .notification-item { cursor: pointer; }
         .notifications-box { display: none; background-color: var(--bg-notif-box); border-radius: 8px; padding: 12px; margin: 5px 15px 15px 15px; font-size: 0.8rem; color: var(--text-sidebar); border: 1px solid var(--border-sidebar); }
-        .sidebar.expanded .notifications-box { display: block; }
+        .sidebar.expanded .notifications-box { display: none; }
+        .sidebar.expanded .notifications-box.active { display: block; }
         .notifications-box-title { font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; }
         .notif-category { font-weight: 700; margin-top: 6px; }
         .notif-sublist { list-style: none; padding-left: 10px; margin-top: 2px; display: flex; flex-direction: column; gap: 3px; font-weight: 500; }
@@ -482,7 +483,28 @@
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
-        if (sidebarToggleBtn && sidebar) { sidebarToggleBtn.addEventListener('click', () => { sidebar.classList.toggle('expanded'); }); }
+        const notificationItem = document.querySelector('.notification-item');
+        const notificationsBox = document.querySelector('.notifications-box');
+
+        if (sidebarToggleBtn && sidebar) { 
+            sidebarToggleBtn.addEventListener('click', () => { 
+                sidebar.classList.toggle('expanded'); 
+                if (!sidebar.classList.contains('expanded') && notificationsBox) {
+                    notificationsBox.classList.remove('active');
+                }
+            }); 
+        }
+
+        if (notificationItem && sidebar && notificationsBox) {
+            notificationItem.addEventListener('click', () => {
+                if (!sidebar.classList.contains('expanded')) {
+                    sidebar.classList.add('expanded');
+                    notificationsBox.classList.add('active');
+                } else {
+                    notificationsBox.classList.toggle('active');
+                }
+            });
+        }
 
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
