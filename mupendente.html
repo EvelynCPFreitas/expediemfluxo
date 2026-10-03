@@ -643,10 +643,9 @@
         </div>
     </div>
 
-    <!-- SCRIPT COM INTEGRAÇÃO FIRESTORE -->
+    <!-- SCRIPT COM INTEGRAÇÃO FIRESTORE E ONSNAPSHOT -->
     <script type="module">
         import { app } from './firebase-config.js';
-        // AQUI ADICIONAMOS O onSnapshot E O query PARA OUVIR EM TEMPO REAL
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const db = getFirestore(app);
