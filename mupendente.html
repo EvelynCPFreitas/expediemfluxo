@@ -78,7 +78,7 @@
         .sidebar.expanded .notif-badge { position: static; margin-left: auto; }
 
         /* Estilos do Bloco de Notificações Detalhado */
-        .notification-item { cursor: default; }
+        .notification-item { cursor: pointer; }
         .notifications-box { display: none; background-color: var(--bg-notif-box); border-radius: 8px; padding: 12px; margin: 5px 15px 15px 15px; font-size: 0.8rem; color: var(--text-sidebar); border: 1px solid var(--border-sidebar); }
         .sidebar.expanded .notifications-box { display: block; }
         .notifications-box-title { font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; }
@@ -754,9 +754,21 @@
             if (badge) badge.style.display = totalGeralPendencias > 0 ? 'block' : 'none';
         }
 
-        const sidebarToggleBtn = document.getElementById('sidebar-toggle');
-        const sidebar = document.getElementById('sidebar');
-        if (sidebarToggleBtn && sidebar) sidebarToggleBtn.addEventListener('click', () => sidebar.classList.toggle('expanded'));
+       const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+const sidebar = document.getElementById('sidebar');
+const notificationItem = document.querySelector('.notification-item');
+
+if (sidebarToggleBtn && sidebar) { 
+    sidebarToggleBtn.addEventListener('click', () => { 
+        sidebar.classList.toggle('expanded'); 
+    }); 
+}
+
+if (notificationItem && sidebar) {
+    notificationItem.addEventListener('click', () => {
+        sidebar.classList.toggle('expanded');
+    });
+}
 
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
