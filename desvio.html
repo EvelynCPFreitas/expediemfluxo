@@ -1168,9 +1168,11 @@
 
         document.querySelectorAll('.custom-dropdown-input').forEach(input => {
             const listElement = input.nextElementSibling;
+            const isModalInput = input.closest('.modal-content') !== null;
             const renderList = (filterText = '') => {
                 listElement.innerHTML = '';
-                const filtrados = listaCDs.filter(cd => cd.toLowerCase().includes(filterText.toLowerCase()));
+                const fonteLista = isModalInput ? listaCDs.filter(cd => cd !== "Todos") : listaCDs;
+                const filtrados = fonteLista.filter(cd => cd.toLowerCase().includes(filterText.toLowerCase()));
                 if (filtrados.length === 0) {
                     listElement.innerHTML = `<li class="custom-dropdown-item" style="pointer-events:none;color:#999;">Não encontrado</li>`;
                 } else {
